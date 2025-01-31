@@ -129,5 +129,5 @@ Our platform offers a comprehensive solution to the challenges faced by programm
    - **Decision**: We integrated discussion boards, friend groups, and competitions.
    - **Why?**: Collaboration fosters motivation, accountability, and deeper learning by allowing users to exchange knowledge and compete in a supportive environment.
 
-5. **Inspiration Behind the Idea**
+5. **Inspiration Behind the Idea**:
 This idea came from personal experience—university courses cover only a few programming languages, but the industry demands more. Learning independently can be overwhelming without guidance, progress tracking, or a structured path. Seeing how Duolingo makes language learning accessible and engaging, we wanted to bring the same experience to programming, ensuring learners of all levels have a fun, structured, and effective way to improve their skills.
