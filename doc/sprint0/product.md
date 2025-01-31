@@ -18,8 +18,10 @@ Key features include:
 
 The platform fosters a sense of community and friendly competition, while providing real-time feedback and suggestions to help learners progress. It’s a comprehensive solution for learners looking to improve their programming skills and prepare for interviews in a gamified, engaging environment.
 
-**Design & Mockups**:
-To get a better idea of our platform’s UI/UX, check out our Figma designs:
+<br><br>
+
+**Design & Mockups**  
+To get a better idea of our platform’s UI/UX, check out our Figma designs:  
 👉 [CodeLingo Figma Mockups](https://www.figma.com/design/ymEarOgf6gRktSbGTKmK4p/CodeLingo?node-id=0-1&t=UA4htZUGyEJOL89r-1)
 
 <br><br>
@@ -33,7 +35,7 @@ To get a better idea of our platform’s UI/UX, check out our Figma designs:
 - **Pain Points**: Feels overwhelmed by traditional coding tutorials, lacks structured guidance.
 - **Goals**: Wants an easy, fun introduction to programming with visual aids and simple explanations.
 - **Use Case**: Sarah will use Learning Mode to explore basic programming concepts like variables, loops, and simple algorithms. The platform’s gamified, visual approach will help her gradually build confidence and stay motivated.
-
+<br><br>
 ### Persona 2: "Internship Prepper" - Emily
 - **Age**: 20
 - **Occupation**: Second-year computer science student preparing for her first co-op internship.
@@ -42,7 +44,7 @@ To get a better idea of our platform’s UI/UX, check out our Figma designs:
 - **Pain Points**: Needs to practice coding under time pressure, especially for algorithmic problems.
 - **Goals**: Wants to sharpen coding skills and prepare for the challenges she'll face during technical interviews.
 - **Use Case**: Emily will use Interview Prep Mode to practice coding problems with time constraints and simulate real interview conditions. She'll also use Competition Mode to further develop her skills and track her progress.
-
+<br><br>
 ### Persona 3: "Advanced Coder" - John
 - **Age**: 27
 - **Occupation**: Software engineer with 7 years of experience, preparing for senior-level job interviews.
@@ -51,7 +53,7 @@ To get a better idea of our platform’s UI/UX, check out our Figma designs:
 - **Pain Points**: Needs access to complex coding problems and advanced discussions to stay sharp.
 - **Goals**: Wants to solve challenging coding problems and engage in high-level discussions with experts.
 - **Use Case**: John will use Competition Mode to tackle tough coding problems and participate in the Discussion Board for in-depth technical discussions, preparing for interviews at top companies.
-
+<br><br>
 ### Market Potential
 The demand for coding education and interview preparation is massive and continues to grow. Platforms like LeetCode and W3Schools collectively receive over 100 million monthly visits, highlighting the strong demand for structured learning and coding practice. Additionally, the global developer population is around 30 million and is projected to keep expanding, driven by the increasing need for technical skills across industries.  
 Our platform is positioned to capture this growing market by offering an engaging, structured, and adaptive learning experience tailored to users at all skill levels. By addressing key pain points in existing solutions, we provide a compelling alternative that combines gamification, personalized learning, real-time interview prep, and a supportive community—all in one place.
@@ -145,5 +147,5 @@ Our platform offers a comprehensive solution to the challenges faced by programm
    - **Decision**: We integrated discussion boards, friend groups, and competitions.
    - **Why?**: Collaboration fosters motivation, accountability, and deeper learning by allowing users to exchange knowledge and compete in a supportive environment.
 
-5. **Inspiration Behind the Idea**:
+5. **Inspiration Behind the Idea**  
 This idea came from personal experience—university courses cover only a few programming languages, but the industry demands more. Learning independently can be overwhelming without guidance, progress tracking, or a structured path. Seeing how Duolingo makes language learning accessible and engaging, we wanted to bring the same experience to programming, ensuring learners of all levels have a fun, structured, and effective way to improve their skills.
