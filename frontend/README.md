@@ -1,3 +1,13 @@
+# Running the frontend for the first time
+Once the repository is cloned go to terminal
+```
+cd frontend
+npm install
+npm run dev
+```
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
