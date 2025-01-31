@@ -3,6 +3,7 @@
 > _Note:_ This document is meant to evolve throughout the planning phase of your project.  
 > That is, it makes sense for you to commit regularly to this file while working on the project (especially edits/additions/deletions to the _Highlights_ section).
 
+<br><br>
 
 ## Q1: What are you planning to build?
 We are building an interactive web application that gamifies programming and coding practice, inspired by Duolingo’s learning model.  
@@ -21,6 +22,7 @@ The platform fosters a sense of community and friendly competition, while provid
 To get a better idea of our platform’s UI/UX, check out our Figma designs:
 👉 [CodeLingo Figma Mockups](https://www.figma.com/design/ymEarOgf6gRktSbGTKmK4p/CodeLingo?node-id=0-1&t=UA4htZUGyEJOL89r-1)
 
+<br><br>
 
 ## Q2: Who are your target users? (2-3 personas)
 ### Persona 1: "Aspiring Programmer" - Sarah
@@ -54,6 +56,7 @@ To get a better idea of our platform’s UI/UX, check out our Figma designs:
 The demand for coding education and interview preparation is massive and continues to grow. Platforms like LeetCode and W3Schools collectively receive over 100 million monthly visits, highlighting the strong demand for structured learning and coding practice. Additionally, the global developer population is around 30 million and is projected to keep expanding, driven by the increasing need for technical skills across industries.  
 Our platform is positioned to capture this growing market by offering an engaging, structured, and adaptive learning experience tailored to users at all skill levels. By addressing key pain points in existing solutions, we provide a compelling alternative that combines gamification, personalized learning, real-time interview prep, and a supportive community—all in one place.
 
+<br><br>
 
 ## Q3: Why would your users choose your product? What are they using today to solve their problem/need?
 
@@ -83,6 +86,7 @@ Our platform offers a comprehensive solution to the challenges faced by programm
    - **Problem**: Coding learners typically need to use multiple platforms for different tasks—coding practice on LeetCode, tutorials on W3Schools, and interview prep on yet another site. This fragmentation can be inefficient and overwhelming.
    - **Our Solution**: We integrate everything into one platform. Learners can practice coding, prepare for interviews, and engage with the community all in one place. This streamlined approach eliminates the need to switch between multiple platforms, making the learning process more focused and efficient.
 
+<br><br>
 
 ## Q4: What does "DONE" means to your Team
 ### Code Completeness
