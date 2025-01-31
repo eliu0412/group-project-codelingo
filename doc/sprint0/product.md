@@ -117,7 +117,11 @@ Our platform offers a comprehensive solution to the challenges faced by programm
 - CI/CD checks have passed (linting, tests, security scans, etc.).
 - The feature is deployed to a staging environment and verified.
 
+<br><br>
+
 ---
+
+<br><br>
 
 ## Highlights
 
