@@ -16,6 +16,10 @@ Key features include:
 
 The platform fosters a sense of community and friendly competition, while providing real-time feedback and suggestions to help learners progress. It’s a comprehensive solution for learners looking to improve their programming skills and prepare for interviews in a gamified, engaging environment.
 
+**Design & Mockups**
+To get a better idea of our platform’s UI/UX, check out our Figma designs:
+👉 [CodeLingo Figma Mockups](https://www.figma.com/design/ymEarOgf6gRktSbGTKmK4p/CodeLingo?node-id=0-1&t=UA4htZUGyEJOL89r-1)
+
 ## Q2: Who are your target users? (2-3 personas)
 ### Persona 1: "Aspiring Programmer" - Sarah
 - **Age**: 15
