@@ -1,4 +1,4 @@
-# Run the frontend
+# Run the frontend for the first time
 Once the repository is cloned go to terminal
 ```
 cd frontend
