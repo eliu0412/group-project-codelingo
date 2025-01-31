@@ -71,7 +71,7 @@ In the world of programming, maintaining motivation and accountability is often 
 
 ### Microservices Architecture
 
-The backend of Duolingo for Programming utilizes a microservices architecture, ensuring modularity, scalability, and resilience. Here are key design patterns employed:
+The backend of Codelingo utilizes a microservices architecture, ensuring modularity, scalability, and resilience. Here are key design patterns employed:
 
 1. **Service Discovery:**
    - Allows dynamic lookup of service instances, enabling services to find each other and communicate directly, even when they scale across multiple instances.
@@ -118,4 +118,4 @@ The backend of Duolingo for Programming utilizes a microservices architecture, e
 
 ## Conclusion
 
-Duolingo for Programming aspires to transform the way programming is taught by integrating gamification elements with structured learning modules. By inspiring competitiveness and accountability, we aim to enhance motivation and create a thriving community of learners. Join us in our mission to make programming education more engaging and accessible to everyone.
+Codelingo aspires to transform the way programming is taught by integrating gamification elements with structured learning modules. By inspiring competitiveness and accountability, we aim to enhance motivation and create a thriving community of learners. Join us in our mission to make programming education more engaging and accessible to everyone.
