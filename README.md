@@ -1,8 +1,8 @@
-# Duolingo for Programming: A Gamified Learning Platform
+# Codelingo: A Gamified Learning Platform
 
 ## Overview
 
-Duolingo for Programming is an interactive and engaging web application designed to help users learn programming languages in a gamified environment. Inspired by the structure of Duolingo, this platform combines interactive lessons, real-time battles, and trackable progress to motivate users and enhance their learning experience. The application supports both learning and competition modes, allowing users to practice independently or engage with others in coding battles and quizzes.
+Codelingo is an interactive and engaging web application designed to help users learn programming languages in a gamified environment. Inspired by the structure of Duolingo, this platform combines interactive lessons, real-time battles, and trackable progress to motivate users and enhance their learning experience. The application supports both learning and competition modes, allowing users to practice independently or engage with others in coding battles and quizzes.
 
 ## Motivation
 
