@@ -13,17 +13,17 @@ In the world of programming, maintaining motivation and accountability is often 
 
 - **Frontend:** React (TypeScript), Tailwind, Redux, React Query
 - **Backend:** Node.js Microservices
-- **Database:** Firebase
+- **Database:** Firebase 
 - **Sockets/Polling:** Socket.io, Server Sent Events
 - **Queues:** Redis
-- **Authentication:** JWT & Auth0
-- **Deployment:** Docker, Github Actions, Nginx, AWS Lambda
+- **Authentication:** JWT & Auth0 (Using OAuth2.0)
+- **Deployment:** Docker, Github Actions (CI/CD), Nginx, AWS Lambda
 
 ### Why These Technologies?
 
 1. **React (TypeScript):** Chosen for its component-based architecture, maintainability, and TypeScript’s static typing benefits.
 2. **Node.js Microservices:** To ensure scalability and maintainability through a modular architecture.
-3. **Firebase:** Provides real-time data synchronization and simplifies the backend infrastructure.
+3. **Firebase:** Provides real-time data synchronization and simplifies the backend infrastructure. We will also be storing images and programming files in the database(s).
 4. **Socket.io & SSE:** Enables real-time interactions critical for live coding battles and competitive play.
 5. **Redis:** Facilitates efficient message queuing for real-time operations and notifications.
 6. **Docker & AWS Lambda:** Ensures a scalable and reliable deployment strategy.
