@@ -7,7 +7,11 @@ Codelingo is an interactive and engaging web application designed to help users 
 
 ## Motivation
 
-In the world of programming, maintaining motivation and accountability is often a challenge. Many learners find it difficult to stay driven, especially when traditional learning resources lack engagement. The Duolingo for Programming project aims to solve this problem by gamifying the learning experience. Not only does it teach programming concepts, but it also provides a platform for coding competitions, enabling users to test their skills under pressure. By integrating learning with competition, this platform keeps users engaged, motivated, and on track in their learning journey.
+In the world of programming, maintaining motivation and accountability is often a challenge. Many learners find it difficult to stay driven, especially when traditional learning resources lack engagement. The CodeLingo project aims to solve this problem by gamifying the learning experience. Not only does it teach programming concepts, but it also provides a platform for coding competitions, enabling users to test their skills under pressure. By integrating learning with competition, this platform keeps users engaged, motivated, and on track in their learning journey.
+
+## Architecture
+
+**Microservices**: Codelingo follows a microservices architecture to ensure modularity, scalability, and maintainability. Each core functionality, such as user authentication, coding battles, lesson tracking, and leaderboard management, is handled by separate microservices that communicate via event-driven messaging (Redis Pub/Sub) and RESTful APIs. An API Gateway centralizes client requests, improving security and request handling efficiency.
 
 ## Technologies Used
 
@@ -105,7 +109,7 @@ The backend of Codelingo utilizes a microservices architecture, ensuring modular
    - `hotfix/{descriptive_name}` for urgent fixes in production code
 
 3. **Issue Tracking:**
-   - We use [GitHub Issues](https://github.com/yourusername/duolingo-for-programming/issues) for tracking bugs and feature requests.
+   - We use [GitHub Issues](https://github.com/yourusername/codelingo/issues) for tracking bugs and feature requests.
 
 4. **Pull Requests:**
    - Ensure your code is well-documented and follows the project's coding style.
