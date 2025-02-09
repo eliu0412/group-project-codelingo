@@ -45,12 +45,18 @@ function Landing() {
           learn, and grow—one question at a time!
         </p>
         <div className="fade-in">
-          <button className="bg-white font-light py-2 px-16 m-10 rounded-full mt-10">
-            <Link to="/login">Sign In</Link>
-          </button>
-          <button className="bg-sky-200 font-light py-2 px-15 m-10 rounded-full mt-10">
-            <Link to="/register">Register</Link>
-          </button>
+          <Link
+            to="/login"
+            className="bg-white font-light py-2 px-16 m-10 rounded-full mt-10"
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/register"
+            className="bg-sky-200 font-light py-2 px-15 m-10 rounded-full mt-10"
+          >
+            Register
+          </Link>
         </div>
       </div>
     </>
