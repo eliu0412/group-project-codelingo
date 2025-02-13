@@ -7,6 +7,14 @@ const admin = require('firebase-admin');
 const session = require('express-session');
 const serviceAccount = require('./keys/serviceAccountKey.json');
 
+// Firebase Admin SDK initialization
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+});
+
+const db = admin.database();
+
 const app = express();
 const port = 8080;
 
@@ -27,14 +35,6 @@ app.use(
   })
 );
 app.use(express.json());
-
-// Firebase Admin SDK initialization
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-});
-
-const db = admin.database();
 
 // Start the server
 app.listen(port, () => {
