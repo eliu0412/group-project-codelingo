@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.nav-link {
+  @apply px-4 py-1 text-sm;
+}
+
+.nav-link.active {
+  @apply bg-sky-100 rounded-3xl;
+}
