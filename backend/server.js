@@ -1,42 +1,19 @@
-// Load environment variables
-require('dotenv').config();
-
-const express = require('express');
-const cors = require('cors');
-const admin = require('firebase-admin');
-const session = require('express-session');
-const serviceAccount = require('./keys/serviceAccountKey.json');
-
-// Firebase Admin SDK initialization
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-});
-
-const db = admin.database();
+import express from 'express';
+import httpProxy from 'http-proxy';
+import cors from 'cors';
 
 const app = express();
 const port = 8080;
 
-// Middleware
-/* TODO: Configure CORS here */
-const corsConfig = {
-  origin: 'http://localhost:3000',
-  credentials: true,
-};
-app.use(cors(corsConfig));
-
-/* TODO: Configure express-session here */
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
 
-// Start the server
+const proxy = httpProxy.createProxyServer();
+
+app.all('/api/auth/*', (req, res) => {
+    proxy.web(req, res, { target: 'http://localhost:8081' });
+});
+
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    console.log(`API Gateway running on http://localhost:${port}`);
 });

@@ -23,8 +23,8 @@ export default {
                 return res.status(400).json({ error: 'The email is already taken.' });
             }
 
-            const snapshot = await db.ref(`usernames/${username}`).get();
-            if (snapshot.exists()) {
+            const usersSnapshot = await db.ref('users').orderByChild('username').equalTo(username).get();
+            if (usersSnapshot.exists()) {
                 return res.status(400).json({ error: 'The username is already taken.' });
             }
 
@@ -53,31 +53,42 @@ export default {
 
     async login(req, res) {
         try {
-            const { email, username, password } = req.body;
+            const { email, password } = req.body;
 
-            if (!email || !password || !username) {
-                return res.status(400).json({
-                    error: 'Missing parameters in the request body'
-                });
+            if (!email || !password) {
+                return res.status(400).json({ error: 'Missing parameters in the request body' });
             }
-            
-            const user = await admin.auth().getUserByEmail(email);
 
-            if (!user || !await bcrypt.compare(password, user.password)) {
-                return res.status(401).json({
-                    error: 'Invalid email or password'
+            const signIn = async (email, password) => {
+                const apiKey = process.env.FIREBASE_API_KEY;
+                const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        returnSecureToken: true
+                    })
                 });
-            }
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error.message);
+                }
+                return data.idToken;
+            };
+            const idToken = await signIn(email, password);
 
             return res.status(200).json({
-                message: 'Successfully logged in'
+                message: 'Login successful',
+                idToken
             });
-        }
-        catch (err) {
+ 
+        } catch (err) {
             console.error(err);
-            res.status(500).json({
-                error: 'An error occurred while logging in the user.'
-            });
+            res.status(401).json({ error: err.message });
         }
     }
 };
