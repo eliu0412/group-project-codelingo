@@ -127,7 +127,7 @@ const DiscussionsPage: React.FC = () => {
 
         {/* New discussion form */}
         {showCreateForm && (
-          <form onSubmit={handleSubmitForm} className="mt-10 bg-opacity-50 bg-black p-8 rounded-lg w-4/5 sm:w-4/5 lg:w-3/5">
+          <form onSubmit={handleSubmitForm}>
             <label className="text-white font-thin italic">Title:</label>
             <input
               type="text"
