@@ -20,6 +20,7 @@ interface Discussion {
   interface CreateDiscussionResponse {
     id: number;
     title: string;
+    content: string;
     author: string;
     createdAt: string;
     commentCount: number;
