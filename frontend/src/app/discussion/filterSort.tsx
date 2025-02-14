@@ -25,11 +25,10 @@ const FilterSort: React.FC<FilterSortProps> = ({ filter, onFilterChange }) => {
   };
 
   return (
-    <div className="filter-sort flex space-x-4 justify-center items-center mt-4 p-4 bg-opacity-70 bg-white rounded-lg">
+    <div>
       <select
         value={sort}
         onChange={handleSortChange}
-        className="px-4 py-2 bg-gray-200 text-black rounded-md"
       >
         <option value="latest">Latest</option>
         <option value="popular">Popular</option>
@@ -39,7 +38,6 @@ const FilterSort: React.FC<FilterSortProps> = ({ filter, onFilterChange }) => {
         value={tag}
         onChange={handleTagChange}
         placeholder="Filter with Tags"
-        className="px-4 py-2 bg-gray-200 text-black rounded-md"
       />
     </div>
   );

@@ -135,7 +135,6 @@ const DiscussionsPage: React.FC = () => {
               value={newDiscussion.title}
               onChange={handleFormChange}
               required
-              className="w-full p-5 m-5 bg-white text-black rounded-md"
             />
             <label className="text-white font-thin italic">Content:</label>
             <textarea
@@ -143,16 +142,14 @@ const DiscussionsPage: React.FC = () => {
               value={newDiscussion.content}
               onChange={handleFormChange}
               required
-              className="w-full bg-white text-black rounded-md h-64"
             />
             <div className="flex flex-col justify-center items-center mt-5">
-              <button type="submit" className="mb-5">
+              <button type="submit">
                 Submit
               </button>
               <button
                 type="button"
                 onClick={handleBackToDiscussions}
-                className="m-2"
               >
                 Back to Discussions
               </button>
