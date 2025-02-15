@@ -1,24 +1,49 @@
-import { Link } from "react-router-dom";
-
+import { NavLink } from "react-router-dom";
+import "../styles/Navbar.css";
 function Navbar() {
   return (
     <>
       <nav>
         <ul className="flex justify-center">
-          <li className="mx-8 my-6 px-4 py-1 bg-sky-100 rounded-3xl">
-            <Link to="/" className="text-sm">
+          <li className="mx-8 my-6">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
               Home
-            </Link>
+            </NavLink>
           </li>
-          <li className="mx-8 my-6 px-4 py-1">
-            <Link to="/about" className="text-sm">
+          <li className="mx-8 my-6">
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
               About
-            </Link>
+            </NavLink>
           </li>
-          <li className="mx-8 my-6 px-4 py-1">
-            <Link to="/contact" className="text-sm">
+          <li className="mx-8 my-6">
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
               Contact
-            </Link>
+            </NavLink>
+          </li>
+          <li className="mx-8 my-6">
+            <NavLink
+              to="/discussions"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
+              Discussions
+            </NavLink>
           </li>
         </ul>
       </nav>

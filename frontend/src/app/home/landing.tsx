@@ -12,7 +12,7 @@ function Landing() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          height: "92vh",
+          height: "100vh",
           width: "100%",
         }}
         className="flex flex-col justify-center items-center"
