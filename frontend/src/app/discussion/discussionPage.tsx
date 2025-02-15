@@ -11,7 +11,7 @@ interface Discussion {
   title: string;
   author: string;
   createdAt: string;
-  commentCount: number;
+  content: string;
 }
 
 interface Filter {
@@ -20,7 +20,7 @@ interface Filter {
 }
 
 const DiscussionsPage: React.FC = () => {
-  const [discussions, setDiscussions] = useState<Discussion[]>([]);
+  const [discussions, setDiscussions] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filter, setFilter] = useState<Filter>({ sort: 'latest', tag: '' });
@@ -33,16 +33,18 @@ const DiscussionsPage: React.FC = () => {
   useEffect(() => {
     const loadDiscussions = async () => {
       try {
-        const data = await fetchDiscussions(currentPage, filter);
-        setDiscussions(data.discussions);
-        setTotalPages(data.totalPages);
+        const data = await fetchDiscussions();
+        console.log(data);
+        setDiscussions(data);
+        console.log(discussions)
+        // setTotalPages(data.totalPages);
       } catch (error) {
         console.error('Failed to fetch discussions:', error);
       }
     };
 
     loadDiscussions();
-  }, [currentPage, filter]);
+  }, []);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -74,8 +76,8 @@ const DiscussionsPage: React.FC = () => {
       setShowCreateForm(false);
       setNewDiscussion({ title: '', content: '' });
       // Re-fetch discussions
-      const data = await fetchDiscussions(currentPage, filter);
-      setDiscussions(data.discussions);
+      const data = await fetchDiscussions();
+      setDiscussions(data);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error('Failed to create discussion:', error);
@@ -94,16 +96,23 @@ const DiscussionsPage: React.FC = () => {
         width: "100%",
       }}
     >
+   
+   {/* <div className="discussions-page">
+      <DiscussionList discussions={discussions} />
+      {discussions?.length === 0 && <p>No discussions available.</p>}
+    </div> */}
+
       <div className="flex flex-col justify-center items-center h-full">
         {/* Only show these elements when the form is not shown */}
-        {!showCreateForm && (
+         {!showCreateForm && (
           <>
             <h1 className="text-white text-6xl m-5 font-mono font-bold">Discussion Panel</h1>
             {/* Show filter only if there are discussions */}
-            {discussions.length > 0 && (
-              <FilterSort filter={filter} onFilterChange={handleFilterChange} />
+            {discussions?.length > 0 && (
+              //<FilterSort filter={filter} onFilterChange={handleFilterChange} />
+              <DiscussionList discussions={discussions}/>
             )}
-            {discussions.length === 0 && (
+            {discussions?.length === 0 && (
               <p className="text-white font-thin italic m-5">
                 No current discussions. Start a discussion below.
               </p>
