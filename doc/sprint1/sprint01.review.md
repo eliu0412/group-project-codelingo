@@ -44,7 +44,7 @@ List any process-related changes you are planning to make (if there are any)
 
 #### Goals and/or tasks that were met/completed:
 
-- Implemented Login and register
+- Implemented Login and register (Backend Only)
 ![My Image](./images/Register.png)
 - Setup Firebase (Realtime database and firebase authentication)
 ![My Image](./images/FireBase_Setup.png)
@@ -60,7 +60,8 @@ List any process-related changes you are planning to make (if there are any)
 
 #### Goals and/or tasks that were planned but not met/completed:
 
-- All planned tasks were completed.
+- Login/Register frontend was not fully completed.
+- Discussion Post frontend page was not fully integrated with Firebase.
 
 Going into the next iteration, our main insights are:
 
