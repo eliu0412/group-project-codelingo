@@ -1,45 +1,52 @@
 import { db } from '../../../shared/initFirebase.js';
-import verifyToken from '../../../shared/verifyToken.js';
+// import verifyToken from '../../../shared/verifyToken.js';
 
 export default {
     createDiscussion: [
-        verifyToken,
+        //verifyToken,
         async (req, res) => {
-        try {
-            const { title, content } = req.body;
+            console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
+            console.log(`➡️ Forwarding request to user service at http://localhost:8082${req.url}`);
+            console.log(`📦 Request Body:`, req.body);
+            try {
+                const { title, content } = req.body;
 
-            if (!title || !content) {
-                return res.status(400).json({ error: 'Missing parameters in the request body' });
+                if (!title || !content) {
+                    return res.status(400).json({ error: 'Missing parameters in the request body' });
+                }
+            
+                const checkExistDiscussion = await db.ref('discussions').orderByChild('title').equalTo(title).get();
+                if (checkExistDiscussion.exists()) {
+                    return res.status(400).json({ error: 'The discussion post is already created.' });
+                }
+
+                const newDiscussionRef = db.ref('discussions').push();
+
+                await newDiscussionRef.set({
+                    title,
+                    content,
+                    author: "wDGIvXiaB5cJQcAM9QbMHwS3PCZ2",
+                    createdAt: Date.now()
+                });
+
+                return res.status(201).json({
+                    message: 'The discussion post has been successfully created',
+                    uid: newDiscussionRef.uid
+                });
+
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({ error: err.message });
             }
-           
-            const checkExistDiscussion = await db.ref('discussions').orderByChild('title').equalTo(title).get();
-            if (checkExistDiscussion.exists()) {
-                return res.status(400).json({ error: 'The discussion post is already created.' });
-            }
-
-            const newDiscussionRef = db.ref('discussions').push();
-
-            await newDiscussionRef.set({
-                title,
-                content,
-                author: req.user.uid,
-                createdAt: Date.now()
-            });
-
-            return res.status(201).json({
-                message: 'The discussion post has been successfully created',
-                uid: userRecord.uid
-            });
-
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ error: err.message });
-        }
     }],
     
     getDiscussion: [
-        verifyToken,
+        
+        //verifyToken,
         async (req, res) => {
+            console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
+            console.log(`➡️ Forwarding request to user service at http://localhost:8082${req.url}`);
+            console.log(`📦 Request Body:`, req.body);
         try {
             const { author, createdDate, titleRegex } = req.query; // Optional filters
 
@@ -77,7 +84,7 @@ export default {
     }],
 
     modifyDiscussion: [
-        verifyToken,
+        // verifyToken,
         async (req, res) => {
             try {
                 const id = req.params.postID; // Discussion ID from URL
