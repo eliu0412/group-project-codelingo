@@ -18,7 +18,7 @@
   Sets up CI/CD pipelines, manages deployments, and ensures system scalability.
 
 - **QA Engineer:**  
-  Conducts testing using Jest and Postman, ensuring functionality and performance meet requirements.
+  Conducts testing using Postman, ensuring functionality and performance meet requirements.
 
 While these roles provide a general guideline, team members are encouraged to take initiative and contribute across different areas as needed. Instead of strictly adhering to predefined roles, everyone will refer to the necessary tasks outlined in Jira and proactively work on them, whether they fall under frontend, backend, or other categories.
 
@@ -62,9 +62,6 @@ While these roles provide a general guideline, team members are encouraged to ta
 - **Figma Designs:**  
   UX/UI mockups and design assets.
 
-- **Deployment Pipeline:**  
-  Automated CI/CD setup using GitHub Actions.
-
 <br>
 
 ---
@@ -77,9 +74,7 @@ While these roles provide a general guideline, team members are encouraged to ta
 
 #### **Implement Core Features**
 
-- Develop interactive coding challenges in Learning Mode.
-- Set up real-time Competition Mode.
-- Implement AI-Generated Challenges based on user performance.
+- Create user login and registration pages.
 - Integrate progress tracking and leaderboards.
 - Implement a discussion board feature.
 
@@ -96,8 +91,6 @@ While these roles provide a general guideline, team members are encouraged to ta
 - Ensure smooth state management using Redux.
 
 #### **Testing & Deployment**
-
-- Write unit and integration tests.
 - Deploy application using Docker.
 - Monitor system performance and resolve bottlenecks.
 
