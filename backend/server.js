@@ -29,6 +29,10 @@ app.all('/api/auth/*', (req, res) => {
     });
 });
 
+app.all('/api/user/*', (req, res) => {
+    proxy.web(req, res, { target: 'http://localhost:8082' });
+});
+
 
 app.listen(port, () => {
     console.log(`🚀 API Gateway running on http://localhost:${port}`);
