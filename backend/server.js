@@ -5,7 +5,12 @@ import cors from 'cors';
 const app = express();
 const port = 8080;
 
-app.use(cors());
+const corsConfig = {
+    origin: 'http://localhost:5173',
+    credentials: true
+  };
+
+app.use(cors(corsConfig));
 app.use(express.json());
 
 const proxy = httpProxy.createProxyServer();

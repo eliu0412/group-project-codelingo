@@ -1,4 +1,4 @@
-import { admin } from '../../../shared/initFirebase.js';
+import { admin } from './initFirebase.js';
 
 const verifyFirebaseToken = async (req, res, next) => {
     try {
