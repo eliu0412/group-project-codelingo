@@ -16,11 +16,12 @@
 
 ## Release Scope
 ### Included Features
-- **User Authentication**: Implement Firebase authentication with OAuth 2.0.
+- **User Authentication**: Implement Firebase authentication.
 - **Frontend Framework Setup**: Establish React (TypeScript) project structure.
-- **Landing Page**: Develop an initial homepage with navigation.
-- **Database Setup**: Configure Firebase Firestore for storing user data.
-- **Discussion Board**: Create a page to discuss general problems, alongside FAQs.
+- **Landing Page**: Develop an initial homepage with navigation: https://michael4hao.atlassian.net/browse/AP-6
+- **Database Setup**: Configure Firebase realtime database for storing user data.
+- **Discussion Board**: Create a page to discuss general problems, alongside FAQs: https://michael4hao.atlassian.net/browse/AP-16
+- **user Login/Registration**: Create a page for login and registration of users: https://michael4hao.atlassian.net/browse/AP-3, https://michael4hao.atlassian.net/browse/AP-2
 
 ### Excluded Features
 - **Competition Mode**: Real-time coding challenges will be added in future sprints.
@@ -30,15 +31,15 @@
 - None, as this is the initial release.
 
 ### Non-Functional Requirements
-- Ensure the system supports at least 100 concurrent users.
-- Setup automated testing for authentication and basic UI components.
+- Ensure the system supports at least 10 concurrent users.
+- Setup request proxying to manage load.
 - Implement basic security measures to prevent unauthorized access.
 
 ## Dependencies and Limitations
 ### External Dependencies
 - Firebase for authentication and database management.
 - React and TailwindCSS for frontend development.
-- GitHub Actions for CI/CD pipeline setup.
+- Express and NodeJS for backend development.
 
 ### Known Limitations
 - Limited feature set as this is the first sprint.
@@ -47,9 +48,7 @@
 ## Deployment Plan
 ### Steps to Carry Out the Deployment
 1. Merge the Sprint 1 branch into the `main` branch.
-2. Run automated tests to ensure stability.
-3. Deploy to Firebase Hosting using GitHub Actions.
-4. Verify deployment success via system health checks.
+2. Verify deployment success via system health checks.
 
 ### PIV (Post Implementation Verification) Instruction
 - Verify user authentication through test accounts.
