@@ -44,19 +44,18 @@ List any process-related changes you are planning to make (if there are any)
 
 #### Goals and/or tasks that were met/completed:
 
- * From most to least important.
- * Refer/link to artifact(s) that show that a goal/task was met/completed.
- * If a goal/task was not part of the original iteration plan, please mention it.
-
 - Implemented Login and register
-
+![My Image](./images/Register.png)
 - Setup Firebase (Realtime database and firebase authentication)
-
+![My Image](./images/FireBase_Setup.png)
 - Created HomePage for the app
+![My Image](./images/HomePage.png)
 - Complete system design diagram
+![My Image](./images/SystemDesignDiagram.png)
 - Develop MVP of discussion board
-- Complete sprint 1 required documents
-
+![My Image](./images/DisscusionBoard.png)
+- Complete sprint 1 required documents\\
+![My Image](./images/RequiredDocs.png)
 
 
 #### Goals and/or tasks that were planned but not met/completed:
