@@ -21,10 +21,10 @@ interface Discussion {
   
   interface CreateDiscussionResponse {
     id: number;
-  title: string;
-  author: string;
-  createdAt: string;
-  content: string;
+    title: string;
+    author: string;
+    createdAt: string;
+    content: string;
   }
   
   // Fetch list of discussions

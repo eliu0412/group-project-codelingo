@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-//import DiscussionList from './discussionList';
+import DiscussionList from './discussionList';
 import Pagination from './pagination';
 import FilterSort from './filterSort';
 import { fetchDiscussions, createDiscussion } from './discussionApi';
