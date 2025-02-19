@@ -1,35 +1,24 @@
 import { config } from '../../config.ts';
+import { Discussion } from './discussionList.tsx'
 const { apiURL } = config;
 
-interface Discussion {
-  id: number;
-  title: string;
-  author: string;
-  createdAt: string;
-  content: string;
-  }
   
   interface Filter {
     sort: 'latest' | 'popular';
     tag: string;
   }
   
-  interface ApiResponse {
-    discussions: Discussion[];
-    totalPages: number;
-  }
-  
   interface CreateDiscussionResponse {
     id: number;
-  title: string;
-  author: string;
-  createdAt: string;
-  content: string;
+    title: string;
+    author: string;
+    createdAt: string;
+    content: string;
   }
   
   // Fetch list of discussions
   // ?page=${page}&sort=${filter.sort}&tag=${filter.tag}
-  export const fetchDiscussions = async (): Promise<ApiResponse> => {
+  export const fetchDiscussions = async (): Promise<Discussion[]> => {
     const response = await fetch(`${apiURL}/user/discussion`);
     if (!response.ok) {
       throw new Error('Network response was not ok');

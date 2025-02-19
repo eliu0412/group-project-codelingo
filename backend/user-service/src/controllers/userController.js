@@ -41,7 +41,6 @@ export default {
     }],
     
     getDiscussion: [
-        
         //verifyToken,
         async (req, res) => {
             console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
