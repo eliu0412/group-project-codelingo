@@ -11,7 +11,7 @@ const ProblemPage = () => {
   const [formData, setFormData] = useState<ProblemForm>({
     title: '',
     description: '',
-    variationOptions: []
+    variationOptions: [],
   });
   const [generatedProblem, setGeneratedProblem] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,6 @@ const ProblemPage = () => {
     }));
   };
 
-  // フォーム送信時にgenerateProblemを呼び出す関数
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
