@@ -1,5 +1,6 @@
 {
   "name": "problem-service",
+<<<<<<< HEAD
   "version": "1.1.0",
   "description": "An Express service for managing problems with types and difficulty levels, using Firebase as a database.",
   "main": "index.js",
@@ -23,3 +24,22 @@
     "chai-http": "^4.3.0"
   }
 }
+=======
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.22.0",
+    "axios": "^1.8.1",
+    "dotenv": "^16.4.7",
+    "openai": "^4.86.1"
+  }
+}
+>>>>>>> 5b658ad (finished basic features)
