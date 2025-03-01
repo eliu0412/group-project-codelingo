@@ -1,4 +1,4 @@
-import database from '../../../shared/firebaseConfig.js';
+import { db } from '../../../shared/initFirebase.js';
 import { ref, push, query, orderByChild, equalTo, get }  from 'firebase/database';
 import problemService from '../services/problemService.js';
 
@@ -6,10 +6,10 @@ import problemService from '../services/problemService.js';
 const allowableTypes = ['typeA', 'typeB', 'typeC'];
 
 export const addProblem = (req, res) => {
-  const { title, problemType, problemDifficulty, problemDescription, tags } = req.body;
+  const { title, problemType, problemDifficulty, problemDescription, tags, testCases, constraints, verified, createdAt } = req.body;
 
-  if (title == null || problemType == null || problemDifficulty == null || problemDescription == null) {
-    return res.status(400).send('All fields (problemId, problemType, problemDifficulty, problemDescription) are required.');
+  if (title == null || problemType == null || problemDifficulty == null || !problemDescription == null) {
+    return res.status(400).send('All fields (title, problemType, problemDifficulty, problemDescription) are required.');
   }
 
   if (!allowableTypes.includes(problemType)) {
@@ -20,13 +20,17 @@ export const addProblem = (req, res) => {
     return res.status(400).send('Problem difficulty must be between 1 and 10.');
   }
 
-  const newProblemRef = ref(database, 'problems');
+  const newProblemRef = ref(db, 'problems');
   push(newProblemRef, {
     title,
     problemType,
     problemDifficulty,
     problemDescription,
-    tags
+    tags,
+    testCases,
+    constraints,
+    verified,
+    createdAt,
   })
   .then(() => {
     res.status(201).send('Problem added successfully.');
@@ -50,7 +54,7 @@ export const getProblemsByDifficulty = (req, res) => {
   // Convert difficulty to integer
   const difficultyInt = parseInt(difficulty, 10);
 
-  const problemsRef = ref(database, 'problems');
+  const problemsRef = ref(db, 'problems');
   const difficultyQuery = query(problemsRef, orderByChild('problemDifficulty'), equalTo(difficultyInt));
 
   get(difficultyQuery)
@@ -75,7 +79,7 @@ export const getProblemsByType = (req, res) => {
     return res.status(400).send('Problem type is required.');
   }
 
-  const problemsRef = ref(database, 'problems');
+  const problemsRef = ref(db, 'problems');
   const typeQuery = query(problemsRef, orderByChild('problemType'), equalTo(type));
 
   get(typeQuery)
@@ -92,15 +96,14 @@ export const getProblemsByType = (req, res) => {
     });
 };
 
-// Get problems by tags
-export const getProblemsByTag = async (req, res) => {
-  const { tags } = req.query;
+export const getProblemsByTags = async (req, res) => {
+  let { tags } = req.query;
 
   if (!tags) {
     return res.status(400).send('Problem tag is required.');
   }
 
-  const problemsRef = ref(database, 'problems');
+  const problemsRef = ref(db, 'problems');
 
   try {
     const snapshot = await get(problemsRef);
@@ -108,7 +111,7 @@ export const getProblemsByTag = async (req, res) => {
       return res.status(404).send('No problems found.');
     }
 
-    const searchTags = Array.isArray(tags) ? tags : [tags];
+    const searchTags = Array.isArray(tags) ? tags : tags.split(',');
 
     const allProblems = Object.values(snapshot.val() || {});
     const filteredProblems = allProblems.filter(problem =>
@@ -116,7 +119,7 @@ export const getProblemsByTag = async (req, res) => {
     );
 
     if (filteredProblems.length === 0) {
-      return res.status(404).send('No problems found for specified tags.');
+      return res.status(404).send('No problems found for the specified tags.');
     }
 
     res.status(200).json(filteredProblems);
@@ -128,10 +131,6 @@ export const getProblemsByTag = async (req, res) => {
 
 // AI generate problem
 export const generateProblem = async (req, res) => {
-  console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
-  console.log(`➡️ Forwarding request to problem service at http://localhost:8083${req.url}`);
-  console.log(`📦 Request Body:`, req.body);
-
   try {
     const { problemType, problemDifficulty, tags, variationOptions } = req.body;
 
@@ -150,7 +149,7 @@ export const generateProblem = async (req, res) => {
       return res.status(500).json({ error: 'Failed to generate problem' });
     }
 
-    res.status(201).json(newProblem);
+    res.status(200).json(newProblem);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });

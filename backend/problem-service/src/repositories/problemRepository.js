@@ -1,18 +1,16 @@
-import database from '../../../shared/firebaseConfig.js';
-import { ref, query, orderByChild, equalTo, limitToFirst, get, push, set } from 'firebase/database';
+import { db } from '../../../shared/initFirebase.js';
+import { ref, query, orderByChild, equalTo, get, push, set } from 'firebase/database';
 
-const problemRef = ref(database, 'problems');
+const problemRef = ref(db, 'problems');
 
 export default {
   async getRandomProblem({ problemType, problemDifficulty, tags }) {
     try {
-      let q = query(problemRef);
+      let q = problemRef;
 
       if (problemType) {
         q = query(q, orderByChild('problemType'), equalTo(problemType));
-      }
-    
-      if (problemDifficulty) {
+      } else if (problemDifficulty) {
         const difficultyInt = parseInt(problemDifficulty, 10);
         q = query(q, orderByChild('problemDifficulty'), equalTo(difficultyInt));
       }
@@ -24,6 +22,13 @@ export default {
       }
     
       let problems = Object.values(snapshot.val());
+
+      if (problemType && problemDifficulty) {
+        const difficultyInt = parseInt(problemDifficulty, 10);
+        problems = problems.filter(problem =>
+          problem.problemDifficulty === difficultyInt
+        );
+      }
     
       if (tags) {
         const searchTags = Array.isArray(tags) ? tags : [tags];

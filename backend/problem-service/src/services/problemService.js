@@ -13,7 +13,7 @@ export default {
       // get the base question
       const baseProblem = await problemRepository.getRandomProblem({
         problemType,
-        problemdifficulty,
+        problemDifficulty,
         tags
       });
 

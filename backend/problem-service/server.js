@@ -22,4 +22,5 @@ app.use('/api/problems', problemRouter);
 app.listen(port, () => {
   console.log(`Problem Service running on http://localhost:${port}`);
 });
+
 export default app;

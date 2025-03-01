@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// when running test.ai.generator.service.js, replace it with raw API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -32,10 +31,19 @@ export default {
 
 // Create the prompt for Gemini API request
 function createPrompt(baseProblem, params) {
+  let variationOptions = [];
+  if (params.variationOptions) {
+    if (Array.isArray(params.variationOptions)) {
+      variationOptions = params.variationOptions;
+    } else if (typeof params.variationOptions === 'object') {
+      variationOptions = Object.values(params.variationOptions); // Convert object values to an array
+    }
+  }
+
   return `
     Generate a new coding problem based on:
     Base Problem: ${JSON.stringify(baseProblem)}
-    Variations: ${params.variationOptions.join(', ')}
+    Variations: ${variationOptions.join(', ')}
 
     Output JSON format:
     {
@@ -65,7 +73,6 @@ function parseResponse(response) {
     const problem = JSON.parse(response);
     return {
       ...problem,
-      baseProblemId: null,
       createdAt: new Date(),
       verified: false
     };
