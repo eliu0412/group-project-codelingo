@@ -1,21 +1,26 @@
-import dotenv from 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import problemRoutes from './src/routes/problemRoutes.js';
+import problemRouter from './src/routes/problemRoutes.js';
+import bodyParser from 'body-parser';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 8083;
 
-// Middleware
-app.use(cors());
+const corsConfig = {
+  origin: 'http://localhost:5173',
+  credentials: true
+};
+app.use(cors(corsConfig));
 app.use(express.json());
+app.use(bodyParser.json());
 
-// Use the routes
-app.use('/api/problems', problemRoutes);
+app.use('/api/problems', problemRouter);
 
 app.listen(port, () => {
   console.log(`Problem Service running on http://localhost:${port}`);
 });
 
-// Export the express app for testing purposes
 export default app;

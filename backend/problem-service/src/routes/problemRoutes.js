@@ -1,16 +1,22 @@
 import express from 'express';
-import { addProblem, getProblemsByDifficulty, getProblemsByType } from '../controllers/problemController.js';
+import { addProblem, getProblemsByDifficulty, getProblemsByType, getProblemsByTags, generateProblem } from '../controllers/problemController.js';
 
-const router = express.Router();
+export const problemRouter = express.Router();
 
 // POST route to add a new problem
-router.post('/add', addProblem);
+problemRouter.post('/add', addProblem);
 
 // GET route to fetch problems by difficulty
-router.get('/difficulty', getProblemsByDifficulty);
+problemRouter.get('/difficulty', getProblemsByDifficulty);
 
 // GET route to fetch problems by type
-router.get('/type', getProblemsByType);
+problemRouter.get('/type', getProblemsByType);
+
+// GET route to fetch problems by tags
+problemRouter.get('/tags', getProblemsByTags);
+
+// POST route to AI generate a new question
+problemRouter.post('/generate', generateProblem);
 
 
-export default router;
+export default problemRouter;
