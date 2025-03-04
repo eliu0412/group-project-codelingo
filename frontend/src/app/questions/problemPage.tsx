@@ -3,6 +3,11 @@ import { generateProblem } from './problemApi';
 import background from "../../assets/landing.jpg";
 import '../styles/general.css';
 
+interface TestCase {
+  input: string;
+  output: string;
+} 
+
 interface ProblemForm {
   problemType: string;
   problemDifficulty: number;
@@ -16,7 +21,7 @@ interface Problem {
   problemDifficulty: number;
   problemDescription: string;
   tags: string[];
-  testCases: string[];
+  testCases: TestCase[];
   constraints: string[];
   verified: boolean;
   createdAt: Date;
@@ -136,7 +141,7 @@ const ProblemPage = () => {
         {!showForm && !generatedProblem && (
           <>
             <h1 className="text-white text-6xl m-5 font-mono font-bold">Create New Question</h1>
-            <p className="text-white font-thin italic m-5">
+            <p className="fade-in text-white font-thin italic m-5">
               Challenge yourself with an original problem and be the first to solve it!
             </p>
             <button onClick={handleGetQuestionClick} className="m-5">
@@ -279,7 +284,7 @@ const ProblemPage = () => {
                 <label className="text-white">Tags:</label>
                 <div className="tags-display">
                   {generatedProblem.tags.map((tag, index) => (
-                    <span key={index} className="tag-item">{tag}</span>
+                    <span key={index} className="text-white">[{tag}], </span>
                   ))}
                 </div>
               </div>
@@ -288,15 +293,17 @@ const ProblemPage = () => {
                 <textarea
                   style={{
                     height: "100%",
-                    minHeight: "200px", // Optional: Set a min width for better control
+                    minHeight: "200px",
                   }}
-                  value={generatedProblem.testCases.join('\n')}
+                  value={generatedProblem.testCases
+                    .map((tc) => `Input: ${tc.input}\nOutput: ${tc.output}`)
+                    .join('\n\n')}
                   readOnly
                   className="problem-result"
                 />
               </div>
               <div className="detail">
-                <label className="text-result">Constraints:</label>
+                <label className="text-white">Constraints:</label>
                 <textarea
                   style={{
                     height: "100%",

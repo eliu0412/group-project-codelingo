@@ -1,10 +1,3 @@
-/* General Styles */
-body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  color: white;
-}
-
 /* Background styles for pages */
 .page-background {
   background-size: cover;

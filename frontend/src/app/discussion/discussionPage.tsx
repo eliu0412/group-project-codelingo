@@ -104,7 +104,7 @@ const DiscussionsPage: React.FC = () => {
             <DiscussionList discussions={currentDiscussions}/>
           )}
           {discussions?.length === 0 && (
-            <p className="text-white font-thin italic m-5">
+            <p className="fade-in text-white font-thin italic m-5">
               No current discussions. Start a discussion below.
             </p>
           )}
@@ -120,7 +120,7 @@ const DiscussionsPage: React.FC = () => {
 
         {/* Display the quote above the form */}
         {showCreateForm && (
-          <h2 className="text-white text-3xl font-thick italic text-center mt-10 mb-5">
+          <h2 className="fade-in text-white text-3xl font-thick italic text-center mt-10 mb-5">
             "The important thing is not to stop questioning."
           </h2>
         )}

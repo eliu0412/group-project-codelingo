@@ -15,7 +15,7 @@ function Landing() {
           height: "100vh",
           width: "100%",
         }}
-        className="flex flex-col justify-center items-center"
+        className="landing flex flex-col justify-center items-center"
       >
         <h1
           className="text-white text-6xl m-4 font-mono font-bold
