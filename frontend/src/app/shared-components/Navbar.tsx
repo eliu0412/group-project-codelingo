@@ -27,12 +27,12 @@ function Navbar() {
           </li>
           <li className="mx-8 my-6">
             <NavLink
-              to="/contact"
+              to="/problems"
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
               }
             >
-              Contact
+              Challenges
             </NavLink>
           </li>
           <li className="mx-8 my-6">
@@ -43,6 +43,16 @@ function Navbar() {
               }
             >
               Discussions
+            </NavLink>
+          </li>
+          <li className="mx-8 my-6">
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
+              Contact
             </NavLink>
           </li>
         </ul>

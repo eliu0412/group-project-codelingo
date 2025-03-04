@@ -1,6 +1,6 @@
 import { config } from '../../config.ts';
 import { Discussion } from './discussionList.tsx'
-const { apiURL } = config;
+const { disc } = config.api;
 
   
   interface Filter {
@@ -19,7 +19,7 @@ const { apiURL } = config;
   // Fetch list of discussions
   // ?page=${page}&sort=${filter.sort}&tag=${filter.tag}
   export const fetchDiscussions = async (): Promise<Discussion[]> => {
-    const response = await fetch(`${apiURL}/user/discussion`);
+    const response = await fetch(`${disc}/user/discussion`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -28,7 +28,7 @@ const { apiURL } = config;
   
   // Create new discussion
   export const createDiscussion = async (newDiscussion: { title: string; content: string }): Promise<CreateDiscussionResponse> => {
-    const response = await fetch(`${apiURL}/user/discussion`, {
+    const response = await fetch(`${disc}/user/discussion`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

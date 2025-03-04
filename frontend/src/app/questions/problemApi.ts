@@ -1,15 +1,16 @@
 import { config } from '../../config.ts';
-const { apiURL } = config;
+const { prob } = config.api;
 
 interface ProblemForm {
-    title: string;
-    description: string;
+    problemType: string;
+    problemDifficulty: number;
+    tags: string[];
     variationOptions: string[];
   }
   
 export const generateProblem = async (formData: ProblemForm) => {
 try {
-    const response = await fetch(`${apiURL}/problems/generate`, {
+    const response = await fetch(`${prob}/problems/generate`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

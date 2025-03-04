@@ -3,7 +3,7 @@ import DiscussionList, { Discussion } from './discussionList';
 import Pagination from './pagination';
 import FilterSort, { Filter } from './filterSort';
 import { fetchDiscussions, createDiscussion } from './discussionApi';
-import './discussionPage.css';
+import '../styles/general.css';
 import background from "../../assets/landing.jpg";
 
 const DiscussionsPage: React.FC = () => {
@@ -84,8 +84,13 @@ const DiscussionsPage: React.FC = () => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        height: "100vh",
         width: "100%",
+        backgroundAttachment: "fixed",
+        minHeight:"100vh",
+        display: "flex",    // Enable flexbox
+        flexDirection: "column", // Stack items vertically
+        justifyContent: "center", // Center the content vertically
+        alignItems: "center", // Center the content horizontally
       }}
     >
       <div className="flex flex-col justify-center items-center h-full">

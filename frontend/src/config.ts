@@ -1,3 +1,6 @@
 export const config = {
-    apiURL: 'http://localhost:8082/api',
+    api: {
+      disc: 'http://localhost:8082/api',
+      prob: 'http://localhost:8083/api'
+    }
   }
