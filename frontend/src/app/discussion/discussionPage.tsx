@@ -3,7 +3,7 @@ import DiscussionList, { Discussion } from './discussionList';
 import Pagination from './pagination';
 import FilterSort, { Filter } from './filterSort';
 import { fetchDiscussions, createDiscussion } from './discussionApi';
-import './discussionPage.css';
+import '../styles/general.css';
 import background from "../../assets/landing.jpg";
 
 const DiscussionsPage: React.FC = () => {
@@ -84,8 +84,13 @@ const DiscussionsPage: React.FC = () => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        height: "100vh",
         width: "100%",
+        backgroundAttachment: "fixed",
+        minHeight:"100vh",
+        display: "flex",    // Enable flexbox
+        flexDirection: "column", // Stack items vertically
+        justifyContent: "center", // Center the content vertically
+        alignItems: "center", // Center the content horizontally
       }}
     >
       <div className="flex flex-col justify-center items-center h-full">
@@ -99,7 +104,7 @@ const DiscussionsPage: React.FC = () => {
             <DiscussionList discussions={currentDiscussions}/>
           )}
           {discussions?.length === 0 && (
-            <p className="text-white font-thin italic m-5">
+            <p className="fade-in text-white font-thin italic m-5">
               No current discussions. Start a discussion below.
             </p>
           )}
@@ -115,7 +120,7 @@ const DiscussionsPage: React.FC = () => {
 
         {/* Display the quote above the form */}
         {showCreateForm && (
-          <h2 className="text-white text-3xl font-thick italic text-center mt-10 mb-5">
+          <h2 className="fade-in text-white text-3xl font-thick italic text-center mt-10 mb-5">
             "The important thing is not to stop questioning."
           </h2>
         )}
