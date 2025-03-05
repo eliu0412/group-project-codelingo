@@ -24,7 +24,7 @@ const AddProblem = () => {
     const formattedTags = tags.split(',').map(tag => tag.trim());
 
     try {
-      const response = await axios.post('http://localhost:4000/api/problems/add', {
+      const response = await axios.post('http://localhost:8083/api/problems/add', {
         title,
         problemType,
         problemDifficulty: parseInt(problemDifficulty),

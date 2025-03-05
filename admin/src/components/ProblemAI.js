@@ -23,7 +23,7 @@ const ProblemAI = () => {
     const { problemType, problemDifficulty, tags, variationOptions } = generateData;
 
     try {
-      const response = await axios.post('http://localhost:4000/api/problems/generate', {
+      const response = await axios.post('http://localhost:8083/api/problems/generate', {
         problemType,
         problemDifficulty: parseInt(problemDifficulty),
         tags: tags.split(',').map(tag => tag.trim()),

@@ -155,3 +155,20 @@ export const generateProblem = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+
+export const getProblemsAll = async (req, res) => {
+  const problemsRef = ref(database, 'problems');
+
+  try {
+    const snapshot = await get(problemsRef);
+    if (!snapshot.exists()) {
+      return res.status(404).send('No problems found.');
+    }
+
+    const allProblems = snapshot.val();
+    res.status(200).json(allProblems);
+  } catch (error) {
+    console.error('Error fetching all problems:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
