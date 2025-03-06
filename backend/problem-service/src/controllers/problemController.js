@@ -1,4 +1,4 @@
-import { db } from '../../../shared/initFirebase.js';
+import database from '../../../shared/firebaseConfig.js';
 import { ref, push, query, orderByChild, equalTo, get }  from 'firebase/database';
 import problemService from '../services/problemService.js';
 
@@ -20,7 +20,7 @@ export const addProblem = (req, res) => {
     return res.status(400).send('Problem difficulty must be between 1 and 10.');
   }
 
-  const newProblemRef = ref(db, 'problems');
+  const newProblemRef = ref(database, 'problems');
   push(newProblemRef, {
     title,
     problemType,
@@ -54,7 +54,7 @@ export const getProblemsByDifficulty = (req, res) => {
   // Convert difficulty to integer
   const difficultyInt = parseInt(difficulty, 10);
 
-  const problemsRef = ref(db, 'problems');
+  const problemsRef = ref(database, 'problems');
   const difficultyQuery = query(problemsRef, orderByChild('problemDifficulty'), equalTo(difficultyInt));
 
   get(difficultyQuery)
@@ -79,7 +79,7 @@ export const getProblemsByType = (req, res) => {
     return res.status(400).send('Problem type is required.');
   }
 
-  const problemsRef = ref(db, 'problems');
+  const problemsRef = ref(database, 'problems');
   const typeQuery = query(problemsRef, orderByChild('problemType'), equalTo(type));
 
   get(typeQuery)
@@ -103,7 +103,7 @@ export const getProblemsByTags = async (req, res) => {
     return res.status(400).send('Problem tag is required.');
   }
 
-  const problemsRef = ref(db, 'problems');
+  const problemsRef = ref(database, 'problems');
 
   try {
     const snapshot = await get(problemsRef);
@@ -155,3 +155,20 @@ export const generateProblem = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+
+export const getProblemsAll = async (req, res) => {
+  const problemsRef = ref(database, 'problems');
+
+  try {
+    const snapshot = await get(problemsRef);
+    if (!snapshot.exists()) {
+      return res.status(404).send('No problems found.');
+    }
+
+    const allProblems = snapshot.val();
+    res.status(200).json(allProblems);
+  } catch (error) {
+    console.error('Error fetching all problems:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
