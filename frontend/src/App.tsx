@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./app/registration/registrationPage";
 import Login from "./app/login/loginPage";
 import ProblemPage from "./app/questions/problemPage";
+import GeneratedProblemPage from "./app/questions/generatedProblemPage";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/problems" element={<ProblemPage />} />
-          <Route path="/problems/generated" element={<ProblemPage />} />
+          <Route path="/problems/generated" element={<GeneratedProblemPage />} />
         </Routes>
       </BrowserRouter>
     </>

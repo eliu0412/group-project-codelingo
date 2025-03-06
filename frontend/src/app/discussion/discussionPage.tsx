@@ -4,6 +4,7 @@ import Pagination from './pagination';
 import FilterSort, { Filter } from './filterSort';
 import { fetchDiscussions, createDiscussion } from './discussionApi';
 import '../styles/general.css';
+import './discussion.css';
 import background from "../../assets/landing.jpg";
 
 const DiscussionsPage: React.FC = () => {
@@ -17,7 +18,7 @@ const DiscussionsPage: React.FC = () => {
     content: '',
   });
 
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 8;
 
   useEffect(() => {
     const loadDiscussions = async () => {

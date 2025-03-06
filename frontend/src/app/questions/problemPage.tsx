@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { generateProblem } from './problemApi';
 import background from "../../assets/landing.jpg";
 import '../styles/general.css';
+import './problem.css'
 
 interface TestCase {
   input: string;
   output: string;
-} 
+}
 
 interface ProblemForm {
   problemType: string;
@@ -95,7 +96,7 @@ const ProblemPage = () => {
 
     try {
       const data = await generateProblem(formData);
-      navigate('/problem', { state: { generatedProblem: data } }); // Navigate to new page with data
+      navigate('/problems/generated', { state: { generatedProblem: data } }); // Navigate to new page with data
     } catch (err) {
       setError('Failed to generate question');
     } finally {
@@ -230,101 +231,6 @@ const ProblemPage = () => {
 
         {/* Show error */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {/* After generating question
-        {generatedProblem && (
-          <div>
-            <h2 className="text-white text-3xl font-thick italic text-center mt-10 mb-5">
-              Generated Question:
-            </h2>
-
-            <div className="problem-details">
-              <div className="detail">
-                <label className="text-white">Title:</label>
-                <input
-                  style={{
-                    width: "100%", // Ensure it uses the full width of the parent div
-                    minWidth: "1000px", // Optional: Set a min width for better control
-                  }}
-                  type="text"
-                  value={generatedProblem.title}
-                  readOnly
-                  className="problem-input"
-                />
-              </div>
-              <div className="detail">
-                <label className="text-white">Problem Type:</label>
-                <input
-                  type="text"
-                  value={generatedProblem.problemType}
-                  readOnly
-                  className="problem-input"
-                />
-              </div>
-              <div className="detail">
-                <label className="text-white">Problem Difficulty:</label>
-                <input
-                  type="text"
-                  value={generatedProblem.problemDifficulty}
-                  readOnly
-                  className="problem-input"
-                />
-              </div>
-              <div className="detail">
-                <label className="text-white">Problem Description:</label>
-                <textarea
-                  style={{
-                    height: "100%",
-                    minHeight: "600px", // Optional: Set a min width for better control
-                  }}
-                  value={generatedProblem.problemDescription}
-                  readOnly
-                  className="problem-result"
-                />
-              </div>
-              <div className="detail">
-                <label className="text-white">Tags:</label>
-                <div className="tags-display">
-                  {generatedProblem.tags.map((tag, index) => (
-                    <span key={index} className="text-white">[{tag}], </span>
-                  ))}
-                </div>
-              </div>
-              <div className="detail">
-                <label className="text-white">Test Cases:</label>
-                <textarea
-                  style={{
-                    height: "100%",
-                    minHeight: "200px",
-                  }}
-                  value={generatedProblem.testCases
-                    .map((tc) => `Input: ${tc.input}\nOutput: ${tc.output}`)
-                    .join('\n\n')}
-                  readOnly
-                  className="problem-result"
-                />
-              </div>
-              <div className="detail">
-                <label className="text-white">Constraints:</label>
-                <textarea
-                  style={{
-                    height: "100%",
-                    minHeight: "150px", // Optional: Set a min width for better control
-                  }}
-                  value={generatedProblem.constraints.join('\n')}
-                  readOnly
-                  className="problem-result"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <button onClick={handleBackToListClick} className="m-5">
-                Go Back
-              </button>
-            </div>
-          </div>
-        )} */}
     </div>
   );
 };
