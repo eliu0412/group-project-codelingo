@@ -1,5 +1,4 @@
 import { admin, db } from '../../../shared/initFirebase.js';
-import bcrypt from 'bcrypt';
 
 export default {
     async register(req, res) {
