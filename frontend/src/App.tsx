@@ -22,6 +22,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/problems" element={<ProblemPage />} />
+          <Route path="/problems/generated" element={<ProblemPage />} />
         </Routes>
       </BrowserRouter>
     </>

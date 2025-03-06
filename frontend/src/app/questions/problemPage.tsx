@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { generateProblem } from './problemApi';
 import background from "../../assets/landing.jpg";
@@ -28,6 +29,8 @@ interface Problem {
 }
 
 const ProblemPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<ProblemForm>({
     problemType: 'typeA',
     problemDifficulty: 1,
@@ -92,8 +95,7 @@ const ProblemPage = () => {
 
     try {
       const data = await generateProblem(formData);
-      setGeneratedProblem(data);
-      setShowForm(false); // Hide the form after generating the problem
+      navigate('/problem', { state: { generatedProblem: data } }); // Navigate to new page with data
     } catch (err) {
       setError('Failed to generate question');
     } finally {
@@ -229,7 +231,7 @@ const ProblemPage = () => {
         {/* Show error */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        {/* After generating question */}
+        {/* After generating question
         {generatedProblem && (
           <div>
             <h2 className="text-white text-3xl font-thick italic text-center mt-10 mb-5">
@@ -322,7 +324,7 @@ const ProblemPage = () => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
     </div>
   );
 };
