@@ -1,4 +1,4 @@
-# CodeLingo - Iteration XX
+# CodeLingo - Iteration 02
 **Start date:** February 26, 2025  
 **End date:** March 7, 2025
 
