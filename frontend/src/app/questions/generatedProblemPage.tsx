@@ -175,7 +175,7 @@ const GeneratedProblemPage = () => {
         </div>
       </div>
 
-      <div className="flex justify-center gap-5">
+      <div className="flex justify-center gap-5 m-10">
         <button onClick={handleDiscussProblemClick} className="flex-1 p-3 m-10">
           Discuss Problem
         </button>

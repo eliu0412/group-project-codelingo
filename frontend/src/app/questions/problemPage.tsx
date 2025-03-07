@@ -216,11 +216,11 @@ const ProblemPage = () => {
                 onChange={handleVariationChange}
               />
 
-            <div className="flex flex-col justify-center items-center mt-5">
-              <button type="submit" disabled={loading}>Generate</button>
-              <button onClick={handleBackToListClick} className="m-5">
+            <div className="flex justify-center gap-5 m-10">
+              <button onClick={handleBackToListClick} className="flex-1 p-3 m-10">
                 Go Back
               </button>
+              <button type="submit" className="flex-1 p-3 m-10" disabled={loading}>Generate</button>
             </div>
           </form>
         )}

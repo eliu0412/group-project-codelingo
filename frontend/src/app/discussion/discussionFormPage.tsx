@@ -76,17 +76,17 @@ const DiscussionForm: React.FC = () => {
                 onChange={handleFormChange}
                 required
             />
-            <div className="flex flex-col justify-center items-center mt-5">
-                <button type="submit">
-                    Submit
-                </button>
+            <div className="flex justify-center gap-5 m-10">
                 <button
                 type="button"
                 onClick={handleBackToDiscussions}
-                >
+                className="flex-1 p-3 m-10">
                     Back to Discussions
                 </button>
-                <button type="button" onClick={handleBackToProblem}>
+                <button type="submit" className="flex-1 p-3 m-10">
+                    Submit
+                </button>
+                <button type="button" onClick={handleBackToProblem} className="flex-1 p-3 m-10">
                     Back to Problem
                 </button>
             </div>
