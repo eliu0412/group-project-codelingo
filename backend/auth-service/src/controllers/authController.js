@@ -61,38 +61,69 @@ export default {
     async completeRegistration(req, res) {
         try {
             console.log("COMPLETING REGISTRATION");
-            const { email, username, password } = req.body; 
-            if (!email || !username || !password) {
-                return res.status(400).json({ error: 'Missing parameters in the request body' });
+            const { encryptedData } = req.body;
+    
+            if (!encryptedData) {
+                return res.status(400).json({ error: "Invalid request parameters." });
             }
-
+    
+            const secretKey = 'SUPERDUPERSECRETKEY';
+            const decryptedBytes = crypto.AES.decrypt(decodeURIComponent(encryptedData), secretKey);
+            const decryptedData = JSON.parse(decryptedBytes.toString(crypto.enc.Utf8));
+            const { email, username, password } = decryptedData;
+    
+            console.log("Decrypted data:", decryptedData);
+            console.log("Email:", email);
+            console.log("Username:", username);
+            console.log("Password:", password);
+    
+            let newUser;
+            try {
+                // 🔹 Instead of checking getUserByEmail, we directly attempt to create a user
+                newUser = await admin.auth().createUser({
+                    email,
+                    password,
+                    displayName: username
+                });
+    
+                console.log("User created:", newUser.uid);
+            } catch (error) {
+                // 🔹 If the email already exists, handle it gracefully
+                if (error.code === 'auth/email-already-exists') {
+                    console.log("User already exists, fetching existing user...");
+                    newUser = await admin.auth().getUserByEmail(email);
+                } else {
+                    throw error; // Handle other unexpected errors
+                }
+            }
+    
+            // 🔹 Now fetch the user record to verify email
             const userRecord = await admin.auth().getUserByEmail(email);
             if (!userRecord.emailVerified) {
-                return res.status(400).json({ error: "Email is not verified yet." });
+                return res.status(402).json({ error: "Email is not verified yet." });
             }
-            
-            const newUser = await admin.auth().createUser({
-                email,
-                password,
-                displayName: username
-            });
-
-            await db.ref(`users/${userRecord.uid}`).set({
-                email,
-                username
-            });
-
+    
+            // 🔹 Save user details in Firebase Realtime Database, only if they don't exist
+            const userRef = db.ref(`users/${userRecord.uid}`);
+            const snapshot = await userRef.once("value");
+            if (!snapshot.exists()) {
+                await userRef.set({
+                    email,
+                    username
+                });
+            }
+    
             return res.status(201).json({
                 message: "User successfully registered",
-                uid: newUser.uid
+                uid: userRecord.uid
             });
-
+    
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: err.message });
         }
     },
-
+    
     async login(req, res) {
         try {
             const { email, password } = req.body;
