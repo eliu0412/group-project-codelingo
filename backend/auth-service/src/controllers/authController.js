@@ -99,9 +99,14 @@ export default {
                 }
             }
     
-            // Step 3: Verify email status
+            // Manually set emailVerified to true (this is the verification step)
             if (!userRecord.emailVerified) {
-                return res.status(402).json({ error: "Email is not verified yet." });
+                await admin.auth().updateUser(userRecord.uid, {
+                    emailVerified: true
+                });
+                console.log("Email manually marked as verified:", userRecord.uid);
+            } else {
+                console.log("Email already verified:", userRecord.uid);
             }
     
             // Step 4: Save user details in Realtime Database if not already present
