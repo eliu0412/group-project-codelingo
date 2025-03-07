@@ -1,11 +1,13 @@
 import { useEffect, useState, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { completeRegistration } from "./verifyEmailApi";
+import "./verifyEmail.css";
 
 const VerifyEmail: React.FC = () => {
     const [message, setMessage] = useState("Verifying email...");
     const [searchParams] = useSearchParams();
     const hasVerified = useRef(false); // Add this to prevent double calls
+    const navigate = useNavigate();
 
     const verifyEmail = async (encryptedData: string) => {
         try {
@@ -16,7 +18,7 @@ const VerifyEmail: React.FC = () => {
 
             setMessage("Email verified! Redirecting to login...");
             setTimeout(() => {
-                window.location.href = "/login";
+                navigate("/login?verified=true"); // Redirect with query parameter
             }, 3000);
 
         } catch (error) {
@@ -41,8 +43,8 @@ const VerifyEmail: React.FC = () => {
     }, [searchParams]);
 
     return (
-        <div>
-            <h1>{message}</h1>
+        <div className="verify-email-container">
+            <p className="verify-email-message">{message}</p>
         </div>
     );
 };

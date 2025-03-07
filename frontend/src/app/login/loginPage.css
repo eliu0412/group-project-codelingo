@@ -13,6 +13,18 @@
     font-size: 26px;
     color: #ffffff; /* White text */
 }
+a {
+    color: #388dd8;
+}
+
+a:hover {
+    opacity: 0.5;
+}
+
+a:active {
+    opacity: 0.3;
+}
+
 
 .login-form {
     display: flex;
@@ -34,7 +46,7 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-.login-form button {
+.login-button {
     background-color: #5a3dc3ce;
     color: white;
     padding: 12px;
@@ -45,12 +57,12 @@
     transition: 0.3s;
 }
 
-.login-form button:hover {
-    opacity: 0.5;
+.login-button:hover {
+    background-color: #512fcace;
 }
 
-.login-form button:active {
-    opacity: 0.3;
+.login-button:active {
+    background-color: #381aa2ce;
 }
 
 .success {
@@ -61,4 +73,18 @@
 .error {
     color: red;
     font-weight: bold;
+}
+
+.forgot-password-button {
+    background-color: transparent;
+    border: 1px solid #666;
+    cursor: pointer;
+}
+
+.forgot-password-button:hover {
+    background-color: rgba(41, 41, 82, 0.9);
+}
+
+.forgot-password-button:active {
+    background-color: rgba(32, 32, 65, 0.9);
 }
