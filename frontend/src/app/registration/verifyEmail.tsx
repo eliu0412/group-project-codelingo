@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { completeRegistration } from "./verifyEmailApi";
 
 const VerifyEmail: React.FC = () => {
     const [message, setMessage] = useState("Verifying email...");
     const [searchParams] = useSearchParams();
+    const hasVerified = useRef(false); // Add this to prevent double calls
 
     const verifyEmail = async (encryptedData: string) => {
         try {
@@ -33,8 +34,10 @@ const VerifyEmail: React.FC = () => {
             return;
         }
 
-        // ✅ Call `verifyEmail` directly
-        verifyEmail(encryptedData);
+        if (!hasVerified.current) { // Only run if not already verified
+            hasVerified.current = true;
+            verifyEmail(encryptedData);
+        }
     }, [searchParams]);
 
     return (
