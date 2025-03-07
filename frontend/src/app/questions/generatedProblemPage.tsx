@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useProblem } from "./problemContext";
 import background from "../../assets/landing.jpg";
 import '../styles/general.css';
 
@@ -32,10 +33,13 @@ const GeneratedProblemPage = () => {
 
   const handleDiscussProblemClick = () => {
     if (generatedProblem) {
-      navigate('/discussions', {
+      navigate('/discussions/new-discussion', {
         state: {
+          previousPage: '/problems/generated',
           problemId: generatedProblem.id,
+          problemTitle: generatedProblem.title,
           problemDescription: generatedProblem.problemDescription,
+          problemTags: generatedProblem.tags,
         },
       });
     }
@@ -172,7 +176,7 @@ const GeneratedProblemPage = () => {
       </div>
 
       <div className="flex justify-center gap-5">
-        <button className="flex-1 p-3 m-10">
+        <button onClick={handleDiscussProblemClick} className="flex-1 p-3 m-10">
           Discuss Problem
         </button>
         <button onClick={handleBackToListClick} className="flex-1 p-3 m-10">
