@@ -1,4 +1,6 @@
 import { admin, db } from '../../../shared/initFirebase.js';
+import { sendVerificationEmail } from '../services/authService.js';
+import crypto from "crypto-js";
 
 export default {
     async register(req, res) {
@@ -26,8 +28,50 @@ export default {
             if (usersSnapshot.exists()) {
                 return res.status(400).json({ error: 'The username is already taken.' });
             }
-
+            /*
             const userRecord = await admin.auth().createUser({
+                email,
+                password,
+                displayName: username
+            });
+
+            await db.ref(`users/${userRecord.uid}`).set({
+                email,
+                username
+            });
+            */
+            const secretKey = 'SUPERDUPERSECRETKEY';
+            const encryptedData = crypto.AES.encrypt(
+                JSON.stringify({ email, username, password }),
+                secretKey
+            ).toString();
+
+            const verificationUrl = `http://localhost:5173/verify-email?data=${encodeURIComponent(encryptedData)}`;
+            await sendVerificationEmail(email, verificationUrl);
+        
+            return res.status(201).json({
+                message: 'Email verification sent',
+            });
+
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err.message });
+        }
+    },
+    async completeRegistration(req, res) {
+        try {
+            console.log("COMPLETING REGISTRATION");
+            const { email, username, password } = req.body; 
+            if (!email || !username || !password) {
+                return res.status(400).json({ error: 'Missing parameters in the request body' });
+            }
+
+            const userRecord = await admin.auth().getUserByEmail(email);
+            if (!userRecord.emailVerified) {
+                return res.status(400).json({ error: "Email is not verified yet." });
+            }
+            
+            const newUser = await admin.auth().createUser({
                 email,
                 password,
                 displayName: username
@@ -39,8 +83,8 @@ export default {
             });
 
             return res.status(201).json({
-                message: 'The user has been successfully registered',
-                uid: userRecord.uid
+                message: "User successfully registered",
+                uid: newUser.uid
             });
 
         } catch (err) {
@@ -48,7 +92,6 @@ export default {
             res.status(500).json({ error: err.message });
         }
     },
-
 
     async login(req, res) {
         try {
