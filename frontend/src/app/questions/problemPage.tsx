@@ -14,7 +14,7 @@ interface ProblemForm {
   problemType: string;
   problemDifficulty: number;
   tags: string[];
-  variationOptions: string[];
+  userOptions: string;
 }
 
 interface Problem {
@@ -36,7 +36,7 @@ const ProblemPage = () => {
     problemType: 'typeA',
     problemDifficulty: 1,
     tags: [],
-    variationOptions: [],
+    userOptions: "",
   });
   const [generatedProblem, setGeneratedProblem] = useState<Problem | null>(null);
   const [loading, setLoading] = useState(false);
@@ -66,16 +66,17 @@ const ProblemPage = () => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === "userOptions" ? value : value,
     }));
   };
 
   // Variation options change handler
-  const handleVariationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+  
     setFormData((prevData) => ({
       ...prevData,
-      variationOptions: value.split(',').map((option) => option.trim()),
+      [name]: value,
     }));
   };
 
@@ -116,7 +117,7 @@ const ProblemPage = () => {
       problemType: 'typeA',
       problemDifficulty: 1,
       tags: [],
-      variationOptions: [],
+      userOptions: "",
     });
     setShowForm(false); // Hide form on going back
   };
@@ -207,13 +208,12 @@ const ProblemPage = () => {
               </div>
             </div>
 
-              <label className="text-white font-thin italic">Variation Options</label>
-              <input
-                type="text"
-                id="variationOptions"
-                name="variationOptions"
-                value={formData.variationOptions.join(', ')}
-                onChange={handleVariationChange}
+              <label className="text-white font-thin italic">User Options</label>
+              <textarea
+                id="userOptions"
+                name="userOptions"
+                value={formData.userOptions}
+                onChange={handleOptionChange}
               />
 
             <div className="flex justify-center gap-5 m-10">
