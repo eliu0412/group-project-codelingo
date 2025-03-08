@@ -1,6 +1,6 @@
-# CodeLingo - Iteration 01
-**Start date:** February 8, 2025  
-**End date:** February 15, 2025
+# CodeLingo - Iteration 02
+**Start date:** February 26, 2025  
+**End date:** March 7, 2025
 
 <br>
 
@@ -74,15 +74,19 @@ While these roles provide a general guideline, team members are encouraged to ta
 
 #### **Implement Core Features**
 
-- Create user login and registration pages.
+- Create user login and registration pages. (Completed in sprint1)
+- Implement a discussion board feature. (Mostly completed in sprint1)
+- Create an admin page for managing problem storage in the database. (Sprint2)
+- Implement AI-generated problems based on the stored database problems. (Sprint2)
+- Develop an executable environment where users can write and run code. (Sprint2)
+- Provide access to educational materials on specific programming topics. (Sprint2)
 - Integrate progress tracking and leaderboards.
-- Implement a discussion board feature.
 
 #### **Build Infrastructure**
 
-- Develop a landing page using React.js.
-- Set up Firebase for database management and authentication.
-- Implement authentication using Firebase Authentication with OAuth2.0.
+- Develop a landing page using React.js. (Completed in sprint1)
+- Set up Firebase for database management and authentication. (Completed in sprint1)
+- Implement authentication using Firebase Authentication with OAuth2.0. (Completed in sprint1)
 
 #### **Enhance User Experience**
 
@@ -124,4 +128,5 @@ While these roles provide a general guideline, team members are encouraged to ta
 <br>
 
 All tasks are assigned in Jira based on user stories, ensuring an agile workflow. The development process follows an iterative approach, continuously refining and improving the system based on peer feedback and testing results.
+
 

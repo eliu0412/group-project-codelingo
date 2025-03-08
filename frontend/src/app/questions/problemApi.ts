@@ -2,11 +2,11 @@ import { config } from "../../config.ts";
 const { prob } = config.api;
 
 interface ProblemForm {
-  problemType: string;
-  problemDifficulty: number;
-  tags: string[];
-  variationOptions: Record<string, any>;
-}
+    problemType: string;
+    problemDifficulty: number;
+    tags: string[];
+    userOptions: string;
+  }
 
 export const generateProblem = async (formData: ProblemForm) => {
   try {

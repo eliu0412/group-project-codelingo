@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import DiscussionList, { Discussion } from './discussionList';
 import Pagination from './pagination';
 import FilterSort, { Filter } from './filterSort';
-import { fetchDiscussions, createDiscussion } from './discussionApi';
+import { useNavigate } from 'react-router-dom';
+import { fetchDiscussions } from './discussionApi';
 import '../styles/general.css';
+import './discussion.css';
 import background from "../../assets/landing.jpg";
 
 const DiscussionsPage: React.FC = () => {
@@ -11,13 +13,10 @@ const DiscussionsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filter, setFilter] = useState<Filter>({ sort: 'latest', tag: '' });
-  const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
-  const [newDiscussion, setNewDiscussion] = useState<{ title: string; content: string }>({
-    title: '',
-    content: '',
-  });
 
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 8;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadDiscussions = async () => {
@@ -45,32 +44,7 @@ const DiscussionsPage: React.FC = () => {
   };
 
   const handleCreateDiscussionClick = () => {
-    setShowCreateForm(true);
-  };
-
-  const handleBackToDiscussions = () => {
-    setShowCreateForm(false);
-    setNewDiscussion({ title: '', content: '' });
-  };
-
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setNewDiscussion((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmitForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await createDiscussion(newDiscussion);
-      setShowCreateForm(false);
-      setNewDiscussion({ title: '', content: '' });
-      // Re-fetch discussions
-      const data = await fetchDiscussions();
-      setDiscussions(data);
-      setTotalPages(Math.ceil(data.length / ITEMS_PER_PAGE));
-    } catch (error) {
-      console.error('Failed to create discussion:', error);
-    }
+    navigate('/discussions/new-discussion');
   };
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -94,8 +68,6 @@ const DiscussionsPage: React.FC = () => {
       }}
     >
       <div className="flex flex-col justify-center items-center h-full">
-        {/* Only show these elements when the form is not shown */}
-        {!showCreateForm && (
         <>
           <h1 className="text-white text-6xl m-5 font-mono font-bold">Discussion Panel</h1>
           {/* Show filter only if there are discussions */}
@@ -109,53 +81,11 @@ const DiscussionsPage: React.FC = () => {
             </p>
           )}
         </>
-        )}
 
         {/* Start a Discussion button (hidden when the form is shown) */}
-        {!showCreateForm && (
           <button onClick={handleCreateDiscussionClick} className="m-5">
             Start a Discussion
           </button>
-        )}
-
-        {/* Display the quote above the form */}
-        {showCreateForm && (
-          <h2 className="fade-in text-white text-3xl font-thick italic text-center mt-10 mb-5">
-            "The important thing is not to stop questioning."
-          </h2>
-        )}
-
-        {/* New discussion form */}
-        {showCreateForm && (
-          <form onSubmit={handleSubmitForm}>
-            <label className="text-white font-thin italic">Title:</label>
-            <input
-              type="text"
-              name="title"
-              value={newDiscussion.title}
-              onChange={handleFormChange}
-              required
-            />
-            <label className="text-white font-thin italic">Content:</label>
-            <textarea
-              name="content"
-              value={newDiscussion.content}
-              onChange={handleFormChange}
-              required
-            />
-            <div className="flex flex-col justify-center items-center mt-5">
-              <button type="submit">
-                Submit
-              </button>
-              <button
-                type="button"
-                onClick={handleBackToDiscussions}
-              >
-                Back to Discussions
-              </button>
-            </div>
-          </form>
-        )}
 
         {discussions.length > ITEMS_PER_PAGE && (
           <Pagination

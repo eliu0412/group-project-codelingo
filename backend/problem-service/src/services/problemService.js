@@ -4,9 +4,9 @@ import aiGeneratorService from './aiGeneratorService.js';
 export default {
   async generateProblem(param) {
     try {
-      const { problemType, problemDifficulty, tags, variationOptions } = param;
+      const { problemType, problemDifficulty, tags, userOptions } = param;
 
-      if (!problemType || !problemDifficulty || !tags || !variationOptions) {
+      if (!problemType || !problemDifficulty) {
         throw new Error('Missing parameters in the request body');
       }
 
@@ -22,7 +22,7 @@ export default {
       }
 
       // create variation with AI
-      const generated = await aiGeneratorService.generateVariant(baseProblem, variationOptions);
+      const generated = await aiGeneratorService.generateVariant(baseProblem, userOptions);
 
       if (!generated) {
         throw new Error('Failed to generate new problem');

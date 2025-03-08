@@ -1,0 +1,62 @@
+/* Problem Result Styles */
+.problem-result {
+    width: 100%;
+    height: 256px;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #a8b1c4;
+    border-radius: 5px;
+    background-color: #1f273b;
+    color: white;
+  }
+  
+  /* For ProblemPage - specific to variation input */
+  .variation-options-input {
+    width: 100%;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #a8b1c4;
+    border-radius: 5px;
+    background-color: #1f273b;
+    color: white;
+  }
+  
+  .variation-options-input:focus {
+    outline: none;
+    border-color: #5a3dc3ce;
+  }
+  
+  /* Common Form Controls */
+    form input,
+    form textarea,
+    form select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #a8b1c4;
+    border-radius: 5px;
+    background-color: #1f273b;
+    color: white;
+    }
+
+    /* Custom Select Styles */
+    form select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #1f273b;
+    color: white;
+    border: 1px solid #a8b1c4;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
+    }
+
+    form select:focus {
+    outline: none;
+    border-color: #5a3dc3ce;
+    }
