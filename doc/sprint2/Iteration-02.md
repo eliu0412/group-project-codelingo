@@ -1,6 +1,6 @@
-# CodeLingo - Iteration 02
-**Start date:** February 26, 2025  
-**End date:** March 7, 2025
+# CodeLingo - Sprint 2
+**Start date:** February 19, 2025  
+**End date:** March 7, 2025  
 
 <br>
 
@@ -74,29 +74,31 @@ While these roles provide a general guideline, team members are encouraged to ta
 
 #### **Implement Core Features**
 
-- Create user login and registration pages. (Completed in sprint1)
-- Implement a discussion board feature. (Mostly completed in sprint1)
-- Create an admin page for managing problem storage in the database. (Sprint2)
-- Implement AI-generated problems based on the stored database problems. (Sprint2)
-- Develop an executable environment where users can write and run code. (Sprint2)
-- Provide access to educational materials on specific programming topics. (Sprint2)
-- Integrate progress tracking and leaderboards.
+- Enable users to access various programming and CS modules.
+- Implement a discussion panel for competitions (Frontend & Backend).
+- Develop functionality for users to practice questions on specific topics.
+- Validate answers for correctness using AI.
+- Allow users to reset passwords securely.
+- Send email verification upon user registration.
 
 #### **Build Infrastructure**
 
-- Develop a landing page using React.js. (Completed in sprint1)
-- Set up Firebase for database management and authentication. (Completed in sprint1)
-- Implement authentication using Firebase Authentication with OAuth2.0. (Completed in sprint1)
+- Develop a centralized admin page for managing problems and lessons.
+- Set up Firebase for authentication and database management.
+- Implement an API to fetch AI-generated coding challenges.
+- Enable admins to add new problems to existing problem sets.
 
 #### **Enhance User Experience**
 
-- Create a polished UI with Tailwind.
-- Optimize frontend interactions with React Query.
-- Ensure smooth state management using Redux.
+- Improve UI and UX with TailwindCSS.
+- Ensure a smooth coding environment supporting multiple languages.
+- Optimize state management using Redux.
 
 #### **Testing & Deployment**
-- Deploy application using Docker.
-- Monitor system performance and resolve bottlenecks.
+
+- Monitor Firebase analytics for performance.
+- Validate API interactions and problem descriptions.
+- Conduct security checks to prevent unauthorized access.
 
 <br>
 
@@ -128,5 +130,3 @@ While these roles provide a general guideline, team members are encouraged to ta
 <br>
 
 All tasks are assigned in Jira based on user stories, ensuring an agile workflow. The development process follows an iterative approach, continuously refining and improving the system based on peer feedback and testing results.
-
-
