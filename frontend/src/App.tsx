@@ -11,6 +11,8 @@ import ProblemPage from "./app/questions/problemPage";
 import CodingPage from "./app/questions/codingPage";
 import GeneratedProblemPage from "./app/questions/generatedProblemPage";
 import DiscussionFormPage from './app/discussion/discussionFormPage';
+import VerifyEmail from "./app/registration/verifyEmail";
+import ForgotPassword from "./app/login/forgotPasswordPage";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/coding" element={<CodingPage />} />
           <Route path="/problems/generated" element={<GeneratedProblemPage />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ForgotPassword />} />
         </Routes>
       </BrowserRouter>
     </>

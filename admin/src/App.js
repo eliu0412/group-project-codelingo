@@ -1,9 +1,10 @@
-// App.js
 import React, { useState } from 'react';
 import AddProblem from './components/AddProblem';
 import ProblemList from './components/ProblemList';
 import ProblemAI from './components/ProblemAI';
 import Login from './components/Login';
+import AddLesson from './components/AddLesson';
+import LessonList from './components/LessonList';
 import './App.css';
 
 function App() {
@@ -28,8 +29,10 @@ function App() {
       <h1>Problem Admin Dashboard</h1>
       <button onClick={handleLogout}>Logout</button>
       <AddProblem />
-      <ProblemAI />  {/* Moved to be directly below AddProblem */}
+      <ProblemAI />
       <ProblemList />
+      <AddLesson />
+      <LessonList />
     </div>
   );
 }
