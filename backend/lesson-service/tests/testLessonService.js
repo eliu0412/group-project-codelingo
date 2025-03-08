@@ -39,23 +39,7 @@ describe('Lesson Service', () => {
       });
   });
 
-  // Test for invalid topic when adding a lesson
-  it('should fail when lesson topic is invalid', (done) => {
-    chai.request(server)
-      .post('/api/lessons/add')
-      .send({
-        topic: 'InvalidTopic', // Assuming this topic is not allowed
-        description: 'An invalid topic',
-        problemDifficulty: 5,
-        problemType: 'typeA',
-        problemTags: ['array', 'loop'],
-      })
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.text).to.match(/Topic must be one of the following:/);
-        done();
-      });
-  });
+
 
   // Test for fetching lessons by topic
   it('should get lessons by topic', (done) => {

@@ -2,7 +2,7 @@ import database from '../../../shared/firebaseConfig.js';
 import { ref, push, query, orderByChild, equalTo, get } from 'firebase/database';
 
 // Allowable topic types: Customize these as needed
-const allowableTopics = ['Math', 'Science', 'History', 'Programming'];
+
 
 // Add a lesson
 export const addLesson = async (req, res) => {
@@ -12,9 +12,7 @@ export const addLesson = async (req, res) => {
     return res.status(400).send('Fields (topic, description) are required.');
   }
 
-  if (!allowableTopics.includes(topic)) {
-    return res.status(400).send(`Topic must be one of the following: ${allowableTopics.join(', ')}`);
-  }
+
 
   try {
     // Fetch problems directly from Firebase rather than using an external API
