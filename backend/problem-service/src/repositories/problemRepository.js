@@ -18,7 +18,7 @@ export default {
       const snapshot = await get(q);
     
       if (!snapshot.exists()) {
-        throw new Error('No matching problems found');
+        throw new Error('No matching problems found 1');
       }
     
       let problems = Object.values(snapshot.val());
@@ -30,15 +30,14 @@ export default {
         );
       }
     
-      if (tags) {
-        const searchTags = Array.isArray(tags) ? tags : [tags];
+      if (Array.isArray(tags) && tags.length > 0) {
         problems = problems.filter(problem =>
-          problem.tags && problem.tags.some(tag => searchTags.includes(tag))
+          problem.tags && problem.tags.some(tag => tags.includes(tag))
         );
       }
     
       if (problems.length === 0) {
-        throw new Error('No matching problems found');
+        throw new Error('No matching problems found 2');
       }
 
       return problems[Math.floor(Math.random() * problems.length)];
