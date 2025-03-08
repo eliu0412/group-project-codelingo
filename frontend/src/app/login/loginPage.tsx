@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { loginUser } from "./loginApi";
 import "./LoginPage.css";
 import background from "../../assets/landing.jpg";
@@ -11,6 +12,7 @@ const LoginPage: React.FC = () => {
 
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [searchParams] = useSearchParams();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,6 +38,14 @@ const LoginPage: React.FC = () => {
             console.error("Login Failed", error);
         }
     };
+    useEffect(() => {
+        const verified = searchParams.get("verified");
+        if (verified === "true") {
+            setMessage("Email verified! You can now log in.");
+            // Clear the query parameter from the URL to prevent persistence on refresh
+            window.history.replaceState({}, document.title, "/login");
+        }
+    }, [searchParams]);
 
     return (
         <div
@@ -50,31 +60,33 @@ const LoginPage: React.FC = () => {
             }}
             className="flex flex-col justify-center items-center"
         >
-        <div className="login-container">
-            <form className="login-form" onSubmit={handleSubmit}>
-                <h2>Login</h2>
-                {message && <p className="success">{message}</p>}
-                {error && <p className="error">{error}</p>}
+            <div className="login-container">
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <h2>Login</h2>
+                    {message && <p className="success">{message}</p>}
+                    {error && <p className="error">{error}</p>}
 
-                <input
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={form.password}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit">Submit</button>
-            </form>
-        </div>
+                    <input
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    <button className="login-button" type="submit">Submit</button>
+                    <button className="forgot-password-button" onClick={() => window.location.href = "/reset-password"}>Forgot Password?</button>
+                    <p>Don't have an account? <a href="/register">Register here</a></p>
+                </form>
+            </div>
         </div>
     );
 };
