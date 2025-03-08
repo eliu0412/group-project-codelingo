@@ -33,28 +33,30 @@ const ProblemPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<ProblemForm>({
-    problemType: 'typeA',
+    problemType: "typeA",
     problemDifficulty: 1,
     tags: [],
     userOptions: "",
   });
-  const [generatedProblem, setGeneratedProblem] = useState<Problem | null>(null);
+  const [generatedProblem, setGeneratedProblem] = useState<Problem | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   // Allowable problem types and difficulties
-  const allowableTypes = ['typeA', 'typeB', 'typeC'];
+  const allowableTypes = ["typeA", "typeB", "typeC"];
   const difficulties = Array.from({ length: 10 }, (_, i) => i + 1);
 
   // Fetch available tags from the database
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const fetchedTags = ['array', 'tag1', 'tag2', 'tag3', 'tag4', 'tag5']; // Sample data
+        const fetchedTags = ["array", "tag1", "tag2", "tag3", "tag4", "tag5"]; // Sample data
         setAvailableTags(fetchedTags);
       } catch (err) {
-        console.error('Failed to fetch tags:', err);
+        console.error("Failed to fetch tags:", err);
       }
     };
 
@@ -62,7 +64,11 @@ const ProblemPage = () => {
   }, []);
 
   // Form input change handler
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -73,7 +79,7 @@ const ProblemPage = () => {
   // Variation options change handler
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-  
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -82,7 +88,10 @@ const ProblemPage = () => {
 
   // Tags change handler
   const handleTagsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
+    const selectedOptions = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setFormData((prevData) => ({
       ...prevData,
       tags: selectedOptions,
@@ -99,7 +108,7 @@ const ProblemPage = () => {
       const data = await generateProblem(formData);
       navigate('/problems/generated', { state: { generatedProblem: data } }); // Navigate to new page with data
     } catch (err) {
-      setError('Failed to generate question');
+      setError("Failed to generate question");
     } finally {
       setLoading(false);
     }
@@ -114,7 +123,7 @@ const ProblemPage = () => {
   const handleBackToListClick = () => {
     setGeneratedProblem(null);
     setFormData({
-      problemType: 'typeA',
+      problemType: "typeA",
       problemDifficulty: 1,
       tags: [],
       userOptions: "",
@@ -134,8 +143,8 @@ const ProblemPage = () => {
         backgroundRepeat: "no-repeat",
         width: "100%",
         backgroundAttachment: "fixed",
-        minHeight:"100vh",
-        display: "flex",    // Enable flexbox
+        minHeight: "100vh",
+        display: "flex", // Enable flexbox
         flexDirection: "column", // Stack items vertically
         justifyContent: "center", // Center the content vertically
         alignItems: "center", // Center the content horizontally
@@ -144,9 +153,12 @@ const ProblemPage = () => {
       <div className="flex flex-col justify-center items-center h-full">
         {!showForm && !generatedProblem && (
           <>
-            <h1 className="text-white text-6xl m-5 font-mono font-bold">Create New Question</h1>
+            <h1 className="text-white text-6xl m-5 font-mono font-bold">
+              Create New Question
+            </h1>
             <p className="fade-in text-white font-thin italic m-5">
-              Challenge yourself with an original problem and be the first to solve it!
+              Challenge yourself with an original problem and be the first to
+              solve it!
             </p>
             <button onClick={handleGetQuestionClick} className="m-5">
               Get Question
@@ -156,49 +168,51 @@ const ProblemPage = () => {
 
         {showForm && !generatedProblem && (
           <form onSubmit={handleSubmit}>
-              <label className="text-white font-thin italic">Problem Type</label>
+            <label className="text-white font-thin italic">Problem Type</label>
+            <select
+              id="problemType"
+              name="problemType"
+              value={formData.problemType}
+              onChange={handleInputChange}
+            >
+              {allowableTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+
+            <label className="text-white font-thin italic">
+              Problem Difficulty
+            </label>
+            <select
+              id="problemDifficulty"
+              name="problemDifficulty"
+              value={formData.problemDifficulty}
+              onChange={handleInputChange}
+            >
+              {difficulties.map((difficulty) => (
+                <option key={difficulty} value={difficulty}>
+                  {difficulty}
+                </option>
+              ))}
+            </select>
+
+            <label className="text-white font-thin italic">Tags</label>
+            <div className="tags">
               <select
-                id="problemType"
-                name="problemType"
-                value={formData.problemType}
-                onChange={handleInputChange}
+                id="tags"
+                name="tags"
+                multiple
+                value={formData.tags}
+                onChange={handleTagsChange}
               >
-                {allowableTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
+                {availableTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
                   </option>
                 ))}
               </select>
-
-              <label className="text-white font-thin italic">Problem Difficulty</label>
-              <select
-                id="problemDifficulty"
-                name="problemDifficulty"
-                value={formData.problemDifficulty}
-                onChange={handleInputChange}
-              >
-                {difficulties.map((difficulty) => (
-                  <option key={difficulty} value={difficulty}>
-                    {difficulty}
-                  </option>
-                ))}
-              </select>
-
-              <label className="text-white font-thin italic">Tags</label>
-              <div className="tags">
-                <select
-                  id="tags"
-                  name="tags"
-                  multiple
-                  value={formData.tags}
-                  onChange={handleTagsChange}
-                >
-                  {availableTags.map((tag) => (
-                    <option key={tag} value={tag}>
-                      {tag}
-                    </option>
-                  ))}
-                </select>
               <div className="selected-tags">
                 {formData.tags.map((tag, index) => (
                   <span key={index} className="selected-tag">
@@ -224,10 +238,10 @@ const ProblemPage = () => {
             </div>
           </form>
         )}
-        </div>
+      </div>
 
-        {/* Loading... */}
-        {loading && <p>Generating...</p>}
+      {/* Loading... */}
+      {loading && <p>Generating...</p>}
 
         {/* Show error */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
