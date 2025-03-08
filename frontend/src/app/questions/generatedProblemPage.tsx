@@ -1,7 +1,7 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 import { useProblem } from "./problemContext";
 import background from "../../assets/landing.jpg";
-import '../styles/general.css';
+import "../styles/general.css";
 
 interface TestCase {
   input: string;
@@ -27,15 +27,14 @@ const GeneratedProblemPage = () => {
   const generatedProblem: Problem | null = location.state?.generatedProblem;
 
   const handleBackToListClick = () => {
-    navigate('/problems');
+    navigate("/problems");
   };
-
 
   const handleDiscussProblemClick = () => {
     if (generatedProblem) {
-      navigate('/discussions/new-discussion', {
+      navigate("/discussions/new-discussion", {
         state: {
-          previousPage: '/problems/generated',
+          previousPage: "/problems/generated",
           problemId: generatedProblem.id,
           problemTitle: generatedProblem.title,
           problemDescription: generatedProblem.problemDescription,
@@ -44,7 +43,16 @@ const GeneratedProblemPage = () => {
       });
     }
   };
-  
+
+  const handleSolveProblem = () => {
+    if (generatedProblem) {
+      navigate("/coding", {
+        state: {
+          problem: generatedProblem,
+        },
+      });
+    }
+  };
 
   if (!generatedProblem) {
     return (
@@ -66,7 +74,7 @@ const GeneratedProblemPage = () => {
         }}
       >
         <p>No problem found. Go back and generate a new one.</p>
-        <button onClick={() => navigate('/problems')}>Go Back</button>
+        <button onClick={() => navigate("/problems")}>Go Back</button>
       </div>
     );
   }
@@ -156,7 +164,7 @@ const GeneratedProblemPage = () => {
             }}
             value={generatedProblem.testCases
               .map((tc) => `Input: ${tc.input}\nOutput: ${tc.output}`)
-              .join('\n\n')}
+              .join("\n\n")}
             readOnly
             className="problem-result"
           />
@@ -168,7 +176,7 @@ const GeneratedProblemPage = () => {
               height: "100%",
               minHeight: "150px", // Optional: Set a min width for better control
             }}
-            value={generatedProblem.constraints.join('\n')}
+            value={generatedProblem.constraints.join("\n")}
             readOnly
             className="problem-result"
           />
@@ -182,7 +190,7 @@ const GeneratedProblemPage = () => {
         <button onClick={handleBackToListClick} className="flex-1 p-3 m-10">
           Go Back
         </button>
-        <button className="flex-1 p-3 m-10">
+        <button onClick={handleSolveProblem} className="flex-1 p-3 m-10">
           Solve Problem
         </button>
       </div>
