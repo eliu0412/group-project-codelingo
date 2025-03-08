@@ -1,0 +1,116 @@
+/* Discussion Page Styles */
+.discussions-page {
+    /* General form and button styles */
+    button,
+    .pagination button {
+      background-color: #5a3dc3ce;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+  
+    button:hover,
+    .pagination button:hover {
+      background-color: #3ec4a9;
+    }
+  
+    form {
+      margin-top: 10px;
+      background-color: rgba(60, 80, 120, 0.4);
+      padding: 15px;
+      border-radius: 8px;
+      max-width: 1000px;
+      width: 100%;
+    }
+  
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 5px;
+      margin: 5px;
+      border: 1px solid #a8b1c4;
+      border-radius: 5px;
+      background-color: #1f273b;
+      color: white;
+    }
+  
+    form textarea {
+      height: 256px;
+    }
+  
+    form button {
+      background-color: #5a3dc3ce;
+      color: white;
+      padding: 10px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 5px;
+    }
+  
+    form button:hover {
+      background-color: #3ec4a9;
+    }
+  
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+  }
+  
+  /* Discussion List Styles */
+  .discussion-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .discussion-item {
+    background-color: white; /* White background */
+    color: black; /* Black text */
+    padding: 15px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .discussion-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: black; /* Purple color for titles */
+  }
+  
+  .author, .date {
+    font-size: 14px;
+    font-weight: 300;
+    margin-bottom: 8px;
+    color: #7b7b7b; /* Light gray for author and date */
+  }
+  
+  .view-details {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #4ac0e6; /* Light blue base */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+  }
+  
+  .view-details:hover {
+    background-color: #3ec4a9; /* Green accent for hover */
+  }
+  
