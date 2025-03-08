@@ -1,0 +1,119 @@
+/* Background styles for pages */
+.page-background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Centered Content Container */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Buttons */
+button {
+  background-color: #5a3dc3ce;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: #3ec4a9;
+}
+
+button:disabled {
+  background-color: #a8a8a8;
+  cursor: not-allowed;
+}
+
+/* Text Styles */
+h1, h2 {
+  color: white;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2rem;
+  font-style: italic;
+}
+
+p {
+  color: white;
+  font-size: 1rem;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.font-thin {
+  font-weight: 300;
+}
+
+.font-thick {
+  font-weight: 700;
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #5a3dc3ce;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.pagination button:hover {
+  background-color: #3ec4a9;
+}
+
+input[type="text"],
+input[type="textarea"] {
+  width: 100%;
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #a8b1c4;
+  border-radius: 5px;
+  background-color: #1f273b;
+  color: white;
+}
+
+/* Style for the tags chips */
+.selected-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.selected-tag {
+  background-color: #3ec4a9;
+  color: #1f273b;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 15px;
+  font-size: 14px;
+  display: inline-block;
+}

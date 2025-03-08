@@ -1,11 +1,11 @@
 import React from 'react';
 
-interface Discussion {
+export interface Discussion {
   id: number;
   title: string;
   author: string;
   createdAt: string;
-  commentCount: number;
+  content: string;
 }
 
 interface DiscussionListProps {
@@ -15,13 +15,22 @@ interface DiscussionListProps {
 const DiscussionList: React.FC<DiscussionListProps> = ({ discussions }) => {
   return (
     <div className="discussion-list">
-      {discussions.map((discussion) => (
-        <div key={discussion.id} className="discussion-item">
-          <h2>{discussion.title}</h2>
-          <p>Author: {discussion.author}</p>
-          <p>Date: {new Date(discussion.createdAt).toLocaleDateString()}</p>
-          <p>Comments: {discussion.commentCount}</p>
-          <a href={`/discussion/${discussion.id}`}>View Details</a>
+      {discussions?.map((discussion) => (
+        <div
+          key={discussion.id}
+          className="discussion-item"
+        >
+          <h2 className="title">{discussion.title}</h2>
+          <p className="author">By {discussion.author}</p>
+          <p className="date">{new Date(discussion.createdAt).toLocaleDateString()}</p>
+          <div className="mt-4">
+            <a
+              href={`/discussion/${discussion.id}`}
+              className="view-details"
+            >
+              View Details
+            </a>
+          </div>
         </div>
       ))}
     </div>
