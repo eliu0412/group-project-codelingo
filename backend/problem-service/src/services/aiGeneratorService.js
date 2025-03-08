@@ -31,24 +31,19 @@ export default {
 
 // Create the prompt for Gemini API request
 function createPrompt(baseProblem, params) {
-  let variationOptions = [];
-  if (params.variationOptions) {
-    if (Array.isArray(params.variationOptions)) {
-      variationOptions = params.variationOptions;
-    } else if (typeof params.variationOptions === 'object') {
-      variationOptions = Object.values(params.variationOptions); // Convert object values to an array
-    }
-  }
+  const userOption = params.userOption || "";
 
   return `
     Generate a new coding problem based on:
     Base Problem: ${JSON.stringify(baseProblem)}
-    Variations: ${variationOptions.join(', ')}
+    That has the type: ${baseProblem.problemType} and difficulty: ${baseProblem.problemDifficulty}
+    The user wants the question to be:
+    ${userOption}
 
     Output JSON format:
     {
       "title": "Problem Title",
-      "problemType": "typeA/typeB/typeC"
+      "problemType": "typeA/typeB/typeC",
       "problemDifficulty": "1/2/3/4/5/6/7/9/10",
       "problemDescription": "Problem Description",
       "testCases": [{ "input": "...", "output": "..." }],

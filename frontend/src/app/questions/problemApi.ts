@@ -5,7 +5,7 @@ interface ProblemForm {
     problemType: string;
     problemDifficulty: number;
     tags: string[];
-    variationOptions: string[];
+    userOptions: string;
   }
   
 export const generateProblem = async (formData: ProblemForm) => {

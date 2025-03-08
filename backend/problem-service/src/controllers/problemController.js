@@ -132,9 +132,10 @@ export const getProblemsByTags = async (req, res) => {
 // AI generate problem
 export const generateProblem = async (req, res) => {
   try {
-    const { problemType, problemDifficulty, tags, variationOptions } = req.body;
+    const { problemType, problemDifficulty, tags, userOptions } = req.body;
+    console.log('req.body:', req.body);
 
-    if (!problemType || !problemDifficulty || !tags || !variationOptions) {
+    if (!problemType || !problemDifficulty) {
       return res.status(400).json({ error: 'Missing parameters in the request body' });
     }
 
@@ -142,7 +143,7 @@ export const generateProblem = async (req, res) => {
       problemType,
       problemDifficulty,
       tags,
-      variationOptions
+      userOptions
     });
 
     if (!newProblem) {
