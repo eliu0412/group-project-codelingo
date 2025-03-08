@@ -9,6 +9,7 @@ import Register from "./app/registration/registrationPage";
 import Login from "./app/login/loginPage";
 import ProblemPage from "./app/questions/problemPage";
 import VerifyEmail from "./app/registration/verifyEmail";
+import ForgotPassword from "./app/login/forgotPasswordPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ForgotPassword />} />
         </Routes>
       </BrowserRouter>
     </>

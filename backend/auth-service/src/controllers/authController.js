@@ -172,6 +172,27 @@ export default {
             console.error(err);
             res.status(401).json({ error: err.message });
         }
+    },
+    async resetPassword(req, res) {
+        try {
+            const { oobCode, newPassword } = req.body;
+    
+            if (!oobCode || !newPassword) {
+                return res.status(400).json({ error: "oobCode and new password are required." });
+            }
+    
+            await admin.auth().verifyPasswordResetCode(oobCode);
+            await admin.auth().confirmPasswordReset(oobCode, newPassword);
+            console.log("Password reset successful");
+    
+            return res.status(200).json({
+                message: "Password has been successfully reset. Please log in with your new password."
+            });
+    
+        } catch (err) {
+            console.error("Password reset error:", err);
+            return res.status(500).json({ error: err.message });
+        }
     }
 };
 
