@@ -55,6 +55,16 @@ function Navbar() {
               Contact
             </NavLink>
           </li>
+          <li className="mx-8 my-6">
+            <NavLink
+              to="/lobby"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
+              Lobby
+            </NavLink>
+          </li>          
         </ul>
       </nav>
     </>
