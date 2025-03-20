@@ -115,6 +115,101 @@ describe("User Service", () => {
         done();
       });
   });
-
   
+});
+
+describe('User Service - Game Score', () => {
+  const testUsername = 'user1';
+  const initialScore = 85;
+  let currentScore, currentWins, currentLosses;
+
+
+
+  beforeEach((done) => {
+    // Get the current score, wins, and losses before each test
+    chai.request(server)
+      .get(`/api/user/gamescore?username=${testUsername}`)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        currentScore = res.body.score || 0;
+        currentWins = res.body.wins || 0;
+        currentLosses = res.body.losses || 0;
+
+        done();
+      });
+  });
+
+  it('should add a win successfully', (done) => {
+    const newScore = currentScore + 5;
+    chai.request(server)
+      .post('/api/user/gamescore')
+      .send({
+        username: testUsername,
+        score: newScore,
+        isWin: true
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('message', `Game score and record updated successfully for user '${testUsername}'`);
+        
+        currentWins++; // Increment expected wins
+        done();
+      });
+  });
+
+  it('should add a loss successfully', (done) => {
+    const newScore = currentScore + 3;
+    chai.request(server)
+      .post('/api/user/gamescore')
+      .send({
+        username: testUsername,
+        score: newScore,
+        isWin: false
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('message', `Game score and record updated successfully for user '${testUsername}'`);
+        
+        currentLosses++; // Increment expected losses
+        done();
+      });
+  });
+
+  it('should get the updated game score and win/loss record successfully', (done) => {
+    chai.request(server)
+      .get(`/api/user/gamescore?username=${testUsername}`)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('score', currentScore);
+        expect(res.body).to.have.property('wins', currentWins);
+        expect(res.body).to.have.property('losses', currentLosses);
+        done();
+      });
+  });
+
+  it('should fail to set game score if user not found', (done) => {
+    chai.request(server)
+      .post('/api/user/gamescore')
+      .send({
+        username: 'nonexistentUser',
+        score: currentScore,
+        isWin: true
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.have.property('error', 'User not found');
+        done();
+      });
+  });
+
+  it('should fail to get game score if user not found', (done) => {
+    chai.request(server)
+      .get('/api/user/gamescore?username=nonexistentUser')
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.have.property('error', 'User not found');
+        done();
+      });
+  });
 });
