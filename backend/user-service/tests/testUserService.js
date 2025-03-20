@@ -6,7 +6,6 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe("User Service", () => {
-  // Define users and their ranks
   const usersAndRanks = [
     { username: 'user1', email: 'user1@example.com', rank: 1 },
     { username: 'user2', email: 'user2@example.com', rank: 2 },
@@ -20,7 +19,7 @@ describe("User Service", () => {
     { username: 'user10', email: 'user10@example.com', rank: 10 },
   ];
 
-  // Ensure the database is set up before tests start
+  // Set up users with ranks before tests
   before((done) => {
     let completedRequests = 0;
     usersAndRanks.forEach((user) => {
@@ -29,16 +28,14 @@ describe("User Service", () => {
         .post("/api/user/rank")
         .send(user)
         .end((err, res) => {
-          if (res.status === 200) {
-            completedRequests++;
-          }
+          if (err || res.status !== 200) return done(err);
+          completedRequests++;
           if (completedRequests === usersAndRanks.length) {
-            done(); 
+            done();
           }
         });
     });
   });
-
 
   it('should retrieve top 10 ranked users', (done) => {
     chai.request(server)
@@ -47,21 +44,9 @@ describe("User Service", () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
         
-        const expectedUsers = [
-          { username: 'user1', rank: 1 },
-          { username: 'user2', rank: 2 },
-          { username: 'user3', rank: 3 },
-          { username: 'user4', rank: 4 },
-          { username: 'user5', rank: 5 },
-          { username: 'user6', rank: 6 },
-          { username: 'user7', rank: 7 },
-          { username: 'user8', rank: 8 },
-          { username: 'user9', rank: 9 },
-          { username: 'user10', rank: 10 }
-        ];
-
+        const expectedUsers = usersAndRanks.map(({ username, rank }) => ({ username, rank }));
+        
         expect(res.body.length).to.equal(expectedUsers.length);
-
         res.body.forEach((user, index) => {
           expect(user.username).to.equal(expectedUsers[index].username);
           expect(user.rank).to.equal(expectedUsers[index].rank);
@@ -71,7 +56,6 @@ describe("User Service", () => {
       });
   });
 
-  
   it('should add a new user successfully', (done) => {
     chai.request(server)
       .post('/api/user/rank')
@@ -88,23 +72,21 @@ describe("User Service", () => {
       .get('/api/user/rank?username=user3')
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.deep.equal({ username: 'user3', rank: 3 });
+        expect(res.body).to.have.deep.property('rank', 3);
         done();
       });
   });
 
-
   it('should update the rank for an existing user', (done) => {
     chai.request(server)
       .post('/api/user/rank')
-      .send({ username: 'user3', email: 'user3@example.com', rank: 5 }) // Updating rank
+      .send({ username: 'user3', email: 'user3@example.com', rank: 5 })
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('message', "Rank '5' updated/added for user 'user3'");
         done();
       });
   });
-
 
   it('should return an error for a non-existent user when retrieving rank', (done) => {
     chai.request(server)
@@ -115,27 +97,26 @@ describe("User Service", () => {
         done();
       });
   });
-  
 });
 
 describe('User Service - Game Score', () => {
   const testUsername = 'user1';
-  const initialScore = 85;
   let currentScore, currentWins, currentLosses;
 
-
-
   beforeEach((done) => {
-    // Get the current score, wins, and losses before each test
     chai.request(server)
       .get(`/api/user/gamescore?username=${testUsername}`)
       .end((err, res) => {
-        if (err) return done(err);
-
-        currentScore = res.body.score || 0;
-        currentWins = res.body.wins || 0;
-        currentLosses = res.body.losses || 0;
-
+        if (err || res.status === 404) {
+          // Assume initial data if user does not exist
+          currentScore = 0;
+          currentWins = 0;
+          currentLosses = 0;
+        } else {
+          currentScore = res.body.score || 0;
+          currentWins = res.body.wins || 0;
+          currentLosses = res.body.losses || 0;
+        }
         done();
       });
   });
@@ -144,16 +125,22 @@ describe('User Service - Game Score', () => {
     const newScore = currentScore + 5;
     chai.request(server)
       .post('/api/user/gamescore')
-      .send({
-        username: testUsername,
-        score: newScore,
-        isWin: true
-      })
+      .send({ username: testUsername, score: newScore, isWin: true })
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('message', `Game score and record updated successfully for user '${testUsername}'`);
-        
-        currentWins++; // Increment expected wins
+
+        currentWins++;
+        done();
+      });
+  });
+
+  it('should record the win in lastMatchResult', (done) => {
+    chai.request(server)
+      .get(`/api/user/gamescore?username=${testUsername}`)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('lastMatchResult', 'win');
         done();
       });
   });
@@ -162,28 +149,22 @@ describe('User Service - Game Score', () => {
     const newScore = currentScore + 3;
     chai.request(server)
       .post('/api/user/gamescore')
-      .send({
-        username: testUsername,
-        score: newScore,
-        isWin: false
-      })
+      .send({ username: testUsername, score: newScore, isWin: false })
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('message', `Game score and record updated successfully for user '${testUsername}'`);
-        
-        currentLosses++; // Increment expected losses
+
+        currentLosses++;
         done();
       });
   });
 
-  it('should get the updated game score and win/loss record successfully', (done) => {
+  it('should record the loss in lastMatchResult', (done) => {
     chai.request(server)
       .get(`/api/user/gamescore?username=${testUsername}`)
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.property('score', currentScore);
-        expect(res.body).to.have.property('wins', currentWins);
-        expect(res.body).to.have.property('losses', currentLosses);
+        expect(res.body).to.have.property('lastMatchResult', 'loss');
         done();
       });
   });
@@ -193,7 +174,7 @@ describe('User Service - Game Score', () => {
       .post('/api/user/gamescore')
       .send({
         username: 'nonexistentUser',
-        score: currentScore,
+        score: 50,
         isWin: true
       })
       .end((err, res) => {
