@@ -122,8 +122,91 @@ export default {
             }
         }
     ],
-
+    addRankToUser: [
+        async (req, res) => {
+            try {
+                const { username, rank } = req.body;
+  
+                if (!username || !rank) {
+                    return res.status(400).json({ error: 'Username and rank are required' });
+                }
+  
+                // Assuming there exists a 'users' node where user details are stored
+                const userSnapshot = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).get();
+  
+                if (!userSnapshot.exists()) {
+                    return res.status(404).json({ error: 'User not found' });
+                }
+  
+                const userKey = Object.keys(userSnapshot.val())[0];
+                const userRef = db.ref(`users/${userKey}`);
+  
+                await userRef.update({ rank });
+  
+                return res.status(200).json({ message: `Rank '${rank}' added to user '${username}'` });
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({ error: err.message });
+            }
+        }
+    ],
+  
+    getRankFromUser: [
+        async (req, res) => {
+            try {
+                const username = req.query.username;
+  
+                if (!username) {
+                    return res.status(400).json({ error: 'Username is required' });
+                }
+  
+                const userSnapshot = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).get();
+  
+                if (!userSnapshot.exists()) {
+                    return res.status(404).json({ error: 'User not found' });
+                }
+  
+                const user = Object.values(userSnapshot.val())[0];
+  
+                if (!user.rank) {
+                    return res.status(404).json({ message: `Rank not found for user '${username}'` });
+                }
+  
+                return res.status(200).json({ username, rank: user.rank });
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({ error: err.message });
+            }
+        }
+    ],
+    
+    getTopRankedUsers: [
+        async (req, res) => {
+          try {
+            // Retrieve users and their ranks
+            const usersSnapshot = await db.ref('users').get();
+    
+            if (!usersSnapshot.exists()) {
+              return res.status(404).json({ message: 'No users found' });
+            }
+    
+            // Map users to an array and sort by rank
+            const users = Object.values(usersSnapshot.val());
+    
+            users.sort((a, b) => b.rank - a.rank); // Assuming higher rank is better
+    
+            // Get the top 10 users
+            const topUsers = users.slice(0, 10);
+    
+            return res.status(200).json(topUsers);
+          } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err.message });
+          }
+        }
+      ],
 };
+
 
 
     

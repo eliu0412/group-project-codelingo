@@ -14,16 +14,25 @@ const Lobby = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const sampleData: Leader[] = [
-      { username: 'User1', rank: 1 },
-      { username: 'User2', rank: 2 },
-      { username: 'User3', rank: 3 },
-      { username: 'User4', rank: 4 },
-      { username: 'User5', rank: 5 },
-    ];
-
-    setLeaders(sampleData);
-    setLoading(false);
+    const fetchLeaders = async () => {
+      try {
+        const response = await fetch('http://localhost:8082/api/user/top-users');
+        if (!response.ok) {
+          throw new Error('Failed to fetch leaderboard data');
+        }
+        const data = await response.json();
+  
+        // Sort the data by rank in descending order (highest rank first)
+        const sortedData = data.sort((a: Leader, b: Leader) => b.rank - a.rank);  // Change this to descending order
+        setLeaders(sortedData);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchLeaders();
   }, []);
 
   const handleMatch = () => {
@@ -42,7 +51,7 @@ const Lobby = () => {
       }}
     >
       <div className="page-content">
-        <h1>Lobby</h1>
+        <h1>Ranked Leaderboard</h1>
 
         {loading && <p>Loading leaderboard...</p>}
         {error && <p className="error">{error}</p>}
