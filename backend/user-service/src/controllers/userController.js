@@ -124,32 +124,34 @@ export default {
     ],
     addRankToUser: [
         async (req, res) => {
-            try {
-                const { username, rank } = req.body;
-  
-                if (!username || !rank) {
-                    return res.status(400).json({ error: 'Username and rank are required' });
-                }
-  
-                // Assuming there exists a 'users' node where user details are stored
-                const userSnapshot = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).get();
-  
-                if (!userSnapshot.exists()) {
-                    return res.status(404).json({ error: 'User not found' });
-                }
-  
-                const userKey = Object.keys(userSnapshot.val())[0];
-                const userRef = db.ref(`users/${userKey}`);
-  
-                await userRef.update({ rank });
-  
-                return res.status(200).json({ message: `Rank '${rank}' added to user '${username}'` });
-            } catch (err) {
-                console.error(err);
-                res.status(500).json({ error: err.message });
+          try {
+            const { username, rank } = req.body;
+      
+            if (!username || rank === undefined) {
+              return res.status(400).json({ error: 'Username and rank are required' });
             }
+      
+            // Check if the user already exists
+            let userSnapshot = await db.ref('users').orderByChild('username').equalTo(username).get();
+      
+            if (!userSnapshot.exists()) {
+              // Create the user if not exists
+              const newUserRef = db.ref('users').push();
+              await newUserRef.set({ username, rank });
+            } else {
+              // If the user exists, update the rank
+              const userKey = Object.keys(userSnapshot.val())[0];
+              const userRef = db.ref(`users/${userKey}`);
+              await userRef.update({ rank });
+            }
+      
+            return res.status(200).json({ message: `Rank '${rank}' updated/added for user '${username}'` });
+          } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err.message });
+          }
         }
-    ],
+      ],
   
     getRankFromUser: [
         async (req, res) => {
@@ -193,12 +195,44 @@ export default {
             // Map users to an array and sort by rank
             const users = Object.values(usersSnapshot.val());
     
-            users.sort((a, b) => b.rank - a.rank); // Assuming higher rank is better
+            users.sort((a, b) => a.rank - b.rank);// Assuming higher rank is better
     
             // Get the top 10 users
             const topUsers = users.slice(0, 10);
     
             return res.status(200).json(topUsers);
+          } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err.message });
+          }
+        }
+      ],
+
+      addUser: [
+        async (req, res) => {
+          try {
+            const { username, email, rank } = req.body;
+      
+            // Input validation
+            if (!username || !email) {
+              return res.status(400).json({ error: 'Username and email are required' });
+            }
+      
+            // Check if user already exists
+            const existingUserSnapshot = await db.ref('users').orderByChild('username').equalTo(username).get();
+            if (existingUserSnapshot.exists()) {
+              return res.status(400).json({ error: 'User already exists' });
+            }
+      
+            // Create new user
+            const newUserRef = db.ref('users').push();
+            await newUserRef.set({
+              username,
+              email,
+              rank: rank || 'Newbie', // Assign a default rank if it's not provided
+            });
+      
+            return res.status(201).json({ message: 'User created successfully', userId: newUserRef.key });
           } catch (err) {
             console.error(err);
             res.status(500).json({ error: err.message });

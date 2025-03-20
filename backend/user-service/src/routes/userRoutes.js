@@ -13,5 +13,6 @@ userRouter.get('/rank', userController.getRankFromUser);
 
 // Add route for top 10 ranked users
 userRouter.get('/top-users', userController.getTopRankedUsers);
+userRouter.post('/user', userController.addUser); // New endpoint for adding a user
 
 export default userRouter;

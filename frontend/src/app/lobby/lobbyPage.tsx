@@ -21,17 +21,16 @@ const Lobby = () => {
           throw new Error('Failed to fetch leaderboard data');
         }
         const data = await response.json();
-  
-        // Sort the data by rank in descending order (highest rank first)
-        const sortedData = data.sort((a: Leader, b: Leader) => b.rank - a.rank);  // Change this to descending order
-        setLeaders(sortedData);
+        
+        // Directly set the leaders data without sorting
+        setLeaders(data);
       } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-  
+    
     fetchLeaders();
   }, []);
 
