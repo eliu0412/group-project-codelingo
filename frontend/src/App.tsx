@@ -13,6 +13,7 @@ import GeneratedProblemPage from "./app/questions/generatedProblemPage";
 import DiscussionFormPage from './app/discussion/discussionFormPage';
 import VerifyEmail from "./app/registration/verifyEmail";
 import ForgotPassword from "./app/login/forgotPasswordPage";
+import Lobby from "./app/lobby/lobbyPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/problems/generated" element={<GeneratedProblemPage />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
+          <Route path="/lobby" element={<Lobby />} />
         </Routes>
       </BrowserRouter>
     </>
