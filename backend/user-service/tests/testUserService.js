@@ -33,13 +33,13 @@ describe("User Service", () => {
             completedRequests++;
           }
           if (completedRequests === usersAndRanks.length) {
-            done(); // Ensure all users are added before starting tests
+            done(); 
           }
         });
     });
   });
 
-  // Test for retrieving top 10 ranked users
+
   it('should retrieve top 10 ranked users', (done) => {
     chai.request(server)
       .get('/api/user/top-users')
@@ -71,7 +71,7 @@ describe("User Service", () => {
       });
   });
 
-  // Test adding a new user
+  
   it('should add a new user successfully', (done) => {
     chai.request(server)
       .post('/api/user/rank')
@@ -83,7 +83,6 @@ describe("User Service", () => {
       });
   });
 
-  // Test retrieving a user's rank
   it('should retrieve the rank for a specific user', (done) => {
     chai.request(server)
       .get('/api/user/rank?username=user3')
@@ -94,7 +93,7 @@ describe("User Service", () => {
       });
   });
 
-  // Test updating a user's rank
+
   it('should update the rank for an existing user', (done) => {
     chai.request(server)
       .post('/api/user/rank')
@@ -106,7 +105,7 @@ describe("User Service", () => {
       });
   });
 
-  // Test handling of non-existent user
+
   it('should return an error for a non-existent user when retrieving rank', (done) => {
     chai.request(server)
       .get('/api/user/rank?username=nonExistentUser')
