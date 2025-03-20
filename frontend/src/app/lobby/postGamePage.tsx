@@ -42,10 +42,6 @@ const PostGameReview = () => {
     
   };
 
-  const handleReturnHome = () => {
-    // Navigate to home page
-    
-  };
 
   return (
     <div
