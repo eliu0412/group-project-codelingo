@@ -5,7 +5,7 @@ const ProblemAI = () => {
   const [problems, setProblems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProblem, setSelectedProblem] = useState(null);
-  const [variationOptions, setVariationOptions] = useState('');
+  const [userOptions, setUserOptions] = useState('');
   const [generatedProblem, setGeneratedProblem] = useState(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const ProblemAI = () => {
       try {
         const response = await axios.post('http://localhost:8083/api/problems/generate', {
           ...selectedProblem,
-          variationOptions: { option1: variationOptions }
+          userOptions: { option1: userOptions }
         });
 
         setGeneratedProblem(response.data);
@@ -35,7 +35,7 @@ const ProblemAI = () => {
         alert('Error generating problem: ' + error.response.data.error);
       }
     } else {
-      alert('Please select a problem to generate a variation.');
+      alert('Please select a problem to generate a user option.');
     }
   };
 
@@ -70,9 +70,9 @@ const ProblemAI = () => {
           <h3>Selected Problem: {selectedProblem.title}</h3>
           <input
             type="text"
-            placeholder="Variation Options"
-            value={variationOptions}
-            onChange={(e) => setVariationOptions(e.target.value)}
+            placeholder="User Options"
+            value={userOptions}
+            onChange={(e) => setUserOptions(e.target.value)}
             required
           />
           <button type="submit">Generate Problem</button>
