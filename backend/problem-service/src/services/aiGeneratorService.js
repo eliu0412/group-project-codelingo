@@ -88,7 +88,7 @@ function createPrompt(baseProblem, params) {
         "problemDescription": "Fill in the blank with the correct answer",
         "testCases": [empty],
         "constraints": [empty],
-        "options": [empty],
+        "options": [{empty}],
         "correctAnswer": "Correct Answer",
         "tags": ["..."]
       }

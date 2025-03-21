@@ -20,8 +20,8 @@ export const addProblem = (req, res) => {
     problemDifficulty,
     problemDescription,
     tags,
-    testCases,
-    constraints,
+    testCases,       // Only for code
+    constraints,     // Only for code
     options,         // Only for mcq
     correctAnswer,   // Only for fill
     verified,
