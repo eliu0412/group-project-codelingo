@@ -13,7 +13,7 @@ describe('Problem Service', () => {
       .send({
         title: 'Test title',
         problemType: 'mcq',
-        problemDifficulty: 5,
+        problemDifficulty: 1,
         problemDescription: 'Test description',
         tags: ['array', 'loop'],
         testCases: {},
@@ -41,7 +41,7 @@ describe('Problem Service', () => {
       .send({
         title: 'Test title',
         problemType: 'coding',
-        problemDifficulty: 2,
+        problemDifficulty: 1,
         problemDescription: 'Test description',
         tags: ['array', '`pointers'],
         testCases: {},
@@ -64,7 +64,7 @@ describe('Problem Service', () => {
       .send({
         title: 'Test title',
         problemType: 'fill',
-        problemDifficulty: 2,
+        problemDifficulty: 1,
         problemDescription: 'Test description',
         tags: ['array', '`pointers'],
         testCases: {},

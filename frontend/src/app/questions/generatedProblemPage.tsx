@@ -127,6 +127,16 @@ const GeneratedProblemPage = () => {
           <label className="text-white">Problem Description:</label>
           <textarea value={generatedProblem.problemDescription} readOnly className="problem-result" />
         </div>
+        <div className="detail mt-5">
+          <label className="text-white">Tags:</label>
+          <div className="tags-display mt-3">
+            {generatedProblem.tags.map((tag, index) => (
+              <span key={index} className="selected-tag">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
 
         {generatedProblem.problemType === "coding" && <CodingProblemPage problem={generatedProblem} />}
         {generatedProblem.problemType === "mcq" && <McqProblemPage problem={generatedProblem} />}

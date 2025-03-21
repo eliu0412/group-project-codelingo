@@ -31,12 +31,18 @@ const CodingProblemPage: React.FC<CodingProblemProps> = ({ problem }) => {
     return (
         <>
         <div className="detail mt-5">
-            <label className="text-white">Test Cases:</label>
-            <textarea
-            value={problem.testCases?.map(tc => `Input: ${tc.input}\nOutput: ${tc.output}`).join("\n\n") || ""}
+          <label className="text-white">Test Cases:</label>
+          <textarea
+            style={{
+              height: "100%",
+              minHeight: "200px",
+            }}
+            value={problem.testCases
+              .map((tc) => `Input: ${tc.input}\nOutput: ${tc.output}`)
+              .join("\n\n")}
             readOnly
             className="problem-result"
-            />
+          />
         </div>
         <div className="detail mt-5">
             <label className="text-white">Constraints:</label>
