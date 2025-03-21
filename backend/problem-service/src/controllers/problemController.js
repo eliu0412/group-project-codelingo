@@ -1,4 +1,4 @@
-import database from "../../../shared/firebaseConfig.js";
+import { db } from '../../../shared/initFirebase.js';
 import {
   ref,
   push,
@@ -22,7 +22,6 @@ export const addProblem = (req, res) => {
     tags,
     testCases,
     constraints,
-    question,        // Only for mcq and fill
     options,         // Only for mcq
     correctAnswer,   // Only for fill
     verified,
@@ -32,12 +31,13 @@ export const addProblem = (req, res) => {
   if (
     title == null ||
     problemType == null ||
-    problemDifficulty == null
+    problemDifficulty == null ||
+    problemDescription == null
   ) {
     return res
       .status(400)
       .send(
-        "All fields (title, problemType, problemDifficulty) are required."
+        "All fields (title, problemType, problemDifficulty, problemDescription) are required."
       );
   }
 
@@ -55,7 +55,7 @@ export const addProblem = (req, res) => {
     return res.status(400).send("Problem difficulty must be between 1 and 10.");
   }
 
-  const newProblemRef = ref(database, "problems");
+  const newProblemRef = ref(db, "problems");
   push(newProblemRef, {
     title,
     problemType,
@@ -64,7 +64,6 @@ export const addProblem = (req, res) => {
     tags,
     testCases,       // Only for coding
     constraints,     // Only for coding
-    question,        // Only for mcq and fill
     options,         // Only for mcq
     correctAnswer,   // Only for fill
     verified,
@@ -90,7 +89,7 @@ export const getProblemsByDifficulty = (req, res) => {
   // Convert difficulty to integer
   const difficultyInt = parseInt(difficulty, 10);
 
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
   const difficultyQuery = query(
     problemsRef,
     orderByChild("problemDifficulty"),
@@ -121,7 +120,7 @@ export const getProblemsByType = (req, res) => {
     return res.status(400).send("Problem type is required.");
   }
 
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
   const typeQuery = query(
     problemsRef,
     orderByChild("problemType"),
@@ -149,7 +148,7 @@ export const getProblemsByTags = async (req, res) => {
     return res.status(400).send("Problem tag is required.");
   }
 
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
 
   try {
     const snapshot = await get(problemsRef);
@@ -205,7 +204,7 @@ export const generateProblem = async (req, res) => {
 };
 
 export const getProblemsAll = async (req, res) => {
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
 
   try {
     const snapshot = await get(problemsRef);

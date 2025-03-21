@@ -52,6 +52,8 @@ function createPrompt(baseProblem, params) {
         "problemDescription": "Problem Description",
         "testCases": [{ "input": "...", "output": "..." }],
         "constraints": ["..."],
+        "options": [empty],
+        "correctAnswer": "empty",
         "tags": ["..."]
       }
     `;
@@ -63,13 +65,16 @@ function createPrompt(baseProblem, params) {
         "title": "Question Title",
         "problemType": "mcq",
         "problemDifficulty": "1/2/3/4/5/6/7/9/10",
-        "question": "Question Text",
+        "problemDescription": "Question Text",
+        "testCases": [empty],
+        "constraints": [empty],
         "options": [
           { "option": "Option A", "isCorrect": true/false },
           { "option": "Option B", "isCorrect": true/false },
           { "option": "Option C", "isCorrect": true/false },
           { "option": "Option D", "isCorrect": true/false }
         ],
+        "correctAnswer": "empty",
         "tags": ["..."]
       }
     `;
@@ -80,7 +85,10 @@ function createPrompt(baseProblem, params) {
         "title": "Fill in the Blank Question Title",
         "problemType": "fill",
         "problemDifficulty": "1/2/3/4/5/6/7/9/10",
-        "question": "Fill in the blank with the correct answer",
+        "problemDescription": "Fill in the blank with the correct answer",
+        "testCases": [empty],
+        "constraints": [empty],
+        "options": [empty],
         "correctAnswer": "Correct Answer",
         "tags": ["..."]
       }

@@ -14,14 +14,17 @@ describe('Problem Service', () => {
         title: 'Test title',
         problemType: 'mcq',
         problemDifficulty: 5,
-        question: 'Test description',
+        problemDescription: 'Test description',
         tags: ['array', 'loop'],
+        testCases: {},
+        constraints: [],
         options: [
             { "option": "Option A", "isCorrect": false },
             { "option": "Option B", "isCorrect": false },
             { "option": "Option C", "isCorrect": true },
             { "option": "Option D", "isCorrect": false }
           ],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
@@ -43,6 +46,8 @@ describe('Problem Service', () => {
         tags: ['array', '`pointers'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
@@ -62,7 +67,9 @@ describe('Problem Service', () => {
         problemDifficulty: 2,
         problemDescription: 'Test description',
         tags: ['array', '`pointers'],
-        question: "Fill in the blank with the correct answer",
+        testCases: {},
+        constraints: [],
+        options: [],
         correctAnswer: "Correct Answer",
         createdAt: new Date(),
         verified: true
@@ -99,12 +106,14 @@ describe('Problem Service', () => {
         tags: ['array', 'loop'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
       .end((err, res) => {
         expect(res).to.have.status(400);
-        expect(res.text).to.equal('Problem type must be one of the following: typeA, typeB, typeC');
+        expect(res.text).to.equal('Problem type must be one of the following: coding, mcq, fill');
         done();
       });
   });
@@ -120,6 +129,8 @@ describe('Problem Service', () => {
         tags: ['array', 'loop'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
@@ -141,6 +152,8 @@ describe('Problem Service', () => {
         tags: ['array', 'loop'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
@@ -250,14 +263,12 @@ describe('Problem Service', () => {
       });
   });
 
-
   // Test for AI generating
   it('should return 400 when missing parameters in the request body', (done) => {
     chai.request(server)
       .post('/api/problems/generate')
       .send({
         problemType: 'coding',
-        problemDifficulty: 5,
         tags: ['array', 'loop']
       })
       .end((err, res) => {
