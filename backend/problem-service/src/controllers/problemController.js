@@ -6,6 +6,7 @@ import {
   orderByChild,
   equalTo,
   get,
+  update,
 } from "firebase/database";
 import problemService from "../services/problemService.js";
 import { exec } from "child_process";
@@ -69,7 +70,27 @@ export const addProblem = (req, res) => {
     verified,
     createdAt,
   })
-    .then(() => {
+  .then(() => {
+    tags.forEach((tag) => {
+      const tagRef = ref(database, `tags/${tag}`);
+
+      get(tagRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const currentCount = snapshot.val().count;
+            update(tagRef, { count: currentCount + 1 });
+          } else {
+            set(tagRef, {
+              tag,
+              count: 1,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating tags:", error);
+        });
+      });
+
       res.status(201).send("Problem added successfully.");
     })
     .catch((error) => {

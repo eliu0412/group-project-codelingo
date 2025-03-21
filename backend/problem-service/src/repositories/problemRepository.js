@@ -1,5 +1,5 @@
 import { db } from '../../../shared/initFirebase.js';
-import { ref, query, orderByChild, equalTo, get, push, set } from 'firebase/database';
+import { ref, query, orderByChild, equalTo, get, push, set, update } from 'firebase/database';
 
 const problemRef = ref(db, 'problems');
 
@@ -47,11 +47,25 @@ export default {
     }
   },      
 
-  // use if we want to store the generated question in the database
   async createProblem(problem) {
     try {
       const newProblemRef = push(problemRef);
       await set(newProblemRef, problem);
+      
+      if (problem.tags && Array.isArray(problem.tags)) {
+        for (const tag of problem.tags) {
+          const tagRef = ref(db, `tags/${tag}`);
+          
+          const snapshot = await get(tagRef);
+          if (snapshot.exists()) {
+            const currentCount = snapshot.val().count;
+            await update(tagRef, { count: currentCount + 1 });
+          } else {
+            await set(tagRef, { tag, count: 1 });
+          }
+        }
+      }
+  
       return { ...problem, id: newProblemRef.key };
     } catch (error) {
       console.error('Error creating problem:', error);
