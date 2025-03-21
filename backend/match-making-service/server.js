@@ -1,133 +1,122 @@
-import { Server } from "socket.io";
+import express from "express";
 import http from "http";
-import socketClient from "socket.io-client";
+import { Server } from "socket.io";
+import cors from "cors";
 
-// Create an in-memory server for testing
-let ioServer;
-let clientSocket1;
-let clientSocket2;
-let clientSocket3;
-let clientSocket4;
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // You can restrict this to specific origins, e.g. "http://localhost:8080"
+    methods: ["GET", "POST"],
+  },
+});
 
-beforeAll((done) => {
-  const app = http.createServer();
-  ioServer = new Server(app);
+// Enable CORS for all routes
+app.use(cors());
+app.use(express.static("public"));
 
-  // Set up the server
-  ioServer.on("connection", (socket) => {
-    socket.on("createLobby", (problem, callback) => {
-      const lobbyCode = Math.random().toString(36).substr(2, 6);
-      socket.join(lobbyCode);
-      callback({ success: true, lobbyCode });
-    });
+// Listen for socket connections
+let lobbies = {};
+io.on("connection", (socket) => {
+  console.log("connected: ", socket.id);
 
-    socket.on("joinLobby", (lobbyCode, callback) => {
-      if (socket.rooms.has(lobbyCode)) {
-        callback({ success: false, message: "Already in the lobby" });
-      } else {
-        socket.join(lobbyCode);
-        callback({ success: true });
+  // Send a welcome message to the client
+  socket.emit("message", "Welcome to the socket server!");
+
+  // Handle lobby creation
+  socket.on("createLobby", (problem, callback) => {
+    const lobbyCode = Math.random().toString(36).substr(2, 6); // Generate a unique code
+    lobbies[lobbyCode] = { users: [], lobbyProblem: problem }; // Initialize the lobby with the creator's socket ID
+
+    console.log(socket.id, `created lobby: ${lobbyCode}`);
+    console.log(lobbies);
+
+    // Emit the new lobby code to the client via the callback
+    callback({ success: true, lobbyCode });
+  });
+
+  // Handle joining a lobby
+  socket.on("joinLobby", (lobbyCode, callback) => {
+    if (lobbies[lobbyCode]) {
+      if (lobbies[lobbyCode].users.length >= 4) {
+        return callback({ success: false, message: "Lobby is full" });
       }
-    });
+      console.log("joining lobby...");
 
-    socket.on("leaveLobby", (lobbyCode, callback) => {
-      if (socket.rooms.has(lobbyCode)) {
-        socket.leave(lobbyCode);
-        callback({ success: true });
-      } else {
-        callback({ success: false, message: "Not in the lobby" });
+      // Add the user to the lobby's user list
+      if (lobbies[lobbyCode].users.includes(socket.id)) {
+        return;
       }
-    });
+      lobbies[lobbyCode].users.push(socket.id);
+
+      console.log(`User joined lobby: ${lobbyCode}`);
+      // Emit the updated user list to the lobby
+      lobbies[lobbyCode].users.forEach((userId) => {
+        io.to(userId).emit("updateUsers", lobbies[lobbyCode].users); // This emits the event to each user
+      });
+    } else {
+      callback({
+        success: false,
+        message: "No lobby with that code was found",
+      }); // Error handling if the lobby does not exist
+    }
   });
 
-  // Start the server
-  app.listen(8087, done);
-});
+  // Handle leaving a lobby
+  socket.on("leaveLobby", (lobbyCode, callback) => {
+    if (lobbies[lobbyCode]) {
+      // Remove the user from the lobby
+      const userIndex = lobbies[lobbyCode].users.indexOf(socket.id);
+      if (userIndex !== -1) {
+        lobbies[lobbyCode].users.splice(userIndex, 1);
+        console.log(`User left the lobby: ${lobbyCode}`);
 
-beforeEach((done) => {
-  // Connect clients before each test
-  clientSocket1 = socketClient("http://localhost:8087");
-  clientSocket2 = socketClient("http://localhost:8087");
-  clientSocket3 = socketClient("http://localhost:8087");
-  clientSocket4 = socketClient("http://localhost:8087");
-
-  clientSocket1.on("connect", done);
-});
-
-afterEach(() => {
-  // Clean up clients after each test
-  clientSocket1.disconnect();
-  clientSocket2.disconnect();
-  clientSocket3.disconnect();
-  clientSocket4.disconnect();
-});
-
-afterAll(() => {
-  ioServer.close();
-});
-
-// Test case for creating a lobby
-test("should create a lobby", (done) => {
-  clientSocket1.emit("createLobby", "problem1", (response) => {
-    expect(response.success).toBe(true);
-    expect(response.lobbyCode).toHaveLength(6); // Ensure the lobby code is 6 characters
-    done();
-  });
-});
-
-// Test case for joining a lobby
-test("should join a lobby", (done) => {
-  clientSocket1.emit("createLobby", "problem1", (response) => {
-    const lobbyCode = response.lobbyCode;
-
-    clientSocket2.emit("joinLobby", lobbyCode, (joinResponse) => {
-      expect(joinResponse.success).toBe(true);
-      done();
-    });
-  });
-});
-
-// Test case for joining a full lobby
-test("should not join a full lobby", (done) => {
-  clientSocket1.emit("createLobby", "problem1", (response) => {
-    const lobbyCode = response.lobbyCode;
-
-    clientSocket2.emit("joinLobby", lobbyCode, (joinResponse) => {
-      clientSocket3.emit("joinLobby", lobbyCode, (joinResponse2) => {
-        clientSocket4.emit("joinLobby", lobbyCode, (joinResponse3) => {
-          // All slots taken, lobby is full, fourth client should not be able to join
-          expect(joinResponse3.success).toBe(false);
-          expect(joinResponse3.message).toBe("Lobby is full");
-          done();
+        // Emit the updated user list to the lobby
+        lobbies[lobbyCode].users.forEach((userId) => {
+          io.to(userId).emit("updateUsers", lobbies[lobbyCode].users); // This emits the event to each user
         });
+        callback({ success: true });
+      } else {
+        callback({ success: false }); // Error handling if the user isn't in the lobby
+      }
+    } else {
+      callback({ success: true }); // Error handling if the lobby does not exist
+    }
+  });
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+
+    // Remove the user from all lobbies they were in
+    for (let lobbyCode in lobbies) {
+      const userIndex = lobbies[lobbyCode].users.indexOf(socket.id);
+      if (userIndex !== -1) {
+        lobbies[lobbyCode].users.splice(userIndex, 1);
+        io.to(lobbyCode).emit("updateUsers", lobbies[lobbyCode].users); // Emit updated list
+      }
+    }
+  });
+
+  socket.on("lobbyExists", (lobbyCode, callback) => {
+    if (lobbies[lobbyCode]) {
+      callback({ exists: true });
+    } else {
+      callback({ exists: false });
+    }
+  });
+
+  socket.on("startCodingProblem", (lobbyCode, callback) => {
+    if (lobbies[lobbyCode]) {
+      lobbies[lobbyCode].users.forEach((userId) => {
+        io.to(userId).emit("codingProblem", lobbies[lobbyCode].lobbyProblem);
       });
-    });
+    }
   });
 });
 
-// Test case for leaving a lobby
-test("should leave a lobby", (done) => {
-  clientSocket1.emit("createLobby", "problem1", (response) => {
-    const lobbyCode = response.lobbyCode;
-
-    clientSocket2.emit("joinLobby", lobbyCode, (joinResponse) => {
-      clientSocket2.emit("leaveLobby", lobbyCode, (leaveResponse) => {
-        expect(leaveResponse.success).toBe(true);
-        done();
-      });
-    });
-  });
-});
-
-// Test case for leaving a lobby without being in it
-test("should not leave a lobby if not in it", (done) => {
-  clientSocket1.emit("createLobby", "problem1", (response) => {
-    const lobbyCode = response.lobbyCode;
-
-    clientSocket2.emit("leaveLobby", lobbyCode, (leaveResponse) => {
-      expect(leaveResponse.success).toBe(false);
-      expect(leaveResponse.message).toBe("Not in the lobby");
-      done();
-    });
-  });
+// Set the server to listen on port 8087
+server.listen(8087, () => {
+  console.log("Server is running on http://localhost:8087");
 });
