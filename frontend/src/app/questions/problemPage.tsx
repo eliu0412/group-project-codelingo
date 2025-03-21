@@ -18,13 +18,16 @@ interface ProblemForm {
 }
 
 interface Problem {
+  id: number;
   title: string;
   problemType: string;
   problemDifficulty: number;
   problemDescription: string;
   tags: string[];
-  testCases: TestCase[];
-  constraints: string[];
+  testCases?: TestCase[]; // Only for coding
+  constraints?: string[]; // Only for coding
+  options?: string[]; // Only for MCQ
+  correctAnswer?: string; // Only for Fill in the Blank
   verified: boolean;
   createdAt: Date;
 }
@@ -32,8 +35,14 @@ interface Problem {
 const ProblemPage = () => {
   const navigate = useNavigate();
 
+  const typeOptions = [
+    { label: "Coding", value: "coding" },
+    { label: "MCQ", value: "mcq" },
+    { label: "Fill In The Blank", value: "fill" },
+  ];
+
   const [formData, setFormData] = useState<ProblemForm>({
-    problemType: "typeA",
+    problemType: "coding",
     problemDifficulty: 1,
     tags: [],
     userOptions: "",
@@ -46,7 +55,7 @@ const ProblemPage = () => {
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   // Allowable problem types and difficulties
-  const allowableTypes = ["typeA", "typeB", "typeC"];
+  const allowableTypes = ["coding", "mcq", "fill"];
   const difficulties = Array.from({ length: 10 }, (_, i) => i + 1);
 
   // Fetch available tags from the database
@@ -123,7 +132,7 @@ const ProblemPage = () => {
   const handleBackToListClick = () => {
     setGeneratedProblem(null);
     setFormData({
-      problemType: "typeA",
+      problemType: "Coding",
       problemDifficulty: 1,
       tags: [],
       userOptions: "",
@@ -175,9 +184,9 @@ const ProblemPage = () => {
               value={formData.problemType}
               onChange={handleInputChange}
             >
-              {allowableTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
+              {typeOptions.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
                 </option>
               ))}
             </select>
