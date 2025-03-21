@@ -1,5 +1,6 @@
 import background from "../../assets/landing.jpg";
 import CodeEditor from "./codeEditor";
+import Timer from "./timer";
 
 function CodingPage() {
   return (
@@ -18,6 +19,7 @@ function CodingPage() {
         }}
         className="flex flex-col justify-center items-center"
       >
+        <Timer />
         <CodeEditor />
       </div>
     </>
