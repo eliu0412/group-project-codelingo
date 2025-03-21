@@ -239,11 +239,73 @@ export default {
           }
         }
       ],
-      isLoggedIn: [
-        async (req, res) => {
-          
+
+
+  setGameScore: [
+    async (req, res) => {
+      try {
+        const { username, score, isWin } = req.body; // isWin is a boolean
+
+        if (!username || score == null || isWin == null) {
+          return res.status(400).json({ error: 'Username, score, and isWin (true/false) are required' });
         }
-      ],
+
+        const userSnapshot = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).get();
+
+        if (!userSnapshot.exists()) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userKey = Object.keys(userSnapshot.val())[0];
+        const userRef = db.ref(`users/${userKey}`);
+
+        const userData = userSnapshot.val()[userKey];
+
+        await userRef.update({
+          gameScore: score,
+          gameWins: isWin ? (userData.gameWins || 0) + 1 : userData.gameWins || 0,
+          gameLosses: !isWin ? (userData.gameLosses || 0) + 1 : userData.gameLosses || 0,
+          lastMatchResult: isWin ? 'win' : 'loss'
+        });
+
+        return res.status(200).json({ message: `Game score and record updated successfully for user '${username}'` });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+      }
+    }
+  ],
+
+  getGameScore: [
+    async (req, res) => {
+      try {
+        const username = req.query.username;
+
+        if (!username) {
+          return res.status(400).json({ error: 'Username is required' });
+        }
+
+        const userSnapshot = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).get();
+
+        if (!userSnapshot.exists()) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        const user = Object.values(userSnapshot.val())[0];
+
+        return res.status(200).json({
+          username,
+          score: user.gameScore || 0,
+          wins: user.gameWins || 0,
+          losses: user.gameLosses || 0,
+          lastMatchResult: user.lastMatchResult || 'None'
+        });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+      }
+    }
+  ],
 };
 
 

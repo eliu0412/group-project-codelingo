@@ -17,6 +17,7 @@ import Lobby from "./app/lobby/lobbyPage";
 import PlayerLobby from "./app/lobby/playerLobby";
 import { SocketProvider } from "./socketContext";
 import JoinLobby from "./app/lobby/joinLobby";
+import PostGame from "./app/lobby/postGamePage"
 
 function App() {
   return (
