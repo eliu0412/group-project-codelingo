@@ -47,7 +47,6 @@ const GeneratedProblemPage = () => {
   const handleSolveProblem = () => {
     if (!generatedProblem) return;
 
-    // problemType によって遷移先を変更
     switch (generatedProblem.problemType) {
       case "coding":
         navigate("/coding", { state: { problem: generatedProblem } });
@@ -60,6 +59,20 @@ const GeneratedProblemPage = () => {
         break;
       default:
         break;
+    }
+  };
+
+  const handleDiscussProblemClick = () => {
+    if (generatedProblem) {
+      navigate('/discussions/new-discussion', {
+        state: {
+          previousPage: '/problems/generated',
+          problemId: generatedProblem.id,
+          problemTitle: generatedProblem.title,
+          problemDescription: generatedProblem.problemDescription,
+          problemTags: generatedProblem.tags,
+        },
+      });
     }
   };
 
@@ -144,7 +157,7 @@ const GeneratedProblemPage = () => {
       </div>
 
       <div className="flex justify-center gap-5 m-10">
-        <button onClick={() => navigate("/discussions/new-discussion")} className="flex-1 p-3 m-10">
+        <button onClick={handleDiscussProblemClick} className="flex-1 p-3 m-10">
           Discuss Problem
         </button>
         <button onClick={() => navigate("/problems")} className="flex-1 p-3 m-10">
