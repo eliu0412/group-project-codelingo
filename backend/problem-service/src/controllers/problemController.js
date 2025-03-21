@@ -11,7 +11,7 @@ import problemService from "../services/problemService.js";
 import { exec } from "child_process";
 
 // Allowable problem types
-const allowableTypes = ["typeA", "typeB", "typeC"];
+const allowableTypes = ["coding", "mcq", "fill"];
 
 export const addProblem = (req, res) => {
   const {
@@ -22,6 +22,9 @@ export const addProblem = (req, res) => {
     tags,
     testCases,
     constraints,
+    question,        // Only for mcq and fill
+    options,         // Only for mcq
+    correctAnswer,   // Only for fill
     verified,
     createdAt,
   } = req.body;
@@ -29,13 +32,12 @@ export const addProblem = (req, res) => {
   if (
     title == null ||
     problemType == null ||
-    problemDifficulty == null ||
-    !problemDescription == null
+    problemDifficulty == null
   ) {
     return res
       .status(400)
       .send(
-        "All fields (title, problemType, problemDifficulty, problemDescription) are required."
+        "All fields (title, problemType, problemDifficulty) are required."
       );
   }
 
@@ -60,8 +62,11 @@ export const addProblem = (req, res) => {
     problemDifficulty,
     problemDescription,
     tags,
-    testCases,
-    constraints,
+    testCases,       // Only for coding
+    constraints,     // Only for coding
+    question,        // Only for mcq and fill
+    options,         // Only for mcq
+    correctAnswer,   // Only for fill
     verified,
     createdAt,
   })
