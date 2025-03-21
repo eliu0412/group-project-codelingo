@@ -14,6 +14,7 @@ import DiscussionFormPage from './app/discussion/discussionFormPage';
 import VerifyEmail from "./app/registration/verifyEmail";
 import ForgotPassword from "./app/login/forgotPasswordPage";
 import Lobby from "./app/lobby/lobbyPage";
+import PostGame from "./app/lobby/postGamePage"
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/lobby" element={<Lobby />} />
+          <Route path="/post-game/:username" element={<PostGame/>} />
         </Routes>
       </BrowserRouter>
     </>

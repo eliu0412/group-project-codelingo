@@ -15,4 +15,7 @@ userRouter.get('/rank', userController.getRankFromUser);
 userRouter.get('/top-users', userController.getTopRankedUsers);
 userRouter.post('/user', userController.addUser); // New endpoint for adding a user
 
+userRouter.post('/gamescore', userController.setGameScore);
+userRouter.get('/gamescore', userController.getGameScore);
+
 export default userRouter;
