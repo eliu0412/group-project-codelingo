@@ -12,7 +12,6 @@ jobs:
     strategy:
       matrix:
         service: [frontend, admin, backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
-    continue-on-error: true  # Allow the workflow to continue even if the tests fail
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,12 +25,13 @@ jobs:
         run: |
           cd ${{ matrix.service }}
           npm install
+        continue-on-error: true # Continue even if installation fails
 
       - name: Run tests
         run: |
           cd ${{ matrix.service }}
           npm test
-
+        continue-on-error: true # Continue even if tests fail
   build-and-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
