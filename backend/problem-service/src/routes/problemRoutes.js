@@ -7,6 +7,7 @@ import {
   generateProblem,
   getProblemsAll,
   executeCode,
+  getAllTags,
 } from "../controllers/problemController.js";
 
 export const problemRouter = express.Router();
@@ -31,5 +32,8 @@ problemRouter.get("/all", getProblemsAll);
 
 // POST route execute code
 problemRouter.post("/execute", executeCode);
+
+// GET route to get all tags
+problemRouter.get("/all-tags", getAllTags);
 
 export default problemRouter;

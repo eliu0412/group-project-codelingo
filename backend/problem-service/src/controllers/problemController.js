@@ -1,4 +1,4 @@
-import database from '../../../shared/firebaseConfig.js';
+import { db } from '../../../shared/initFirebase.js';
 import {
   ref,
   push,
@@ -56,7 +56,7 @@ export const addProblem = (req, res) => {
     return res.status(400).send("Problem difficulty must be between 1 and 10.");
   }
 
-  const newProblemRef = ref(database, "problems");
+  const newProblemRef = ref(db, "problems");
   push(newProblemRef, {
     title,
     problemType,
@@ -70,9 +70,9 @@ export const addProblem = (req, res) => {
     verified,
     createdAt,
   })
-  .then(() => {
-    tags.forEach((tag) => {
-      const tagRef = ref(database, `tags/${tag}`);
+    .then(() => {
+tags.forEach((tag) => {
+      const tagRef = ref(db, `tags/${tag}`);
 
       get(tagRef)
         .then((snapshot) => {
@@ -110,7 +110,7 @@ export const getProblemsByDifficulty = (req, res) => {
   // Convert difficulty to integer
   const difficultyInt = parseInt(difficulty, 10);
 
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
   const difficultyQuery = query(
     problemsRef,
     orderByChild("problemDifficulty"),
@@ -141,7 +141,7 @@ export const getProblemsByType = (req, res) => {
     return res.status(400).send("Problem type is required.");
   }
 
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
   const typeQuery = query(
     problemsRef,
     orderByChild("problemType"),
@@ -169,7 +169,7 @@ export const getProblemsByTags = async (req, res) => {
     return res.status(400).send("Problem tag is required.");
   }
 
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
 
   try {
     const snapshot = await get(problemsRef);
@@ -225,7 +225,7 @@ export const generateProblem = async (req, res) => {
 };
 
 export const getProblemsAll = async (req, res) => {
-  const problemsRef = ref(database, "problems");
+  const problemsRef = ref(db, "problems");
 
   try {
     const snapshot = await get(problemsRef);
@@ -284,3 +284,24 @@ export const executeCode = (req, res) => {
     }
   );
 };
+
+
+export const getAllTags = async (req, res) => {
+  const tagsRef = ref(db, "tags");
+
+  try {
+    const snapshot = await get(tagsRef);
+    if (!snapshot.exists()) {
+      return res.status(404).json({ message: "No tags found." });
+    }
+
+    const tagsData = Object.values(snapshot.val());
+    tagsData.sort((a, b) => b.count - a.count);
+
+    res.status(200).json(tagsData);
+  } catch (error) {
+    console.error("Error fetching tags:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
