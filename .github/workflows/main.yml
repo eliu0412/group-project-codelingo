@@ -104,7 +104,7 @@ jobs:
         run: |
           SERVICE_NAME=$(basename ${{ matrix.service }})
           LAMBDA_FUNCTION_NAME=codeify-${SERVICE_NAME//\//-}
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin $ECR_REGISTRY
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin https://211125481123.dkr.ecr.us-east-1.amazonaws.com/cscc01/codlingo
           docker tag christiangrogers/$SERVICE_NAME:latest $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}/$SERVICE_NAME:latest
           docker push $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}/$SERVICE_NAME:latest
           aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}/$SERVICE_NAME:latest
