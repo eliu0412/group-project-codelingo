@@ -1,5 +1,5 @@
-import database from '../../../shared/firebaseConfig.js';
-// import { database } from '../../../shared/initFirebase.js';
+// import { db } from '../../../shared/initFirebase.js';
+import database from "../../../shared/firebaseConfig.js";
 import {
   ref,
   push,
@@ -22,10 +22,10 @@ export const addProblem = (req, res) => {
     problemDifficulty,
     problemDescription,
     tags,
-    testCases,       // Only for code
-    constraints,     // Only for code
-    options,         // Only for mcq
-    correctAnswer,   // Only for fill
+    testCases, // Only for code
+    constraints, // Only for code
+    options, // Only for mcq
+    correctAnswer, // Only for fill
     verified,
     createdAt,
   } = req.body;
@@ -64,10 +64,10 @@ export const addProblem = (req, res) => {
     problemDifficulty,
     problemDescription,
     tags,
-    testCases,       // Only for coding
-    constraints,     // Only for coding
-    options,         // Only for mcq
-    correctAnswer,   // Only for fill
+    testCases, // Only for coding
+    constraints, // Only for coding
+    options, // Only for mcq
+    correctAnswer, // Only for fill
     verified,
     createdAt,
   })
@@ -201,17 +201,19 @@ export const getProblemsByTags = async (req, res) => {
 export const generateProblem = async (req, res) => {
   try {
     const { problemType, problemDifficulty, tags, userOptions } = req.body;
-    console.log('req.body:', req.body);
+    console.log("req.body:", req.body);
 
     if (!problemType || !problemDifficulty) {
-      return res.status(400).json({ error: 'Missing parameters in the request body' });
+      return res
+        .status(400)
+        .json({ error: "Missing parameters in the request body" });
     }
 
     const newProblem = await problemService.generateProblem({
       problemType,
       problemDifficulty,
       tags,
-      userOptions
+      userOptions,
     });
 
     if (!newProblem) {
