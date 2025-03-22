@@ -79,7 +79,7 @@ jobs:
   
       - name: Deploy to Lambda
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          ECR_REGISTRY: secrets.ECR_REGISTRY
         run: |
           SERVICE_NAME=$(basename ${{ matrix.service }})
           LAMBDA_FUNCTION_NAME=codeify-${SERVICE_NAME//\//-}
