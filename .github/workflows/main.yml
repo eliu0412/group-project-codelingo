@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         service: [frontend, admin, backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
-    continue-on-error: true   # Allow the workflow to continue even if the tests fail
+    continue-on-error: true  # Allow the workflow to continue even if the tests fail
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,28 +39,49 @@ jobs:
     strategy:
       matrix:
         service: [frontend, admin, backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
+    env:
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+  
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and Push Docker image
+  
+      - name: Build Docker Image
         run: |
           SERVICE_NAME=$(basename ${{ matrix.service }})
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest ${{ matrix.service }}
+          echo "Building service: $SERVICE_NAME"
+          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest ${{ matrix.service }}
+        
+      - name: List Docker Images
+        run: docker images
+        
+      - name: Verify Docker Image Exists
+        run: |
+          SERVICE_NAME=$(basename ${{ matrix.service }})
+          if ! docker image inspect ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest > /dev/null 2>&1; then
+            echo "Docker image ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest does not exist."
+            exit 1
+          fi
+  
+      - name: Push Docker image to Docker Hub
+        run: |
+          SERVICE_NAME=$(basename ${{ matrix.service }})
           docker push ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
-
-      - name: Build and Push Versioned Docker image
+  
+      - name: Log in to AWS ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
+  
+      - name: Tag and Push Docker image to ECR
         run: |
           SERVICE_NAME=$(basename ${{ matrix.service }})
-          VERSION=$(date +'%Y%m%d%H%M%S')
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:$VERSION ${{ matrix.service }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:$VERSION
+          docker tag ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest $ECR_REGISTRY/$SERVICE_NAME:latest
+          docker push $ECR_REGISTRY/$SERVICE_NAME:latest
 
   deploy:
     name: Deploy to AWS Lambda
@@ -69,6 +90,8 @@ jobs:
     strategy:
       matrix:
         service: [frontend, admin, backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
+    env:
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
     steps:
       - name: Log in to AWS
         uses: aws-actions/configure-aws-credentials@v2
@@ -78,12 +101,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
   
       - name: Deploy to Lambda
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
         run: |
           SERVICE_NAME=$(basename ${{ matrix.service }})
           LAMBDA_FUNCTION_NAME=codeify-${SERVICE_NAME//\//-}
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin $ECR_REGISTRY
-          docker tag ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}/$SERVICE_NAME:latest
-          docker push $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}/$SERVICE_NAME:latest
-          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $ECR_REGISTRY/${{ secrets.ECR_REPOSITORY }}/$SERVICE_NAME:latest
+          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $ECR_REGISTRY/$SERVICE_NAME:latest
