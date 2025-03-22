@@ -1,9 +1,5 @@
 # CodeLingo
 
-> _Note:_ This document is meant to be written during (or shortly after) your review meeting, which should happen fairly close to the due date.  
->  
-> _Suggestion:_ Have your review meeting a day or two before the due date. This way you will have some time to go over (and edit) this document, and all team members should have a chance to make their contribution.
-
 ---
 
 ## Iteration 03 - Review & Retrospect
@@ -54,16 +50,20 @@
 
 ### ✅ Goals and Tasks Completed:
 
-- **Progress Tracking Logic (Backend):**  
-  Implemented logic to track user progress through lessons and questions  
-- **Admin Dashboard Updates:**  
-  Refined UI, added filtering and editable lesson modules  
-- **Database and API Dependencies Finalized:**  
-  Laid groundwork for lesson-based interactions (including future interactive questions)  
-- **Daily Standups + Midweek Syncs:**  
-  Maintained velocity by quickly resolving blockers  
-- **Sprint 3 Documentation:**  
-  Completed and reviewed collaboratively during the sprint
+- **Multiplayer Games**  
+![image](https://github.com/user-attachments/assets/8c037241-bcf1-4d8b-919c-177dbfdbd36f)
+
+- **Private Game Sessions using Tokens**  
+![image](https://github.com/user-attachments/assets/1fecf6f2-189e-440f-a5bb-2890141422c5)
+ 
+- **Multiplayer Game Competition Timing**  
+![image](https://github.com/user-attachments/assets/0d36276a-d72e-4b3e-a7ba-0bd858bc298b)
+
+- **User Rankings**  
+![image](https://github.com/user-attachments/assets/a5ad4808-f011-41a4-9e08-e042e90d165b)
+
+- **Post Game Review**  
+![image](https://github.com/user-attachments/assets/587f6df8-03b2-4c25-b376-99a552cd36e9)
 
 ---
 
@@ -72,10 +72,6 @@
 - **AP-8 (Interactive Fill-in-the-Blank Questions):**  
   - **User Story:** _"As a user, I want fill-in-the-blank questions during lessons so that I can test my understanding interactively."_  
   - **Status:** Incomplete due to unexpected backend and validation complexity. Work is partially implemented but requires more time for full integration.
-
-- **GitHub Code Uploads:**  
-  Project files were not pushed to GitHub as priority shifted to backend and API logic stabilization.
-
 ---
 
 ## Looking Ahead
@@ -84,5 +80,4 @@ In the next sprint, we aim to:
 
 - Complete AP-8, including frontend components and answer validation logic  
 - Upload finalized modules to GitHub with README and setup docs  
-- Begin implementation of multiplayer functionality (real-time collaborative lesson sessions)  
 - Expand AI question integration within lesson flows  
