@@ -2,11 +2,16 @@ import { config } from "../../config.ts";
 const { prob } = config.api;
 
 interface ProblemForm {
-    problemType: string;
-    problemDifficulty: number;
-    tags: string[];
-    userOptions: string;
-  }
+  problemType: string;
+  problemDifficulty: number;
+  tags: string[];
+  userOptions: string;
+}
+
+interface Tag {
+  tag: string;
+  count: number;
+}
 
 export const generateProblem = async (formData: ProblemForm) => {
   try {
@@ -26,6 +31,24 @@ export const generateProblem = async (formData: ProblemForm) => {
     return response.json();
   } catch (err) {
     throw new Error("Failed to generate problem");
+  }
+};
+
+export const getAllTags = async (): Promise<Tag[]> => {
+  try {
+    const response = await fetch(`${prob}/problems/all-tags`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch tags");
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Error fetching tags:", err);
+    return [];
   }
 };
 

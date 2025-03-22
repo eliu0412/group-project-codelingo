@@ -33,24 +33,76 @@ export default {
 function createPrompt(baseProblem, params) {
   const userOption = params.userOption || "";
 
-  return `
-    Generate a new coding problem based on:
+  let prompt = `
+    Generate a new problem based on:
     Base Problem: ${JSON.stringify(baseProblem)}
     That has the type: ${baseProblem.problemType} and difficulty: ${baseProblem.problemDifficulty}
     The user wants the question to be:
     ${userOption}
-
-    Output JSON format:
-    {
-      "title": "Problem Title",
-      "problemType": "typeA/typeB/typeC",
-      "problemDifficulty": "1/2/3/4/5/6/7/9/10",
-      "problemDescription": "Problem Description",
-      "testCases": [{ "input": "...", "output": "..." }],
-      "constraints": ["..."],
-      "tags": ["..."]
-    }
   `;
+
+  // Adjust prompt for different problem types
+  if (baseProblem.problemType === "coding") {
+    prompt += `
+      Output JSON format:
+      {
+        "title": "Problem Title",
+        "problemType": "coding",
+        "problemDifficulty": "1/2/3/4/5/6/7/9/10",
+        "problemDescription": "Problem Description",
+        "testCases": [{ "input": "...", "output": "..." }],
+        "constraints": ["..."],
+        "options": [empty],
+        "correctAnswer": "empty",
+        "tags": ["..."]
+      }
+    `;
+  } else if (baseProblem.problemType === "mcq") {
+    prompt += `
+      Multiple choice question with only one true answer
+      Output JSON format:
+      {
+        "title": "Question Title",
+        "problemType": "mcq",
+        "problemDifficulty": "1/2/3/4/5/6/7/9/10",
+        "problemDescription": "Question Text",
+        "testCases": [empty],
+        "constraints": [empty],
+        "options": [
+          { "option": "Option A", "isCorrect": true/false },
+          { "option": "Option B", "isCorrect": true/false },
+          { "option": "Option C", "isCorrect": true/false },
+          { "option": "Option D", "isCorrect": true/false }
+        ],
+        "correctAnswer": "empty",
+        "tags": ["..."]
+      }
+    `;
+  } else if (baseProblem.problemType === "fill") {
+    prompt += `
+      Output JSON format:
+      {
+        "title": "Fill in the Blank Question Title",
+        "problemType": "fill",
+        "problemDifficulty": "1/2/3/4/5/6/7/9/10",
+        "problemDescription": "Fill in the blank with the correct answer",
+        "testCases": [empty],
+        "constraints": [empty],
+        "options": [{empty}],
+        "correctAnswer": "Correct Answer",
+        "tags": ["..."]
+      }
+    `;
+  } else {
+    prompt += `
+      Output JSON format:
+      {
+        "error": "Unknown problem type"
+      }
+    `;
+  }
+
+  return prompt;
 }
 
 // Clean the response string (to remove unwanted characters, code blocks, etc.)

@@ -12,12 +12,19 @@ describe('Problem Service', () => {
       .post('/api/problems/add')
       .send({
         title: 'Test title',
-        problemType: 'typeA',
-        problemDifficulty: 5,
+        problemType: 'mcq',
+        problemDifficulty: 1,
         problemDescription: 'Test description',
         tags: ['array', 'loop'],
         testCases: {},
         constraints: [],
+        options: [
+            { "option": "Option A", "isCorrect": false },
+            { "option": "Option B", "isCorrect": false },
+            { "option": "Option C", "isCorrect": true },
+            { "option": "Option D", "isCorrect": false }
+          ],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
@@ -33,12 +40,37 @@ describe('Problem Service', () => {
       .post('/api/problems/add')
       .send({
         title: 'Test title',
-        problemType: 'typeC',
-        problemDifficulty: 2,
+        problemType: 'coding',
+        problemDifficulty: 1,
         problemDescription: 'Test description',
         tags: ['array', '`pointers'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
+        createdAt: new Date(),
+        verified: true
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        expect(res.text).to.equal('Problem added successfully.');
+        done();
+      });
+  });
+
+  it('should add a problem successfully', (done) => {
+    chai.request(server)
+      .post('/api/problems/add')
+      .send({
+        title: 'Test title',
+        problemType: 'fill',
+        problemDifficulty: 1,
+        problemDescription: 'Test description',
+        tags: ['array', '`pointers'],
+        testCases: {},
+        constraints: [],
+        options: [],
+        correctAnswer: "Correct Answer",
         createdAt: new Date(),
         verified: true
       })
@@ -54,7 +86,7 @@ describe('Problem Service', () => {
       .post('/api/problems/add')
       .send({
         problemId: '1234',
-        problemType: 'typeA'
+        problemType: 'mcq'
       })
       .end((err, res) => {
         expect(res).to.have.status(400);
@@ -74,12 +106,14 @@ describe('Problem Service', () => {
         tags: ['array', 'loop'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
       .end((err, res) => {
         expect(res).to.have.status(400);
-        expect(res.text).to.equal('Problem type must be one of the following: typeA, typeB, typeC');
+        expect(res.text).to.equal('Problem type must be one of the following: coding, mcq, fill');
         done();
       });
   });
@@ -89,12 +123,14 @@ describe('Problem Service', () => {
       .post('/api/problems/add')
       .send({
         title: 'Test title',
-        problemType: 'typeA',
+        problemType: 'coding',
         problemDifficulty: 0,
         problemDescription: 'Test description',
         tags: ['array', 'loop'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
@@ -110,12 +146,14 @@ describe('Problem Service', () => {
       .post('/api/problems/add')
       .send({
         title: 'Test title',
-        problemType: 'typeA',
+        problemType: 'coding',
         problemDifficulty: 11,
         problemDescription: 'Test description',
         tags: ['array', 'loop'],
         testCases: {},
         constraints: [],
+        options: [],
+        correctAnswer: {},
         createdAt: new Date(),
         verified: true
       })
@@ -150,7 +188,18 @@ describe('Problem Service', () => {
   // Test for fetching problems by type
   it('should get problems by type', (done) => {
     chai.request(server)
-      .get('/api/problems/type?type=typeA')
+      .get('/api/problems/type?type=coding')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        done();
+      });
+  });
+
+  // Test for fetching problems by type
+  it('should get problems by type', (done) => {
+    chai.request(server)
+      .get('/api/problems/type?type=mcq')
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
@@ -167,10 +216,6 @@ describe('Problem Service', () => {
         done();
       });
   });
-
-
-
-  // Added
 
   // Test for fetching problems by tags
   it('should get problems by tags', (done) => {
@@ -218,16 +263,13 @@ describe('Problem Service', () => {
       });
   });
 
-
   // Test for AI generating
   it('should return 400 when missing parameters in the request body', (done) => {
     chai.request(server)
       .post('/api/problems/generate')
       .send({
-        problemType: 'typeA',
-        problemDifficulty: 5,
+        problemType: 'coding',
         tags: ['array', 'loop']
-        // missing variationOptions
       })
       .end((err, res) => {
         expect(res).to.have.status(400);
@@ -242,10 +284,10 @@ describe('Problem Service', () => {
     chai.request(server)
       .post('/api/problems/generate')
       .send({
-        problemType: 'typeA',
+        problemType: 'mcq',
         problemDifficulty: 5,
         tags: ['array', 'loop'],
-        variationOptions: { option1: 'make it a sorting problem' }
+        userOptions: { option1: 'about array' }
       })
       .end((err, res) => {
         console.log('Response body:', res.body);

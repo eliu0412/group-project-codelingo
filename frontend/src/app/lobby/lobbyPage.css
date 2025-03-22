@@ -1,0 +1,72 @@
+/* Lobby specific styles */
+.lobby {
+    background-image: url("../../assets/landing.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100vh; /* Ensures the lobby fills the viewport */
+  }
+  
+  /* Leaderboard Table Styles */
+  .leaderboard {
+    width: 80%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    color: white;
+    border-radius: 10px; /* Rounded edges for the entire table */
+    overflow: hidden; /* Ensures content does not overflow the rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  .leaderboard th, .leaderboard td {
+    padding: 15px; /* Increase padding for better spacing */
+    text-align: left;
+    border-bottom: 1px solid #444c56;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  .leaderboard th {
+    font-weight: 700;
+    background-color: #3ec4a9;
+    border-bottom: 2px solid #2e3748; /* More distinct bottom border */
+  }
+  
+  .leaderboard tr:nth-child(even) {
+    background-color: #2e3748;
+  }
+  
+  .leaderboard tr:hover {
+    background-color: #3b4966; /* Slightly lighter on hover for contrast */
+  }
+  
+  .leaderboard td:hover {
+    background-color: #4b5c79; /* Highlight specific cell on hover */
+  }
+  
+  .leaderboard th, .leaderboard td:first-child {
+    border-left: none;
+  }
+  
+  .leaderboard th:last-child, .leaderboard td:last-child {
+    border-right: none;
+  }
+  
+  .leaderboard th:first-child, .leaderboard td:first-child {
+    border-radius: 10px 0 0 10px; /* Round top-left and bottom-left */
+  }
+  
+  .leaderboard th:last-child, .leaderboard td:last-child {
+    border-radius: 0 10px 10px 0; /* Round top-right and bottom-right */
+  }
+  
+  /* Custom Match Button Styles (extends button styles from general.css) */
+  .match-button {
+    width: 150px;
+    font-weight: bold;
+  }
+  
+  /* Error message style */
+  .error {
+    color: #ff8585;
+  }

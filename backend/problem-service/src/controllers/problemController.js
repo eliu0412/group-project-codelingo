@@ -1,3 +1,4 @@
+// import { db } from '../../../shared/initFirebase.js';
 import database from "../../../shared/firebaseConfig.js";
 import {
   ref,
@@ -6,12 +7,13 @@ import {
   orderByChild,
   equalTo,
   get,
+  update,
 } from "firebase/database";
 import problemService from "../services/problemService.js";
 import { exec } from "child_process";
 
 // Allowable problem types
-const allowableTypes = ["typeA", "typeB", "typeC"];
+const allowableTypes = ["coding", "mcq", "fill"];
 
 export const addProblem = (req, res) => {
   const {
@@ -20,8 +22,10 @@ export const addProblem = (req, res) => {
     problemDifficulty,
     problemDescription,
     tags,
-    testCases,
-    constraints,
+    testCases, // Only for code
+    constraints, // Only for code
+    options, // Only for mcq
+    correctAnswer, // Only for fill
     verified,
     createdAt,
   } = req.body;
@@ -30,7 +34,7 @@ export const addProblem = (req, res) => {
     title == null ||
     problemType == null ||
     problemDifficulty == null ||
-    !problemDescription == null
+    problemDescription == null
   ) {
     return res
       .status(400)
@@ -60,12 +64,34 @@ export const addProblem = (req, res) => {
     problemDifficulty,
     problemDescription,
     tags,
-    testCases,
-    constraints,
+    testCases, // Only for coding
+    constraints, // Only for coding
+    options, // Only for mcq
+    correctAnswer, // Only for fill
     verified,
     createdAt,
   })
     .then(() => {
+tags.forEach((tag) => {
+      const tagRef = ref(database, `tags/${tag}`);
+
+      get(tagRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const currentCount = snapshot.val().count;
+            update(tagRef, { count: currentCount + 1 });
+          } else {
+            set(tagRef, {
+              tag,
+              count: 1,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating tags:", error);
+        });
+      });
+
       res.status(201).send("Problem added successfully.");
     })
     .catch((error) => {
@@ -175,17 +201,19 @@ export const getProblemsByTags = async (req, res) => {
 export const generateProblem = async (req, res) => {
   try {
     const { problemType, problemDifficulty, tags, userOptions } = req.body;
-    console.log('req.body:', req.body);
+    console.log("req.body:", req.body);
 
     if (!problemType || !problemDifficulty) {
-      return res.status(400).json({ error: 'Missing parameters in the request body' });
+      return res
+        .status(400)
+        .json({ error: "Missing parameters in the request body" });
     }
 
     const newProblem = await problemService.generateProblem({
       problemType,
       problemDifficulty,
       tags,
-      userOptions
+      userOptions,
     });
 
     if (!newProblem) {
@@ -259,3 +287,24 @@ export const executeCode = (req, res) => {
     }
   );
 };
+
+
+export const getAllTags = async (req, res) => {
+  const tagsRef = ref(database, "tags");
+
+  try {
+    const snapshot = await get(tagsRef);
+    if (!snapshot.exists()) {
+      return res.status(404).json({ message: "No tags found." });
+    }
+
+    const tagsData = Object.values(snapshot.val());
+    tagsData.sort((a, b) => b.count - a.count);
+
+    res.status(200).json(tagsData);
+  } catch (error) {
+    console.error("Error fetching tags:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
