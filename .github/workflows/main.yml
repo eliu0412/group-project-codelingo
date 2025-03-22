@@ -92,7 +92,7 @@ jobs:
         service: [frontend, admin, backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
     steps:
       - name: Log in to AWS
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
