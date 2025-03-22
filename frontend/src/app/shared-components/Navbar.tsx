@@ -3,8 +3,8 @@ import "../styles/navbar.css";
 function Navbar() {
   return (
     <>
-      <nav>
-        <ul className="flex justify-center">
+      <nav className="flex justify-end">
+        <ul className="flex justify-center mr-85">
           <li className="mx-8 my-6">
             <NavLink
               to="/"
@@ -64,7 +64,14 @@ function Navbar() {
             >
               Lobby
             </NavLink>
-          </li>          
+          </li>
+        </ul>
+        <ul className="">
+          <li className="mx-8 my-6 text-sm text-white bg-blue-600 py-1 px-2 rounded-3xl">
+            <NavLink to="/join-lobby">
+              <span className="text-white">Join Lobby</span>
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </>

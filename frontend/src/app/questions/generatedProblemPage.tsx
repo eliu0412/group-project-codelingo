@@ -4,6 +4,7 @@ import "../styles/general.css";
 import CodingProblemPage from "./codingProblemPage";
 import McqProblemPage from "./mcqProblemPage";
 import FillProblemPage from "./fillProblemPage";
+import { useSocket } from "../../socketContext";
 
 interface TestCase {
   input: string;
@@ -30,6 +31,7 @@ interface Problem {
   createdAt: Date;
 }
 const GeneratedProblemPage = () => {
+  const socket = useSocket();
   const location = useLocation();
   const navigate = useNavigate();
   const generatedProblem: Problem | null = location.state?.generatedProblem;
@@ -41,7 +43,7 @@ const GeneratedProblemPage = () => {
   ];
 
   const getProblemTypeLabel = (value: string) => {
-    return typeOptions.find(option => option.value === value)?.label || value;
+    return typeOptions.find((option) => option.value === value)?.label || value;
   };
 
   const handleSolveProblem = () => {
@@ -56,13 +58,30 @@ const GeneratedProblemPage = () => {
         navigate("/mcq", { state: { problem: generatedProblem } });
         break;
       case "fill":
-        navigate("/fill-in-the-blank", { state: { problem: generatedProblem } });
+        navigate("/fill-in-the-blank", {
+          state: { problem: generatedProblem },
+        });
         break;
       default:
         break;
     }
   };
 
+  const handleSolveFriends = () => {
+    // Emit createLobby event with a callback to handle the response
+    socket.emit("createLobby", generatedProblem, (response) => {
+      if (response.success) {
+        // Redirect to the lobby page with the generated lobby code
+        navigate(`/player-lobby/${response.lobbyCode}`, {
+          state: {
+            lobbyCode: response.lobbyCode,
+          },
+        });
+      } else {
+        console.error("Failed to create lobby");
+      }
+    });
+  };
   if (!generatedProblem) {
     return (
       <div
@@ -113,19 +132,39 @@ const GeneratedProblemPage = () => {
       <div className="problem-details">
         <div className="detail mt-5">
           <label className="text-white">Title:</label>
-          <input type="text" style={{width: "100%", minWidth: "1000px",}} value={generatedProblem.title} readOnly className="problem-input" />
+          <input
+            type="text"
+            style={{ width: "100%", minWidth: "1000px" }}
+            value={generatedProblem.title}
+            readOnly
+            className="problem-input"
+          />
         </div>
         <div className="detail mt-5">
           <label className="text-white">Problem Type:</label>
-          <input type="text" value={getProblemTypeLabel(generatedProblem.problemType)} readOnly className="problem-input" />
+          <input
+            type="text"
+            value={getProblemTypeLabel(generatedProblem.problemType)}
+            readOnly
+            className="problem-input"
+          />
         </div>
         <div className="detail mt-5">
           <label className="text-white">Problem Difficulty:</label>
-          <input type="text" value={generatedProblem.problemDifficulty} readOnly className="problem-input" />
+          <input
+            type="text"
+            value={generatedProblem.problemDifficulty}
+            readOnly
+            className="problem-input"
+          />
         </div>
         <div className="detail mt-5">
           <label className="text-white">Problem Description:</label>
-          <textarea value={generatedProblem.problemDescription} readOnly className="problem-result" />
+          <textarea
+            value={generatedProblem.problemDescription}
+            readOnly
+            className="problem-result"
+          />
         </div>
         <div className="detail mt-5">
           <label className="text-white">Tags:</label>
@@ -138,20 +177,35 @@ const GeneratedProblemPage = () => {
           </div>
         </div>
 
-        {generatedProblem.problemType === "coding" && <CodingProblemPage problem={generatedProblem} />}
-        {generatedProblem.problemType === "mcq" && <McqProblemPage problem={generatedProblem} />}
-        {generatedProblem.problemType === "fill" && <FillProblemPage problem={generatedProblem} />}
+        {generatedProblem.problemType === "coding" && (
+          <CodingProblemPage problem={generatedProblem} />
+        )}
+        {generatedProblem.problemType === "mcq" && (
+          <McqProblemPage problem={generatedProblem} />
+        )}
+        {generatedProblem.problemType === "fill" && (
+          <FillProblemPage problem={generatedProblem} />
+        )}
       </div>
 
       <div className="flex justify-center gap-5 m-10">
-        <button onClick={() => navigate("/discussions/new-discussion")} className="flex-1 p-3 m-10">
+        <button
+          onClick={() => navigate("/discussions/new-discussion")}
+          className="flex-1 p-3 m-10"
+        >
           Discuss Problem
         </button>
-        <button onClick={() => navigate("/problems")} className="flex-1 p-3 m-10">
+        <button
+          onClick={() => navigate("/problems")}
+          className="flex-1 p-3 m-10"
+        >
           Go Back
         </button>
         <button onClick={handleSolveProblem} className="flex-1 p-3 m-10">
           Solve Problem
+        </button>
+        <button onClick={handleSolveFriends} className="flex-1 p-3 m-10">
+          Solve with Friends
         </button>
       </div>
     </div>
