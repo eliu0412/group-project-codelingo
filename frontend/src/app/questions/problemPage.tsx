@@ -4,6 +4,7 @@ import { generateProblem } from './problemApi';
 import background from "../../assets/landing.jpg";
 import '../styles/general.css';
 import './problem.css'
+import TagSelector from "./tagSelector";
 
 interface TestCase {
   input: string;
@@ -47,30 +48,16 @@ const ProblemPage = () => {
     tags: [],
     userOptions: "",
   });
+
   const [generatedProblem, setGeneratedProblem] = useState<Problem | null>(
     null
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   // Allowable problem types and difficulties
   const allowableTypes = ["coding", "mcq", "fill"];
   const difficulties = Array.from({ length: 10 }, (_, i) => i + 1);
-
-  // Fetch available tags from the database
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const fetchedTags = ["array", "tag1", "tag2", "tag3", "tag4", "tag5"]; // Sample data
-        setAvailableTags(fetchedTags);
-      } catch (err) {
-        console.error("Failed to fetch tags:", err);
-      }
-    };
-
-    fetchTags();
-  }, []);
 
   // Form input change handler
   const handleInputChange = (
@@ -85,6 +72,18 @@ const ProblemPage = () => {
     }));
   };
 
+  const toggleTag = (tag: string) => {
+    setFormData((prevData) => {
+      const isSelected = prevData.tags.includes(tag);
+      return {
+        ...prevData,
+        tags: isSelected
+          ? prevData.tags.filter((t) => t !== tag)
+          : [...prevData.tags, tag],
+      };
+    });
+  };
+
   // Variation options change handler
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -92,18 +91,6 @@ const ProblemPage = () => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-  };
-
-  // Tags change handler
-  const handleTagsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setFormData((prevData) => ({
-      ...prevData,
-      tags: selectedOptions,
     }));
   };
 
@@ -132,7 +119,7 @@ const ProblemPage = () => {
   const handleBackToListClick = () => {
     setGeneratedProblem(null);
     setFormData({
-      problemType: "Coding",
+      problemType: "coding",
       problemDifficulty: 1,
       tags: [],
       userOptions: "",
@@ -152,7 +139,7 @@ const ProblemPage = () => {
         backgroundRepeat: "no-repeat",
         width: "100%",
         backgroundAttachment: "fixed",
-        minHeight: "100vh",
+        height: "100vh",
         display: "flex", // Enable flexbox
         flexDirection: "column", // Stack items vertically
         justifyContent: "center", // Center the content vertically
@@ -176,7 +163,7 @@ const ProblemPage = () => {
         )}
 
         {showForm && !generatedProblem && (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} style={{width: "600px"}}>
             <label className="text-white font-thin italic">Problem Type</label>
             <select
               id="problemType"
@@ -207,37 +194,15 @@ const ProblemPage = () => {
               ))}
             </select>
 
-            <label className="text-white font-thin italic">Tags</label>
-            <div className="tags">
-              <select
-                id="tags"
-                name="tags"
-                multiple
-                value={formData.tags}
-                onChange={handleTagsChange}
-              >
-                {availableTags.map((tag) => (
-                  <option key={tag} value={tag}>
-                    {tag}
-                  </option>
-                ))}
-              </select>
-              <div className="selected-tags">
-                {formData.tags.map((tag, index) => (
-                  <span key={index} className="selected-tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <TagSelector selectedTags={formData.tags} onTagToggle={toggleTag} />
 
-              <label className="text-white font-thin italic">User Options</label>
-              <textarea
-                id="userOptions"
-                name="userOptions"
-                value={formData.userOptions}
-                onChange={handleOptionChange}
-              />
+            <label className="text-white font-thin italic">User Options</label>
+            <textarea
+              id="userOptions"
+              name="userOptions"
+              value={formData.userOptions}
+              onChange={handleOptionChange}
+            />
 
             <div className="flex justify-center gap-5 m-10">
               <button onClick={handleBackToListClick} className="flex-1 p-3 m-10">

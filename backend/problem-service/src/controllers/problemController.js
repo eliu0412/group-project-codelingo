@@ -1,3 +1,4 @@
+// import { db } from '../../../shared/initFirebase.js';
 import database from "../../../shared/firebaseConfig.js";
 import {
   ref,
@@ -6,6 +7,7 @@ import {
   orderByChild,
   equalTo,
   get,
+  update,
 } from "firebase/database";
 import problemService from "../services/problemService.js";
 import { exec } from "child_process";
@@ -70,6 +72,26 @@ export const addProblem = (req, res) => {
     createdAt,
   })
     .then(() => {
+tags.forEach((tag) => {
+      const tagRef = ref(database, `tags/${tag}`);
+
+      get(tagRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const currentCount = snapshot.val().count;
+            update(tagRef, { count: currentCount + 1 });
+          } else {
+            set(tagRef, {
+              tag,
+              count: 1,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating tags:", error);
+        });
+      });
+
       res.status(201).send("Problem added successfully.");
     })
     .catch((error) => {
@@ -265,3 +287,24 @@ export const executeCode = (req, res) => {
     }
   );
 };
+
+
+export const getAllTags = async (req, res) => {
+  const tagsRef = ref(database, "tags");
+
+  try {
+    const snapshot = await get(tagsRef);
+    if (!snapshot.exists()) {
+      return res.status(404).json({ message: "No tags found." });
+    }
+
+    const tagsData = Object.values(snapshot.val());
+    tagsData.sort((a, b) => b.count - a.count);
+
+    res.status(200).json(tagsData);
+  } catch (error) {
+    console.error("Error fetching tags:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
