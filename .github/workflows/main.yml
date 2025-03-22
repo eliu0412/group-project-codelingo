@@ -111,4 +111,4 @@ jobs:
         run: |
           SERVICE_NAME=$(basename ${{ matrix.service }})
           LAMBDA_FUNCTION_NAME=codeify-${SERVICE_NAME//\//-}
-          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $ECR_REGISTRY/$SERVICE_NAME:latest
+          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
