@@ -87,8 +87,8 @@ jobs:
       - name: Tag and Push Docker image to ECR
         run: |
           SERVICE_NAME=$(basename ${{ matrix.service }})
-          docker tag christiangrogers/$SERVICE_NAME:latest 211125481123.dkr.ecr.us-east-1.amazonaws.com/christiangrogers/$SERVICE_NAME:latest
-          docker push 211125481123.dkr.ecr.us-east-1.amazonaws.com/christiangrogers/$SERVICE_NAME:latest
+          docker tag christiangrogers/$SERVICE_NAME:latest 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
+          docker push 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
 
   deploy:
     name: Deploy to AWS Lambda
