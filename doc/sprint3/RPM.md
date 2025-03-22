@@ -1,74 +1,76 @@
+# Release Plan - Sprint 3
 
-# Release Plan - Sprint 2
-
-## Release Name: Sprint 2
+## Release Name: Sprint 3
 
 ## Release Objectives
+
 ### Specific Goals
-- Expand platform functionality to include learning modules for programming and computer science.
-- Enable AI-driven validation for coding answers.
-- Introduce a coding environment supporting multiple languages.
-- Deploy user authentication improvements, including password reset and email verification.
-- Develop an admin panel for managing problems and lessons.
-- Support AI-generated coding questions to provide dynamic challenges.
+- Introduce user progress tracking for modules and questions.
+- Launch real-time collaborative coding feature for competitions.
+- Refactor backend for improved scalability and modularity.
+- Expand admin capabilities with bulk import/export of problems.
+- Finalize full CRUD for lessons, questions, and test cases.
+- Improve overall user interface responsiveness and accessibility.
 
 ### Metrics for Measurement
-- User engagement with programming and CS modules (tracked via user activity logs).
-- Successful implementation of discussion panels during competitions (measured via user interactions and backend logs).
-- AI-based answer validation system operational (validated through test cases).
-- Coding environment supports multiple programming languages (verified via execution tests).
-- User password reset and email verification working (tracked via authentication logs).
-- Admin panel allows problem and lesson management (verified through UI interactions and database updates).
-- AI-generated coding questions successfully created and assigned to users.
+- User progress data accurately logged and retrieved (checked via test cases and Firebase analytics).
+- Real-time coding collaboration operates without latency (monitored via socket logs and user testing).
+- Backend endpoints exhibit improved performance and lower response time (measured through load testing).
+- Admin bulk operations perform successfully and reflect in the database (verified via UI logs and DB entries).
+- Successful CRUD operations for content management (validated via automated and manual tests).
+- UI improvements positively impact engagement and lower bounce rate (tracked through analytics).
 
 ## Release Scope
+
 ### Included Features
-- **Programming & CS Modules**: Users can access various programming and computer science lessons.
-- **Practice Questions**: Users can attempt coding problems based on selected topics.
-- **AI-Based Answer Validation**: AI evaluates correctness of submitted answers.
-- **Password Reset**: Users can reset their passwords securely.
-- **API-Driven Problem Retrieval**: AI agent fetches and displays detailed problem descriptions.
-- **Admin Panel**: Centralized interface for managing problems and lessons.
-- **Email Verification**: Users receive a verification email upon registration.
-- **AI-Generated Coding Questions**: System dynamically creates and assigns coding challenges.
-- **Multi-Language Coding Environment**: Supports running code in various programming languages.
+- **Progress Tracking**: Store and visualize user progress across modules and problem sets.
+- **Real-Time Collaboration**: Users can join coding sessions together for competitions.
+- **Admin Enhancements**: Bulk import/export problems, filter content, manage tags.
+- **Lesson & Question Management**: Full CRUD implementation for all content types.
+- **Improved Architecture**: Backend refactored for microservice-friendly design and scalability.
+- **Responsive UI Improvements**: Optimized layout and accessibility for better user experience.
 
 ### Excluded Features
-- **Real-Time Competitive Coding Mode**: To be introduced in future sprints.
-- **Advanced AI Problem Recommendations**: AI-driven personalized problem recommendations are not yet included.
+- **Gamification Features (Points/Leaderboard)**: To be released in Sprint 4.
+- **Personalized AI Recommendations**: Still under development and data collection.
 
 ### Bug Fixes
-- Fixed session persistence issues in authentication.
-- Resolved UI inconsistencies in the discussion panel.
-- Addressed incorrect validation outputs from AI-based answer checking.
+- Addressed lag issues in the coding environment on lower-end devices.
+- Resolved token expiry issues in user sessions.
+- Fixed inconsistencies in lesson save/publish flow.
+- Corrected duplicate rendering in discussion panel.
 
-### Non-Functional Requirements
-- Ensure system stability for at least 50 concurrent users.
-- Optimize backend response times for problem retrieval and answer validation.
-- Implement security measures to prevent unauthorized access to discussions and problem sets.
+## Non-Functional Requirements
+- Achieve under 200ms average response time for all major API calls.
+- Ensure collaboration sync accuracy within 1 second.
+- Maintain system stability for 100+ concurrent users during peak usage.
+- Meet WCAG 2.1 accessibility standards in redesigned UI components.
 
 ## Dependencies and Limitations
+
 ### External Dependencies
-- Firebase for authentication, email verification, and database management.
-- React, TailwindCSS for frontend development.
-- Express, NodeJS, and AI models for backend logic.
-- Multi-language execution environment for coding.
+- Firebase for user progress tracking and authentication.
+- WebSockets/Socket.io for real-time collaboration.
+- React + Redux for frontend state management.
+- Node.js/Express for backend APIs.
 
 ### Known Limitations
-- AI validation may have edge cases requiring further tuning.
-- Limited number of problems available in the initial release.
-- Discussion panel is currently limited to competitions.
+- Real-time collaboration feature may be affected under unstable network conditions.
+- Admin interface bulk actions currently lack undo functionality.
+- Progress tracking is limited to questions and lessons, not discussions or competitions.
 
 ## Deployment Plan
-### Steps to Carry Out the Deployment
-1. Merge the Sprint 2 branch into the `main` branch.
-2. Run integration tests for new features.
-3. Deploy via CI/CD pipeline.
-4. Verify deployment through health checks and test accounts.
 
-### PIV (Post Implementation Verification) Instruction
-- Test learning modules for accessibility and correctness.
-- Verify AI validation works for different types of answers.
-- Ensure discussion panels function correctly during active competitions.
-- Validate password reset and email verification processes.
-- Confirm admin panel functi
+### Steps to Carry Out the Deployment
+1. Merge Sprint 3 branch into `main`.
+2. Run full automated test suite and QA review.
+3. Push to staging environment for internal verification.
+4. Deploy to production via CI/CD pipeline.
+5. Monitor metrics and logs for anomalies.
+
+### PIV (Post Implementation Verification) Instructions
+- Confirm user progress is saved and displayed accurately across sessions.
+- Validate real-time coding works with multiple users simultaneously.
+- Ensure admin tools support correct import/export with no data loss.
+- Test responsiveness and keyboard accessibility in UI.
+- Check that all CRUD operations reflect changes in the database in real-time.
