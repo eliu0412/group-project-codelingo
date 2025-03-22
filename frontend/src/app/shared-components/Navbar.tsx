@@ -16,7 +16,7 @@ function Navbar() {
   };
 
   const navStyle = ({ isActive }: { isActive: boolean }) =>
-    `nav-link text-black ${isActive ? "font-semibold" : ""}`;
+    `nav-link text-black hover:underline ${isActive ? "font-semibold underline" : ""}`;
 
   return (
     <nav className="flex justify-between items-center px-10 py-6 bg-white shadow-md">
@@ -56,7 +56,7 @@ function Navbar() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/join-lobby" className={navStyle}>
+              <NavLink to="/join-lobby" className={navStyle} >
                 Join Lobby
               </NavLink>
             </li>

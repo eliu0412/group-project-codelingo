@@ -83,9 +83,17 @@ const DiscussionsPage: React.FC = () => {
         </>
 
         {/* Start a Discussion button (hidden when the form is shown) */}
-          <button onClick={handleCreateDiscussionClick} className="m-5">
-            Start a Discussion
-          </button>
+          <button
+              onClick={handleCreateDiscussionClick}
+              className="fade-in text-white bg-gradient-to-r from-indigo-800
+                        via-indigo-600 to-blue-500 hover:bg-gradient-to-br
+                        focus:ring-3 focus:outline-none focus:ring-cyan-300
+                        dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50
+                        dark:shadow-lg dark:shadow-cyan-800/80 font-bold
+                        rounded-2xl text-2xl px-10 py-6 w-full max-w-md text-center mb-6 transition-all duration-300"
+            >
+              Start Discussion
+            </button>
 
         {discussions.length > ITEMS_PER_PAGE && (
           <Pagination
