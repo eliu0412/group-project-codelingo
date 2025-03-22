@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
             if (response.message) {
                 setMessage(response.message);
                 //localStorage.setItem("authToken", response.idToken);
-                window.location.href = "/discussions";
+                window.location.href = "/";
             } else {
                 setError(response.error);
             }

@@ -146,7 +146,7 @@ const ProblemPage = () => {
         alignItems: "center", // Center the content horizontally
       }}
     >
-      <div className="flex flex-col justify-center items-center h-full">
+      <div className="flex flex-col justify-center items-center h-full w-full py-50">
         {!showForm && !generatedProblem && (
           <>
             <h1 className="text-white text-6xl m-5 font-mono font-bold">
@@ -156,8 +156,16 @@ const ProblemPage = () => {
               Challenge yourself with an original problem and be the first to
               solve it!
             </p>
-            <button onClick={handleGetQuestionClick} className="m-5">
-              Get Question
+            <button
+              onClick={handleGetQuestionClick}
+              className="fade-in text-white bg-gradient-to-r from-indigo-800
+                        via-indigo-600 to-blue-500 hover:bg-gradient-to-br
+                        focus:ring-3 focus:outline-none focus:ring-cyan-300
+                        dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50
+                        dark:shadow-lg dark:shadow-cyan-800/80 font-bold
+                        rounded-2xl text-2xl px-10 py-6 w-full max-w-md text-center mb-6 transition-all duration-300"
+            >
+              Generate Question
             </button>
           </>
         )}

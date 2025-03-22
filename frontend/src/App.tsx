@@ -43,21 +43,47 @@ function App() {
                 />
                 <Route
                   path="/discussions/new-discussion"
-                  element={<DiscussionFormPage />}
+                  element={
+                    <PrivateRoute>
+                      <DiscussionFormPage />
+                    </PrivateRoute>}
                 />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/problems" element={<ProblemPage />} />
-                <Route path="/coding" element={<CodingPage />} />
+                <Route path="/problems" element={
+                  <PrivateRoute>
+                    <ProblemPage />
+                  </PrivateRoute>}
+                />
+                <Route path="/coding" element={
+                  <PrivateRoute>
+                    <CodingPage />
+                  </PrivateRoute>}
+                />
                 <Route
                   path="/problems/generated"
-                  element={<GeneratedProblemPage />}
+                  element={
+                    <PrivateRoute>
+                      <GeneratedProblemPage />
+                    </PrivateRoute>}
                 />
                 <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/reset-password" element={<ForgotPassword />} />
-                <Route path="/lobby" element={<Lobby />} />
-                <Route path="/player-lobby/:code" element={<PlayerLobby />} />
-                <Route path="/join-lobby" element={<JoinLobby />} />
+                <Route path="/lobby" element={
+                  <PrivateRoute>
+                    <Lobby />
+                  </PrivateRoute>}
+                 />
+                <Route path="/player-lobby/:code" element={
+                  <PrivateRoute>
+                    <PlayerLobby />
+                  </PrivateRoute>}
+                />
+                <Route path="/join-lobby" element={
+                  <PrivateRoute>
+                    <JoinLobby />
+                  </PrivateRoute>}
+                />
               </Routes> 
           </BrowserRouter>
         </SocketProvider>
