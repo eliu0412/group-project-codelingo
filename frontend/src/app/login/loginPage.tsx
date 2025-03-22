@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
             if (response.message) {
                 setMessage(response.message);
                 //localStorage.setItem("authToken", response.idToken);
-                //navigate("/discussions");
+                window.location.href = "/discussions";
             } else {
                 setError(response.error);
             }
@@ -84,7 +84,7 @@ const LoginPage: React.FC = () => {
                     />
                     <button className="login-button" type="submit">Submit</button>
                     <button className="forgot-password-button" onClick={() => window.location.href = "/reset-password"}>Forgot Password?</button>
-                    <p>Don't have an account? <a href="/register">Register here</a></p>
+                    <p>Don't have an account? <a href="/register" className="link">Register here</a></p>
                 </form>
             </div>
         </div>
