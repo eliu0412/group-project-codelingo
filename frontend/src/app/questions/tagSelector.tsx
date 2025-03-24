@@ -14,6 +14,7 @@ interface TagSelectorProps {
 const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) => {
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -25,72 +26,70 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) 
         setAvailableTags([]);
       }
     };
-
     fetchTags();
   }, []);
 
-  const filteredAndSortedTags = useMemo(() => {
-    const filteredTags = availableTags.filter(
-      (tag) => 
-        tag.tag && 
-        tag.tag.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !selectedTags.includes(tag.tag)
-    );
-
-    return filteredTags
+  const filteredTags = useMemo(() => {
+    return availableTags
+      .filter(
+        (tag) =>
+          tag.tag &&
+          tag.tag.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !selectedTags.includes(tag.tag)
+      )
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
   }, [availableTags, searchQuery, selectedTags]);
 
-  const handleTagsChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = event.target.value;
-    onTagToggle(selectedOption);
-  };
-
   return (
-    <div>
-      <label className="text-white font-thin italic">Tags</label>
+    <div className="pt-10 relative w-full max-w-md">
+      <div className="pt-10 flex flex-row justify-between gap-20 items-center">
+      <label className="text-white text-lg min-w-max">Tags:</label>
+      
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search tags..."
+          value={searchQuery}
+          onFocus={() => setDropdownOpen(true)}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="block py-2.5 px-0 w-3/4 bg-gray-900
+             text-lg text-gray-400 border-0 border-b-2 
+             border-gray-200 appearance-none dark:text-gray-400
+             dark:border-gray-700 focus:outline-none focus:ring-0
+             focus:border-gray-200 peer flex justify-center"
+        />
 
-      <input
-        type="text"
-        placeholder="Search tags..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-2 my-2 text-black"
-      />
-
-      <div
-        className="tags-container"
-        style={{ maxHeight: "200px", overflowY: "auto" }}
-      >
-        <select
-          id="tags"
-          name="tags"
-          multiple
-          value={selectedTags}
-          onChange={handleTagsChange}
-          className="w-full p-2 my-2 text-black"
-        >
-          {filteredAndSortedTags.length === 0 ? (
-            <option disabled>No matching tags</option>
-          ) : (
-            filteredAndSortedTags.map((tag) => (
-              <option key={tag.tag} value={tag.tag}>
-                {tag.tag} {tag.count > 5 && "🔥"}
-              </option>
-            ))
-          )}
-        </select>
+        {dropdownOpen && (
+          <div
+            className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow max-h-48 overflow-y-auto"
+            onMouseLeave={() => setDropdownOpen(false)}
+          >
+            {filteredTags.length === 0 ? (
+              <div className="p-2 text-gray-500">No matching tags</div>
+            ) : (
+              filteredTags.map((tag) => (
+                <div
+                  key={tag.tag}
+                  onClick={() => {
+                    onTagToggle(tag.tag);
+                  }}
+                  className="p-2 hover:bg-blue-100 cursor-pointer"
+                >
+                  {tag.tag} {tag.count > 5 && "🔥"}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
       </div>
 
-      <div className="selected-tags flex flex-wrap gap-2 mb-3">
-        {selectedTags.map((tag, index) => (
+      <div className="selected-tags flex flex-wrap gap-2 mt-3">
+        {selectedTags.map((tag) => (
           <span
-            key={index}
+            key={tag}
             className="px-2 py-1 bg-blue-500 text-white rounded cursor-pointer"
-            style={{
-              maxWidth: "100%",
-            }}
             onClick={() => onTagToggle(tag)}
           >
             {tag} ✕
