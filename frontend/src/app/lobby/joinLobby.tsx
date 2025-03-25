@@ -1,7 +1,7 @@
 import { useSocket } from "../../socketContext";
 import background from "../../assets/landing.jpg";
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 function JoinLobby() {
   const navigate = useNavigate();

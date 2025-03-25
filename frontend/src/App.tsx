@@ -20,7 +20,6 @@ import JoinLobby from "./app/lobby/joinLobby";
 import { AuthProvider } from "./app/context/AuthContext";
 import PrivateRoute from "./app/context/PrivateRoute";
 
-import PostGame from "./app/lobby/postGamePage"
 
 function App() {
   
