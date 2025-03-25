@@ -143,7 +143,7 @@ jobs:
           run: |
             SERVICE_NAME=$(basename ${{ matrix.service }})
             AWS_S3_BUCKET=codelingo-static-services-$SERVICE_NAME
-            aws s3 sync ${{ matrix.service }}/build/ s3://$AWS_S3_BUCKET --delete
+            aws s3 sync ${{ matrix.service }}/dist/ s3://$AWS_S3_BUCKET --delete
   
         - name: Invalidate CloudFront Cache (if applicable)
           run: |
