@@ -42,47 +42,50 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) 
   }, [availableTags, searchQuery, selectedTags]);
 
   return (
-    <div className="pt-10 relative w-full max-w-md">
-      <div className="pt-10 flex flex-row justify-between gap-20 items-center">
-      <label className="text-white text-lg min-w-max">Tags:</label>
-      
-    
-        <input
-          type="text"
-          placeholder="Search tags..."
-          value={searchQuery}
-          onFocus={() => setDropdownOpen(true)}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="block py-2.5 px-0 w-3/4 bg-gray-900
-             text-lg text-gray-400 border-0 border-b-2 
-             border-gray-200 appearance-none dark:text-gray-400
-             dark:border-gray-700 focus:outline-none focus:ring-0
-             focus:border-gray-200 peer"
-        />
+    <div>
+      <div className="pt-10 w-full flex items-center gap-43">
+        <label className="text-white text-lg min-w-max mr-4">Tags:</label>
 
-        {dropdownOpen && (
-          <div
-            className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow max-h-48 overflow-y-auto"
-            onMouseLeave={() => setDropdownOpen(false)}
-          >
-            {filteredTags.length === 0 ? (
-              <div className="p-2 text-gray-500">No matching tags</div>
-            ) : (
-              filteredTags.map((tag) => (
-                <div
-                  key={tag.tag}
-                  onClick={() => {
-                    onTagToggle(tag.tag);
-                  }}
-                  className="p-2 hover:bg-blue-100 cursor-pointer"
-                >
-                  {tag.tag} {tag.count > 5 && "🔥"}
-                </div>
-              ))
-            )}
-          </div>
-        )}
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            className="block py-2.5 px-0 w-full bg-gray-900
+              text-lg text-gray-400 border-0 border-b-2 
+              border-gray-200 appearance-none dark:text-gray-400
+              dark:border-gray-700 focus:outline-none focus:ring-0
+              focus:border-gray-200 peer"
+            placeholder="Search tags..."
+            value={searchQuery}
+            onFocus={() => setDropdownOpen(true)}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            
+          />
+
+          {dropdownOpen && (
+            <div
+              className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow max-h-48 overflow-y-auto"
+              onMouseLeave={() => setDropdownOpen(false)}
+            >
+              {filteredTags.length === 0 ? (
+                <div className="p-2 text-gray-500">No matching tags</div>
+              ) : (
+                filteredTags.map((tag) => (
+                  <div
+                    key={tag.tag}
+                    onClick={() => {
+                      onTagToggle(tag.tag);
+                    }}
+                    className="p-2 hover:bg-blue-100 cursor-pointer"
+                  >
+                    {tag.tag} {tag.count > 5 && "🔥"}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
 
       <div className="selected-tags flex flex-wrap gap-2 mt-3">
         {selectedTags.map((tag) => (
@@ -95,7 +98,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) 
           </span>
         ))}
       </div>
-    </div>
+  </div>
   );
 };
 

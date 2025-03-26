@@ -146,7 +146,7 @@ const ProblemPage = () => {
       }}
     >
       {!showForm && !generatedProblem && (
-        <div className="flex flex-col justify-center items-center h-full w-full py-50">
+        <div className="flex flex-col justify-center items-center h-full w-full">
         
           <>
             <h1 className="text-white text-6xl m-5 font-mono font-bold">
@@ -175,9 +175,9 @@ const ProblemPage = () => {
         {/* Show error */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {showForm && !generatedProblem && (
-          <div className='w-1/2 bg-gray-900 flex justify-center'>
+          <div className='w-1/2 bg-gray-900 flex justify-center rounded-2xl'>
             <form onSubmit={handleSubmit} style={{width: "600px"}}>
-              <div className='pt-10 flex flex-row justify-between gap-20 items-center'>
+              <div className='pt-10 flex flex-row justify-between gap-28 items-center'>
                 <label className="text-white text-lg min-w-max">Problem Type:</label>
                 <select
                   id="problemType"
@@ -222,23 +222,32 @@ const ProblemPage = () => {
                   ))}
                 </select>
               </div>
-
-              <TagSelector selectedTags={formData.tags} onTagToggle={toggleTag} />
-
-              <label className="text-white font-thin italic">User Options</label>
-              <textarea
-                id="userOptions"
-                name="userOptions"
-                value={formData.userOptions}
-                onChange={handleOptionChange}
-              />
-
-              <div className="flex justify-center gap-5 m-10">
-                <button onClick={handleBackToListClick} className="flex-1 p-3 m-10">
-                  Go Back
-                </button>
-                <button type="submit" className="flex-1 p-3 m-10" disabled={loading}>Generate</button>
+              <div>
+                <TagSelector selectedTags={formData.tags} onTagToggle={toggleTag} />
               </div>
+              
+              <div className='pt-10 flex flex-col justify-between gap-5'>
+                <label className="text-white text-lg min-w-max">User Options:</label>
+                <textarea
+                  className="block p-2.5 w-full text-base text-gray-50 bg-gray-900
+                            rounded-sm border border-gray-500 focus:outline-none focus:ring-0
+                            dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white h-30"
+                  placeholder="Write your options here..."
+                  id="userOptions"
+                  name="userOptions"
+                  value={formData.userOptions}
+                  onChange={handleOptionChange}
+                />
+              </div>
+              <div>
+                <div className="flex justify-center gap-5 m-10">
+                  <button onClick={handleBackToListClick} className="flex-1 p-3 m-10 bg-t">
+                    Go Back
+                  </button>
+                  <button type="submit" className="flex-1 p-3 m-10" disabled={loading}>Generate</button>
+                </div>
+              </div>
+              
             </form>
           </div>
         )}
