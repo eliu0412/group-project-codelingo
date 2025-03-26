@@ -143,7 +143,7 @@ jobs:
             LAMBDA_FUNCTION_NAME=codeify-${SERVICE_NAME//\//-}
             aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
   deploy-frontend:
-    name: Deploy Frontend to EC2
+    name: Deploy Frontend
     runs-on: ubuntu-latest
     needs: build-and-push-frontend
     steps:
@@ -154,9 +154,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd term-group-project-c01w25-project-codelingo/frontend
-            git checkout main
-            git pull origin main
             docker stop $(docker ps -a -q) || true
             docker rm $(docker ps -a -q) || true
             docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
