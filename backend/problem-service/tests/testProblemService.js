@@ -222,7 +222,6 @@ describe('Problem Service', () => {
     chai.request(server)
       .get('/api/problems/tags?tags=loop') // Assume 'loop' is a valid tag
       .end((err, res) => {
-        console.log('Response body:', res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array'); // Assuming response is an array of problems
         expect(res.body.length).to.be.greaterThan(0); // Ensure there are problems related to 'loop' tag
@@ -245,7 +244,6 @@ describe('Problem Service', () => {
     chai.request(server)
       .get('/api/problems/tags?tags=array,loop') // Assuming 'array' and 'loop' are valid tags
       .end((err, res) => {
-        console.log('Response body:', res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array'); // Assuming response is an array of problems
         expect(res.body.length).to.be.greaterThan(0); // Ensure there are problems related to 'array' and 'loop' tags
@@ -290,7 +288,6 @@ describe('Problem Service', () => {
         userOptions: { option1: 'about array' }
       })
       .end((err, res) => {
-        console.log('Response body:', res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         done();
