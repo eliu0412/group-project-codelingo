@@ -129,4 +129,4 @@ jobs:
             docker stop $(docker ps -a -q)
             docker rm $(docker ps -a -q)
             docker build -t my-react-app .
-            docker run -p 5173:5173 my-react-app
+            docker run -d -p 5173:5173 my-react-app
