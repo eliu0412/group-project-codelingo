@@ -114,7 +114,7 @@ jobs:
   deploy-frontend:
     name: Deploy Frontend to EC2
     runs-on: ubuntu-latest
-    needs: test  # Only needs test, no need for build-and-push
+    needs: test
     steps:
       - name: SSH into EC2 and Deploy Frontend
         uses: appleboy/ssh-action@v0.1.10
