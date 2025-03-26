@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { generateProblem } from './problemApi';
 import background from "../../assets/landing.jpg";
-import '../styles/general.css';
 import './problem.css'
 import TagSelector from "./tagSelector";
 
@@ -208,11 +207,11 @@ const ProblemPage = () => {
                 <select
                   id="problemDifficulty"
                   name="problemDifficulty"
-                  className="block py-2.5 px-0 w-3/4 bg-gray-900
+                  className="block py-2.5 px-0 w-full bg-gray-900
                             text-lg text-gray-400 border-0 border-b-2 
                             border-gray-200 appearance-none dark:text-gray-400
                             dark:border-gray-700 focus:outline-none focus:ring-0
-                            focus:border-gray-200 peer flex justify-center"
+                            focus:border-gray-200 peer flex flex-end"
                   value={formData.problemDifficulty}
                   onChange={handleInputChange}
                 >

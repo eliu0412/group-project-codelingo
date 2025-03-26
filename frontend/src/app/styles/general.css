@@ -88,7 +88,7 @@ p {
 .pagination button:hover {
   background-color: #3ec4a9;
 }
-
+/*
 input[type="text"],
 input[type="textarea"] {
   width: 100%;
@@ -99,7 +99,7 @@ input[type="textarea"] {
   background-color: #1f273b;
   color: white;
 }
-
+*/
 /* Style for the tags chips */
 .selected-tags {
   margin-top: 10px;

@@ -46,7 +46,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) 
       <div className="pt-10 flex flex-row justify-between gap-20 items-center">
       <label className="text-white text-lg min-w-max">Tags:</label>
       
-      <div className="relative">
+    
         <input
           type="text"
           placeholder="Search tags..."
@@ -57,7 +57,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) 
              text-lg text-gray-400 border-0 border-b-2 
              border-gray-200 appearance-none dark:text-gray-400
              dark:border-gray-700 focus:outline-none focus:ring-0
-             focus:border-gray-200 peer flex justify-center"
+             focus:border-gray-200 peer"
         />
 
         {dropdownOpen && (
@@ -82,7 +82,6 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) 
             )}
           </div>
         )}
-      </div>
       </div>
 
       <div className="selected-tags flex flex-wrap gap-2 mt-3">
