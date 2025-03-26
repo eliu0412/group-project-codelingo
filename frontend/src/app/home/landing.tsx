@@ -39,7 +39,7 @@ function Landing() {
           Competitive Collaborative Coding
         </p>
         <p className="text-white text-center font-thin my-10 w-3/4 fade-in">
-          Join a community of over 1,000 competitive coders who challenge
+          Join a Kommunity of over 1,000 competitive coders who challenge
           themselves with real-time coding trivia and collaborative
           problem-solving. Whether you’re looking to test your knowledge,
           improve your skills, or climb the leaderboards, CodeLingo provides an
