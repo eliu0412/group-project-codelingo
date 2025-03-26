@@ -1,113 +1,209 @@
-import chai from 'chai';
-import chaiHttp from 'chai-http';
-import server from '../server.js';
-import admin from 'firebase-admin';
-import sinon from 'sinon';
+import { jest } from '@jest/globals';
 
-const { expect } = chai;
-chai.use(chaiHttp);
+// Mock the auth service
+jest.unstable_mockModule('../src/services/authService.js', () => ({
+  sendVerificationEmail: jest.fn().mockResolvedValue({ success: true, message: 'Verification email sent!' })
+}));
+
+// Mock the Firebase initialization module used by authController.js
+jest.unstable_mockModule('../../shared/initFirebase.js', () => {
+  const mockGet = jest.fn().mockResolvedValue({ exists: () => false });
+  const mockEqualTo = jest.fn((value) => ({ get: mockGet }));
+  const mockOrderByChild = jest.fn((child) => ({ equalTo: mockEqualTo }));
+  const mockOnce = jest.fn().mockResolvedValue({ exists: () => false });
+  const mockSet = jest.fn();
+
+  const mockAuth = {
+    getUserByEmail: jest.fn(),
+    createUser: jest.fn(),
+    updateUser: jest.fn(),
+    verifyPasswordResetCode: jest.fn(),
+    confirmPasswordReset: jest.fn()
+  };
+  const mockDatabase = {
+    ref: jest.fn((path = '') => ({
+      orderByChild: mockOrderByChild,
+      once: mockOnce,
+      set: mockSet,
+      get: mockGet
+    }))
+  };
+  return {
+    admin: {
+      auth: () => mockAuth,
+      database: () => mockDatabase
+    },
+    db: mockDatabase
+  };
+});
+
+import request from 'supertest';
+import crypto from 'crypto-js';
+
+// Dynamically import app and mocked service
+let app, sendVerificationEmail, server;
+beforeAll(async () => {
+  const serverModule = await import('../server.js');
+  const authServiceModule = await import('../src/services/authService.js');
+  app = serverModule.default;
+  sendVerificationEmail = authServiceModule.sendVerificationEmail;
+  server = app.listen(0); // Start server on a random port
+});
+
+afterAll((done) => {
+  if (server) {
+    server.close(done);
+  } else {
+    done();
+  }
+});
+
+const testUser = {
+  email: 'test23@example.com',
+  username: 'test234user',
+  password: 'Test@1234'
+};
 
 describe('Auth Controller Integration Tests', () => {
-    let testUser = {
-        email: "test@example.com",
-        username: "testuser",
-        password: "Test@1234"
-    };
+  let mockAuth, mockDb, mockOrderByChild, mockEqualTo, mockGet, mockOnce, mockSet;
 
-    // Mock Firebase Admin SDK
-    beforeEach(() => {
-        sinon.stub(admin, "auth").returns({
-            getUserByEmail: sinon.stub(),
-            createUser: sinon.stub(),
-            updateUser: sinon.stub(),
-            verifyPasswordResetCode: sinon.stub(),
-            confirmPasswordReset: sinon.stub()
-        });
+  beforeEach(async () => {
+    const initFirebase = await import('../../shared/initFirebase.js');
+    mockAuth = initFirebase.admin.auth();
+    mockDb = initFirebase.db;
 
-        sinon.stub(admin, "database").returns({
-            ref: sinon.stub().returns({
-                orderByChild: sinon.stub().returns({
-                    equalTo: sinon.stub().returns({
-                        get: sinon.stub().resolves({ exists: () => false })
-                    })
-                }),
-                set: sinon.stub().resolves()
-            })
-        });
-    });
+    // Extract persistent mocks by calling the chain
+    mockOrderByChild = mockDb.ref('users').orderByChild;
+    mockEqualTo = mockOrderByChild('username').equalTo;
+    mockGet = mockDb.ref('users').get;
+    mockOnce = mockDb.ref('users').once;
+    mockSet = mockDb.ref('users').set;
 
-    afterEach(() => {
-        sinon.restore();
-    });
+    // Reset mocks
+    mockAuth.getUserByEmail.mockReset();
+    mockAuth.createUser.mockReset();
+    mockAuth.updateUser.mockReset();
+    mockAuth.verifyPasswordResetCode.mockReset();
+    mockAuth.confirmPasswordReset.mockReset();
+    mockOrderByChild.mockReset();
+    mockEqualTo.mockReset();
+    mockGet.mockReset();
+    mockOnce.mockReset();
+    mockSet.mockReset();
 
-    // **Test Case: Register User**
-    it('should send email verification for registration', (done) => {
-        admin.auth().getUserByEmail.rejects({ code: 'auth/user-not-found' });
+    // Set default mock behavior
+    mockOrderByChild.mockReturnValue({ equalTo: mockEqualTo });
+    mockEqualTo.mockReturnValue({ get: mockGet });
+  });
 
-        chai.request(server)
-            .post('/auth/register')
-            .send(testUser)
-            .end((err, res) => {
-                expect(res).to.have.status(201);
-                expect(res.body).to.have.property('message', 'Email verification sent');
-                done();
-            });
-    });
+  it('should return 400 if request body is missing parameters', async () => {
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'a@b.com' });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Missing parameters in the request body');
+  });
 
-    // **Test Case: Register with Existing Email**
-    it('should return 400 if email is already taken', (done) => {
-        admin.auth().getUserByEmail.resolves({ uid: '12345' });
+  it('should return 401 if email is already taken', async () => {
+    mockAuth.getUserByEmail.mockResolvedValue({ uid: 'existing-id' });
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send(testUser);
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toHaveProperty('error', 'The email is already taken.');
+  });
 
-        chai.request(server)
-            .post('/auth/register')
-            .send(testUser)
-            .end((err, res) => {
-                expect(res).to.have.status(400);
-                expect(res.body).to.have.property('error', 'The email is already taken.');
-                done();
-            });
-    });
+  it('should return 402 if username is already taken', async () => {
+    mockAuth.getUserByEmail.mockRejectedValue({ code: 'auth/user-not-found' });
+    mockGet.mockResolvedValue({ exists: () => true });
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send(testUser);
+    expect(mockDb.ref).toHaveBeenCalledWith('users');
+    expect(mockOrderByChild).toHaveBeenCalledWith('username');
+    expect(mockEqualTo).toHaveBeenCalledWith(testUser.username);
+    expect(res.statusCode).toBe(402);
+    expect(res.body).toHaveProperty('error', 'The username is already taken.');
+  });
 
-    // **Test Case: Login**
-    it('should log in user and return a token', (done) => {
-        chai.request(server)
-            .post('/auth/login')
-            .send({ email: testUser.email, password: testUser.password })
-            .end((err, res) => {
-                expect(res).to.have.status(200);
-                expect(res.body).to.have.property('idToken');
-                done();
-            });
-    });
+  it('should send email verification for valid registration', async () => {
+    mockAuth.getUserByEmail.mockRejectedValue({ code: 'auth/user-not-found' });
+    mockGet.mockResolvedValue({ exists: () => false });
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send(testUser);
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty('message', 'Email verification sent');
+    expect(sendVerificationEmail).toHaveBeenCalledWith(
+      testUser.email,
+      expect.stringContaining('http://localhost:5173/verify-email?data=')
+    );
+  });
 
-    // **Test Case: Reset Password**
-    it('should reset password successfully', (done) => {
-        admin.auth().verifyPasswordResetCode.resolves('valid_oobCode');
-        admin.auth().confirmPasswordReset.resolves();
+  it('should complete registration and return 201', async () => {
+    const encryptedData = crypto.AES.encrypt(
+      JSON.stringify(testUser),
+      'SUPERDUPERSECRETKEY'
+    ).toString();
+    const userRecord = { uid: 'abc123', emailVerified: false };
+    mockAuth.getUserByEmail.mockRejectedValue({ code: 'auth/user-not-found' });
+    mockAuth.createUser.mockResolvedValue(userRecord);
+    mockAuth.updateUser.mockResolvedValue();
+    mockOnce.mockResolvedValue({ exists: () => false });
+    const res = await request(app)
+      .post('/api/auth/complete-registration')
+      .send({ encryptedData: encodeURIComponent(encryptedData) });
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty('message', 'User successfully registered');
+    expect(res.body).toHaveProperty('uid', 'abc123');
+  });
 
-        chai.request(server)
-            .post('/auth/resetPassword')
-            .send({ oobCode: 'valid_oobCode', newPassword: 'NewPassword@123' })
-            .end((err, res) => {
-                expect(res).to.have.status(200);
-                expect(res.body).to.have.property('message', 'Password has been successfully reset. Please log in with your new password.');
-                done();
-            });
-    });
+  it('should return 400 if encrypted data is missing on complete-registration', async () => {
+    const res = await request(app)
+      .post('/api/auth/complete-registration')
+      .send({});
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Invalid request parameters.');
+  });
 
-    // **Test Case: Registration Completion**
-    it('should complete registration successfully', (done) => {
-        const encryptedData = encodeURIComponent(
-            'mockedEncryptedData' // Mocked data for test
-        );
+  it('should log in user and return a token', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ idToken: 'mocked_token' })
+      })
+    );
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: testUser.email, password: testUser.password });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('idToken', 'mocked_token');
+    expect(res.body).toHaveProperty('message', 'Login successful');
+  });
 
-        chai.request(server)
-            .post('/auth/completeRegistration')
-            .send({ encryptedData })
-            .end((err, res) => {
-                expect(res).to.have.status(201);
-                expect(res.body).to.have.property('message', 'User successfully registered');
-                done();
-            });
-    });
+  it('should return 400 if login params are missing', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: testUser.email });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Missing parameters in the request body');
+  });
+
+  it('should reset password successfully', async () => {
+    mockAuth.verifyPasswordResetCode.mockResolvedValue(testUser.email);
+    mockAuth.confirmPasswordReset.mockResolvedValue();
+    const res = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ oobCode: 'code123', newPassword: 'newPass@123' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('message', 'Password has been successfully reset. Please log in with your new password.');
+  });
+
+  it('should return 400 if reset-password params are missing', async () => {
+    const res = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ oobCode: 'code123' });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error', 'oobCode and new password are required.');
+  });
 });
