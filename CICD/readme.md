@@ -25,7 +25,7 @@ backend/
 - **AWS EC2** – For frontend hosting
 
 ## 🧪 CI Pipeline
-The CI pipeline runs automatically on every push to the `main` or `fix/user-service-tests` branches.
+The CI pipeline runs automatically on every push to the `main` branches.
 
 ### Steps:
 1. Checkout code
@@ -52,7 +52,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 8085
+EXPOSE PORT_NUMBER
 CMD ["npm", "run"]
 ```
 
@@ -68,10 +68,10 @@ GitHub Actions use the following secrets:
 
 ## How to Run Locally
 ```bash
-cd backend/user-service
+cd backend/WHATEVER-SERVICE
 npm install
 npm test
 # or to build and run
-docker build -t user-service .
-docker run -p 8085:8085 user-service
+docker build -t WHATEVER-SERVICE .
+docker run -p PORT_NUMBER:PORT_NUMBER WHATEVER-SERVICE
 ```
