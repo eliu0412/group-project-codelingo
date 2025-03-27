@@ -163,7 +163,8 @@ const ProblemPage = () => {
                         focus:ring-3 focus:outline-none focus:ring-cyan-300
                         dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50
                         dark:shadow-lg dark:shadow-cyan-800/80 font-bold
-                        rounded-2xl text-2xl px-10 py-6 w-full max-w-md text-center mb-6 transition-all duration-300"
+                        rounded-xl text-2xl px-10 py-3 w-full max-w-md
+                        text-center mb-6 transition-all duration-300"
             >
               Generate Question
             </button>
@@ -175,7 +176,7 @@ const ProblemPage = () => {
         {/* Show error */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {showForm && !generatedProblem && (
-          <div className='w-1/2 bg-gray-900 flex justify-center rounded-2xl'>
+          <div className='w-1/2 bg-gray-900 flex justify-center rounded-2xl shadow-2xl'>
             <form onSubmit={handleSubmit} style={{width: "600px"}}>
               <div className='pt-10 flex flex-row justify-between gap-28 items-center'>
                 <label className="text-white text-lg min-w-max">Problem Type:</label>
@@ -240,13 +241,28 @@ const ProblemPage = () => {
                 />
               </div>
               <div>
-                <div className="flex justify-center gap-5 m-10">
-                  <button onClick={handleBackToListClick} className="flex-1 p-3 m-10 bg-t">
-                    Go Back
-                  </button>
-                  <button type="submit" className="flex-1 p-3 m-10" disabled={loading}>Generate</button>
-                </div>
+              <div className="flex justify-center items-center gap-5 my-10">
+                <button
+                  onClick={handleBackToListClick}
+                  className="bg-transparent border border-[#666] cursor-pointer
+                  rounded-md text-base leading-tight transition duration-300 text-white px-5 py-2
+                  hover:bg-[rgba(41,41,82,0.9)] active:bg-[rgba(32,32,65,0.9)]"
+                >
+                  Go Back
+                </button>
+                
+                <button
+                  type="submit"
+                  className="bg-[#5a3dc3ce] text-white px-5 py-2 rounded-md
+                  cursor-pointer text-base leading-tight transition duration-300
+                  hover:bg-[#512fcace] active:bg-[#381aa2ce]"
+                  disabled={loading}
+                >
+                  Generate
+                </button>
               </div>
+            </div>
+
               
             </form>
           </div>
