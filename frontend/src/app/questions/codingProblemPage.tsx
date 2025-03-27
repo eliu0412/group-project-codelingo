@@ -30,24 +30,35 @@ interface CodingProblemProps {
 const CodingProblemPage: React.FC<CodingProblemProps> = ({ problem }) => {
     return (
         <>
-        <div className="detail mt-5">
-          <label className="text-white">Test Cases:</label>
-          <textarea
-            style={{
-              height: "100%",
-              minHeight: "200px",
-            }}
-            value={problem.testCases
-              .map((tc) => `Input: ${tc.input}\nOutput: ${tc.output}`)
-              .join("\n\n")}
-            readOnly
-            className="problem-result"
-          />
+        <div className="detail mt-5 bg-gray-800 p-3 rounded-md">
+          <p>
+            {problem.testCases.map((tc, index) => (
+              <span key={index}>
+                <strong className="text-white">Example {index + 1}:</strong>
+                <br />
+                Input: {tc.input}
+                <br />
+                Output: {tc.output}
+                <br />
+                <br />
+              </span>
+            ))}
+          </p>
         </div>
-        <div className="detail mt-5">
-            <label className="text-white">Constraints:</label>
-            <textarea value={problem.constraints?.join("\n") || ""} readOnly className="problem-result" />
+
+        <div className="detail mt-5 bg-gray-800 p-3 rounded-md">
+          <p>
+            <strong className="text-white">Constraints:</strong>
+            <br />
+            {problem.constraints?.map((constraint, index) => (
+              <span key={index}>
+                • {constraint}
+                <br />
+              </span>
+            ))}
+          </p>
         </div>
+
         </>
     );
 };
