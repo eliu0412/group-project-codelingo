@@ -175,4 +175,58 @@ describe('Lesson Controller Integration Tests', () => {
   
     consoleSpy.mockRestore(); // Restore console.error after test
   });
+  it('should return 404 if problemTags is empty and no problems match', async () => {
+    mockGet.mockResolvedValue({
+      exists: () => true,
+      forEach: (callback) => {
+        callback({
+          val: () => ({
+            problemType: 'math',
+            tags: ['algebra'],
+            problemDifficulty: 'easy',
+          }),
+        });
+      },
+    });
+  
+    const res = await request(app)
+      .post('/api/lessons/add')
+      .send({
+        topic: 'Algebra Basics',
+        description: 'Intro to algebra',
+        problemDifficulty: 'easy',
+        problemType: 'math',
+        problemTags: [], // ← empty!
+      });
+  
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error', 'No problems found matching the criteria.');
+  });
+  it('should return 404 if none of the tags match even partially', async () => {
+    mockGet.mockResolvedValue({
+      exists: () => true,
+      forEach: (callback) => {
+        callback({
+          val: () => ({
+            problemType: 'math',
+            tags: ['geometry'], // no match with 'algebra'
+            problemDifficulty: 'easy',
+          }),
+        });
+      },
+    });
+  
+    const res = await request(app)
+      .post('/api/lessons/add')
+      .send({
+        topic: 'Geometry Fundamentals',
+        description: 'Shapes and angles',
+        problemDifficulty: 'easy',
+        problemType: 'math',
+        problemTags: ['algebra'], // ← no match
+      });
+  
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error', 'No problems found matching the criteria.');
+  });
 });
