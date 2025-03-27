@@ -241,11 +241,11 @@ const ProblemPage = () => {
                 />
               </div>
               <div>
-              <div className="flex justify-center items-center gap-5 my-10">
+              <div className="flex justify-between items-center my-10">
                 <button
                   onClick={handleBackToListClick}
                   className="bg-transparent border border-[#666] cursor-pointer
-                  rounded-md text-base leading-tight transition duration-300 text-white px-5 py-2
+                  rounded-md text-lg leading-tight transition duration-300 text-white px-9 py-4
                   hover:bg-[rgba(41,41,82,0.9)] active:bg-[rgba(32,32,65,0.9)]"
                 >
                   Go Back
@@ -253,8 +253,8 @@ const ProblemPage = () => {
                 
                 <button
                   type="submit"
-                  className="bg-[#5a3dc3ce] text-white px-5 py-2 rounded-md
-                  cursor-pointer text-base leading-tight transition duration-300
+                  className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
+                  cursor-pointer text-lg leading-tight transition duration-300
                   hover:bg-[#512fcace] active:bg-[#381aa2ce]"
                   disabled={loading}
                 >
