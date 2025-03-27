@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 'fix/user-service-tests'
 
 jobs:
   test:
