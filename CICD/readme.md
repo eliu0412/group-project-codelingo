@@ -2,7 +2,7 @@
 
 This repository contains the CI/CD pipeline setup for the Codeify microservices project using GitHub Actions, Docker, and AWS.
 
-## 📦 Project Structure
+## Project Structure
 
 ```bash
 .github/
@@ -18,7 +18,7 @@ backend/
 └── match-making-service/
 ```
 
-## 🚀 Technologies Used
+## Technologies Used
 - **GitHub Actions** – For continuous integration and deployment
 - **Docker** – For containerization
 - **AWS ECR & Lambda** – For backend image hosting and serverless deployment
@@ -32,7 +32,7 @@ The CI pipeline runs automatically on every push to the `main` or `fix/user-serv
 2. Setup Node.js environment (v20)
 3. Install dependencies and run Jest tests for each microservice and the frontend
 
-## 🔄 CD Pipeline
+##  CD Pipeline
 After passing tests, Docker images are built and pushed to Docker Hub and AWS ECR. Services are then deployed as follows:
 
 ### Backend Services
@@ -44,7 +44,7 @@ After passing tests, Docker images are built and pushed to Docker Hub and AWS EC
 - Built and pushed to Docker Hub
 - Deployed to **EC2** via SSH and Docker
 
-## 🐳 Docker
+## Docker
 Each service includes a `Dockerfile` similar to:
 ```dockerfile
 FROM node:16
@@ -56,7 +56,7 @@ EXPOSE 8085
 CMD ["npm", "run"]
 ```
 
-## 🔐 Secrets
+## Secrets
 GitHub Actions use the following secrets:
 - `DOCKER_USERNAME`
 - `DOCKER_PASSWORD`
@@ -66,7 +66,7 @@ GitHub Actions use the following secrets:
 - `EC2_HOST`
 - `EC2_SSH_KEY`
 
-## 🧰 How to Run Locally
+## How to Run Locally
 ```bash
 cd backend/user-service
 npm install
@@ -75,9 +75,3 @@ npm test
 docker build -t user-service .
 docker run -p 8085:8085 user-service
 ```
-
-## 📝 Authors
-- [Your Name(s)]
-
-## 📄 License
-[Specify License Here]
