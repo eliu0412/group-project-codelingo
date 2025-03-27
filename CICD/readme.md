@@ -24,7 +24,7 @@ backend/
 - **AWS ECR & Lambda** – For backend image hosting and serverless deployment
 - **AWS EC2** – For frontend hosting
 
-## 🧪 CI Pipeline
+## CI Pipeline
 The CI pipeline runs automatically on every push to the `main` branches.
 
 ### Steps:
