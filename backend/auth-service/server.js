@@ -20,4 +20,8 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', authRoutes);
 
+app.listen(port, () => {
+    console.log(`Auth Service running on http://localhost:${port}`);
+});
+
 export default app;

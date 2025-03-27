@@ -53,8 +53,8 @@ function JoinLobby() {
                         focus:ring-3 focus:outline-none focus:ring-cyan-300
                         dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50
                         dark:shadow-lg dark:shadow-cyan-800/80 font-bold
-                        rounded-2xl text-2xl px-10 py-6 w-full max-w-md text-center mb-6 transition-all duration-300"
-            >
+                        rounded-xl text-2xl px-10 py-3 w-full max-w-md
+                        text-center mb-6 transition-all duration-300">
           Join
         </button>
         <p>{warningMsg}</p>

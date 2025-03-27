@@ -19,4 +19,8 @@ app.use(bodyParser.json());
 
 app.use('/api/lessons', lessonRouter);
 
+app.listen(port, () => {
+  console.log(`Lesson Service running on http://localhost:${port}`);
+});
+
 export default app;

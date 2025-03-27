@@ -36,6 +36,7 @@ const McqPage = () => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  
 
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
@@ -102,92 +103,76 @@ const McqPage = () => {
         paddingBottom: "10vh",
       }}
     >
-      <div className="problem-details">
-        <div className="detail mt-5">
-          <label className="text-white">Title:</label>
-          <input
-            type="text"
-            style={{ width: "100%", minWidth: "1000px" }}
-            value={problem.title}
-            readOnly
-            className="problem-input"
-          />
+      <div className='w-3/4 bg-gray-900 rounded-2xl shadow-2xl p-10 mt-10'>
+        <h2 className="text-white text-3xl font-thick mt-10 mb-5">
+          {problem.title}
+        </h2>
+        <div>
+          <p className="mt-4">{problem.problemDescription}</p>
         </div>
-        <div className="detail mt-5">
-          <label className="text-white">Problem Difficulty:</label>
-          <input
-            type="text"
-            value={problem.problemDifficulty}
-            readOnly
-            className="problem-input"
-          />
-        </div>
-        <div className="detail mt-5">
-          <label className="text-white">Problem Description:</label>
-          <textarea
-            value={problem.problemDescription}
-            readOnly
-            className="problem-result"
-          />
-        </div>
-      </div>
+        
+        
 
-      <div
-        style={{
-            marginTop:"25px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            maxWidth: "1000px",
-        }}
-      >
-        {Array.isArray(problem.options) && problem.options.length > 0 ? (
-          problem.options.map((option, index) => (
-            <div key={index} style={{ marginBottom: "10px", width: "100%" }}>
-              <span style={{ marginRight: "10px", fontSize: "16px", color: "white" }}>
-                {`Option ${String.fromCharCode(65 + index)}:`}
-              </span>
-              <button
-                onClick={() => handleOptionSelect(option.option)}
-                style={{
-                  backgroundColor: selectedOption === option.option ? "lightblue" : "white",
-                  color: "black",
-                  padding: "15px",
-                  margin: "5px",
-                  cursor: "pointer",
-                  border: "1px solid white",
-                  fontSize: "16px",
-                  width: "100%",
-                  textAlign: "left",
-                }}
-              >
-                {option.option}
-              </button>
+        <div className="options-display mt-3">
+          {problem.options && problem.options.length > 0 ? (
+            <div className="flex flex-wrap -mx-2">
+              {problem.options.map((option, index) => (
+                <div
+                  key={index}
+                  className="w-full md:w-1/2 px-2 mt-4"
+                  onClick={() => handleOptionSelect(option.option)}
+                >
+                  <div
+                    className={`cursor-pointer flex flex-col h-full p-3 rounded min-h-[130px] transition-colors ${
+                      selectedOption === option.option
+                        ? "bg-gray-700 text-white"
+                        : "bg-gray-800 text-white"
+                    }`}
+                  >
+                    <p className="font-semibold mb-2 text-lg">
+                      Option {String.fromCharCode(65 + index)}:
+                    </p>
+                    <div className="flex-1 text-center text-lg">{option.option}</div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))
-        ) : (
-          <p>No options available</p>
+          ) : (
+            <p className="text-white">No options available.</p>
+          )}
+        </div>
+
+        {isAnswered && (
+          <div className="mt-6">
+            {isCorrect ? (
+              <p style={{ color: "green" }}>Correct Answer!</p>
+            ) : (
+              <p style={{ color: "red" }}>Incorrect Answer!</p>
+            )}
+          </div>
         )}
       </div>
 
-      {isAnswered && (
-        <div>
-          {isCorrect ? (
-            <p style={{ color: "green" }}>Correct Answer!</p>
-          ) : (
-            <p style={{ color: "red" }}>Incorrect Answer!</p>
-          )}
-        </div>
-      )}
-
-      <button onClick={handleSubmit} style={{ padding: "10px", marginTop: "20px" }}>
-        Submit Answer
-      </button>
-      <button onClick={handleBack} style={{ padding: "10px", marginTop: "20px" }}>
-        Go Back
-      </button>
+      <div className="flex justify-between items-center my-10 gap-20">
+        <button
+          onClick={handleBack}
+          className="bg-transparent border border-[#666] cursor-pointer
+          rounded-md text-lg leading-tight transition duration-300 text-white px-9 py-4
+          hover:bg-[rgba(41,41,82,0.9)] active:bg-[rgba(32,32,65,0.9)]"
+        >
+          Go Back
+        </button>
+        
+        <button
+          onClick={handleSubmit}
+          type="submit"
+          className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
+          cursor-pointer text-lg leading-tight transition duration-300
+          hover:bg-[#512fcace] active:bg-[#381aa2ce]"
+        >
+          Submit
+        </button>
+      </div>
     </div>
   );
 };
