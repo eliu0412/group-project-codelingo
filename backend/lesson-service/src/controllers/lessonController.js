@@ -3,8 +3,7 @@ import { ref, push, query, orderByChild, equalTo, get } from 'firebase/database'
 
 // Add a lesson
 export const addLesson = async (req, res) => {
-  const { topic, description, problemDifficulty, problemType, problemTags } =
-    req.body;
+  const { topic, description, problemDifficulty, problemType, problemTags } = req.body;
 
   if (!topic || !description) {
     return res.status(400).json({ error: 'Fields (topic, description) are required.' });
@@ -15,7 +14,7 @@ export const addLesson = async (req, res) => {
 
     const problemsQuery = query(
       problemsRef,
-      orderByChild("problemDifficulty"),
+      orderByChild('problemDifficulty'),
       equalTo(problemDifficulty)
     );
 
@@ -39,7 +38,7 @@ export const addLesson = async (req, res) => {
       return res.status(404).json({ error: 'No problems found matching the criteria.' });
     }
 
-    const newLessonRef = ref(db, "lessons");
+    const newLessonRef = ref(database, 'lessons');
     await push(newLessonRef, {
       topic,
       description,
@@ -61,8 +60,8 @@ export const getLessonsByTopic = (req, res) => {
     return res.status(400).json({ error: 'Topic is required.' });
   }
 
-  const lessonsRef = ref(db, "lessons");
-  const topicQuery = query(lessonsRef, orderByChild("topic"), equalTo(topic));
+  const lessonsRef = ref(database, 'lessons');
+  const topicQuery = query(lessonsRef, orderByChild('topic'), equalTo(topic));
 
   get(topicQuery)
     .then((snapshot) => {
@@ -80,7 +79,7 @@ export const getLessonsByTopic = (req, res) => {
 
 // Get all lessons
 export const getAllLessons = async (req, res) => {
-  const lessonsRef = ref(db, "lessons");
+  const lessonsRef = ref(database, 'lessons');
 
   try {
     const snapshot = await get(lessonsRef);
@@ -95,4 +94,3 @@ export const getAllLessons = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
