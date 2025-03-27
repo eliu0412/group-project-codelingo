@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import background from "../../assets/landing.jpg"; // Import background image
 import "../styles/general.css"; // Import existing general styles
 import "./lobbyPage.css"; // Import your specific lobby styles

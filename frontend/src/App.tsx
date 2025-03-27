@@ -21,7 +21,6 @@ import { AuthProvider } from "./app/context/AuthContext";
 import PrivateRoute from "./app/context/PrivateRoute";
 import McqPage from "./app/questions/mcqPage";
 
-import PostGame from "./app/lobby/postGamePage"
 
 function App() {
   

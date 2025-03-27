@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { generateProblem } from './problemApi';
 import background from "../../assets/landing.jpg";
 import '../styles/general.css';
@@ -56,7 +56,7 @@ const ProblemPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Allowable problem types and difficulties
-  const allowableTypes = ["coding", "mcq", "fill"];
+  //const allowableTypes = ["coding", "mcq", "fill"];
   const difficulties = Array.from({ length: 10 }, (_, i) => i + 1);
 
   // Form input change handler
