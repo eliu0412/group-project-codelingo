@@ -8,7 +8,7 @@ import {
   equalTo,
   get,
   update,
-  set
+  set,
 } from "firebase/database";
 import problemService from "../services/problemService.js";
 import { exec } from "child_process";
