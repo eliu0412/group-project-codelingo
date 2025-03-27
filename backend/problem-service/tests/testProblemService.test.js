@@ -1,13 +1,41 @@
 import { jest } from '@jest/globals';
+
+// ✅ Mock the shared Firebase init module
+jest.unstable_mockModule('../../shared/initFirebase.js', () => {
+  const mockPush = jest.fn().mockResolvedValue();
+  const mockGet = jest.fn().mockResolvedValue({
+    exists: () => false,
+    val: () => null,
+  });
+  const mockUpdate = jest.fn().mockResolvedValue();
+  const mockSet = jest.fn().mockResolvedValue();
+
+  const mockRef = jest.fn(() => ({
+    push: mockPush,
+    get: mockGet,
+    update: mockUpdate,
+    set: mockSet,
+  }));
+
+  return {
+    db: {
+      ref: mockRef,
+      push: mockPush,
+      get: mockGet,
+      update: mockUpdate,
+      set: mockSet,
+    },
+  };
+});
+
 import request from 'supertest';
 import server from '../server.js';
 import admin from 'firebase-admin';
-import { getDatabase, goOffline } from 'firebase/database'; // ✅ for shutting down client DB SDK
+import { getDatabase, goOffline } from 'firebase/database';
 
 jest.setTimeout(20000);
 
 describe('Problem Service', () => {
-
   it('should add a problem successfully (mcq)', async () => {
     const res = await request(server)
       .post('/api/problems/add')
@@ -20,14 +48,14 @@ describe('Problem Service', () => {
         testCases: {},
         constraints: [],
         options: [
-            { "option": "Option A", "isCorrect": false },
-            { "option": "Option B", "isCorrect": false },
-            { "option": "Option C", "isCorrect": true },
-            { "option": "Option D", "isCorrect": false }
-          ],
+          { option: 'Option A', isCorrect: false },
+          { option: 'Option B', isCorrect: false },
+          { option: 'Option C', isCorrect: true },
+          { option: 'Option D', isCorrect: false },
+        ],
         correctAnswer: {},
         createdAt: new Date(),
-        verified: true
+        verified: true,
       });
     expect(res.status).toBe(201);
     expect(res.text).toBe('Problem added successfully.');
@@ -47,7 +75,7 @@ describe('Problem Service', () => {
         options: [],
         correctAnswer: {},
         createdAt: new Date(),
-        verified: true
+        verified: true,
       });
     expect(res.status).toBe(201);
     expect(res.text).toBe('Problem added successfully.');
@@ -58,10 +86,12 @@ describe('Problem Service', () => {
       .post('/api/problems/add')
       .send({
         problemId: '1234',
-        problemType: 'mcq'
+        problemType: 'mcq',
       });
     expect(res.status).toBe(400);
-    expect(res.text).toBe('All fields (title, problemType, problemDifficulty, problemDescription) are required.');
+    expect(res.text).toBe(
+      'All fields (title, problemType, problemDifficulty, problemDescription) are required.'
+    );
   });
 
   it('should fail when problem type is invalid', async () => {
@@ -78,7 +108,7 @@ describe('Problem Service', () => {
         options: [],
         correctAnswer: {},
         createdAt: new Date(),
-        verified: true
+        verified: true,
       });
     expect(res.status).toBe(400);
     expect(res.text).toBe('Problem type must be one of the following: coding, mcq, fill');
@@ -98,7 +128,7 @@ describe('Problem Service', () => {
         options: [],
         correctAnswer: {},
         createdAt: new Date(),
-        verified: true
+        verified: true,
       });
     expect(res.status).toBe(400);
     expect(res.text).toBe('Problem difficulty must be between 1 and 10.');
@@ -118,66 +148,58 @@ describe('Problem Service', () => {
         options: [],
         correctAnswer: {},
         createdAt: new Date(),
-        verified: true
+        verified: true,
       });
     expect(res.status).toBe(400);
     expect(res.text).toBe('Problem difficulty must be between 1 and 10.');
   });
 
   it('should get problems by difficulty', async () => {
-    const res = await request(server)
-      .get('/api/problems/difficulty?difficulty=5');
+    const res = await request(server).get('/api/problems/difficulty?difficulty=5');
     expect(res.status).toBe(200);
     expect(res.body).toBeInstanceOf(Object);
   });
 
   it('should return 404 when no problems are found with specified difficulty', async () => {
-    const res = await request(server)
-      .get('/api/problems/difficulty?difficulty=99');
+    const res = await request(server).get('/api/problems/difficulty?difficulty=99');
     expect(res.status).toBe(404);
     expect(res.text).toBe('No problems found with the specified difficulty.');
   });
 
   it('should get problems by type', async () => {
-    const res = await request(server)
-      .get('/api/problems/type?type=coding');
+    const res = await request(server).get('/api/problems/type?type=coding');
     expect(res.status).toBe(200);
     expect(res.body).toBeInstanceOf(Object);
   });
 
   it('should return 404 when no problems are found for the specified type', async () => {
-    const res = await request(server)
-      .get('/api/problems/type?type=nonExistentType');
+    const res = await request(server).get('/api/problems/type?type=nonExistentType');
     expect(res.status).toBe(404);
     expect(res.text).toBe('No problems found for the specified type.');
   });
 
   it('should get problems by tags', async () => {
-    const res = await request(server)
-      .get('/api/problems/tags?tags=loop');
+    const res = await request(server).get('/api/problems/tags?tags=loop');
     expect(res.status).toBe(200);
     expect(res.body).toBeInstanceOf(Array);
     expect(res.body.length).toBeGreaterThan(0);
   });
 
   it('should return 404 when no problems are found for the specified tags', async () => {
-    const res = await request(server)
-      .get('/api/problems/tags?tags=nonExistentTag');
+    const res = await request(server).get('/api/problems/tags?tags=nonExistentTag');
     expect(res.status).toBe(404);
     expect(res.text).toBe('No problems found for the specified tags.');
   });
 
   it('should get problems by multiple tags', async () => {
-    const res = await request(server)
-      .get('/api/problems/tags?tags=array,loop');
+    const res = await request(server).get('/api/problems/tags?tags=array,loop');
     expect(res.status).toBe(200);
     expect(res.body).toBeInstanceOf(Array);
     expect(res.body.length).toBeGreaterThan(0);
   });
 
   it('should return 404 when no problems are found for the specified multiple tags', async () => {
-    const res = await request(server)
-      .get('/api/problems/tags?tags=nonExistentTag,anotherNonExistentTag');
+    const res = await request(server).get('/api/problems/tags?tags=nonExistentTag,anotherNonExistentTag');
     expect(res.status).toBe(404);
     expect(res.text).toBe('No problems found for the specified tags.');
   });
@@ -187,7 +209,7 @@ describe('Problem Service', () => {
       .post('/api/problems/generate')
       .send({
         problemType: 'coding',
-        tags: ['array', 'loop']
+        tags: ['array', 'loop'],
       });
     expect(res.status).toBe(400);
     expect(res.body).toEqual({ error: 'Missing parameters in the request body' });
@@ -200,16 +222,14 @@ describe('Problem Service', () => {
         problemType: 'mcq',
         problemDifficulty: 5,
         tags: ['array', 'loop'],
-        userOptions: { option1: 'about array' }
+        userOptions: { option1: 'about array' },
       });
     expect(res.status).toBe(200);
     expect(res.body).toBeInstanceOf(Object);
   });
-
 });
 
 afterAll(async () => {
-  // Shut down Firebase Admin SDK if initialized
   try {
     const app = admin.app();
     await app.delete();
@@ -219,7 +239,6 @@ afterAll(async () => {
     }
   }
 
-  // Attempt to shut down firebase/database only if it was initialized
   try {
     const dbClient = getDatabase();
     goOffline(dbClient);
@@ -227,10 +246,8 @@ afterAll(async () => {
     if (!err.message.includes("Firebase App")) {
       console.warn("Warning: goOffline failed:", err.message);
     }
-    // Ignore if client DB was never initialized
   }
 
-  // Await server close
   await new Promise((resolve, reject) => {
     server.close((err) => (err ? reject(err) : resolve()));
   });
