@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { loginUser } from "./loginApi";
-import "./LoginPage.css";
+import "./loginPage.css";
 import background from "../../assets/landing.jpg";
 
 const LoginPage: React.FC = () => {

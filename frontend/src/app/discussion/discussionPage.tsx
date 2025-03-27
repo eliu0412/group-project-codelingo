@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DiscussionList, { Discussion } from './discussionList';
 import Pagination from './pagination';
-import FilterSort, { Filter } from './filterSort';
+//import FilterSort, { Filter } from './filterSort';
 import { useNavigate } from 'react-router-dom';
 import { fetchDiscussions } from './discussionApi';
 import '../styles/general.css';
@@ -12,7 +12,7 @@ const DiscussionsPage: React.FC = () => {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [filter, setFilter] = useState<Filter>({ sort: 'latest', tag: '' });
+  //const [filter, setFilter] = useState<Filter>({ sort: 'latest', tag: '' });
 
   const ITEMS_PER_PAGE = 8;
 
@@ -38,10 +38,10 @@ const DiscussionsPage: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const handleFilterChange = (newFilter: Filter) => {
-    setFilter(newFilter);
-    setCurrentPage(1);
-  };
+  // const handleFilterChange = (newFilter: Filter) => {
+  //   setFilter(newFilter);
+  //   setCurrentPage(1);
+  // };
 
   const handleCreateDiscussionClick = () => {
     navigate('/discussions/new-discussion');

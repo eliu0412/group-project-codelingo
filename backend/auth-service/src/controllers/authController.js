@@ -21,12 +21,12 @@ export default {
             }
 
             if (checkExistEmail) {
-                return res.status(400).json({ error: 'The email is already taken.' });
+                return res.status(401).json({ error: 'The email is already taken.' });
             }
 
             const usersSnapshot = await db.ref('users').orderByChild('username').equalTo(username).get();
             if (usersSnapshot.exists()) {
-                return res.status(400).json({ error: 'The username is already taken.' });
+                return res.status(402).json({ error: 'The username is already taken.' });
             }
             /*
             const userRecord = await admin.auth().createUser({

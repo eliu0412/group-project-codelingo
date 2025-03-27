@@ -19,8 +19,8 @@ app.use(bodyParser.json());
 
 app.use('/api/problems', problemRouter);
 
-app.listen(port, () => {
-  console.log(`Problem Service running on http://localhost:${port}`);
+const server = app.listen(8083, () => {
+  console.log(`Problem Service running on http://localhost:8083`);
 });
 
-export default app;
+export default server;
