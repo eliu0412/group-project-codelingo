@@ -1,6 +1,8 @@
 import { jest } from '@jest/globals';
 import request from 'supertest';
 import server from '../server.js';
+import admin from 'firebase-admin';
+import { getDatabase, goOffline } from 'firebase/database'; // ✅ for shutting down client DB SDK
 
 jest.setTimeout(20000);
 
@@ -204,4 +206,32 @@ describe('Problem Service', () => {
     expect(res.body).toBeInstanceOf(Object);
   });
 
+});
+
+afterAll(async () => {
+  // Shut down Firebase Admin SDK if initialized
+  try {
+    const app = admin.app();
+    await app.delete();
+  } catch (err) {
+    if (!err.message.includes("The default Firebase app does not exist")) {
+      throw err;
+    }
+  }
+
+  // Attempt to shut down firebase/database only if it was initialized
+  try {
+    const dbClient = getDatabase();
+    goOffline(dbClient);
+  } catch (err) {
+    if (!err.message.includes("Firebase App")) {
+      console.warn("Warning: goOffline failed:", err.message);
+    }
+    // Ignore if client DB was never initialized
+  }
+
+  // Await server close
+  await new Promise((resolve, reject) => {
+    server.close((err) => (err ? reject(err) : resolve()));
+  });
 });
