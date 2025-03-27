@@ -174,21 +174,21 @@ const GeneratedProblemPage = () => {
       </div>
     </div>
 
-      <div className="flex justify-center gap-5 m-10">
+      <div className="flex justify-between items-center justify-center gap-8 m-10">
+        <button onClick={() => navigate("/problems")}
+                className="bg-transparent border border-[#666] cursor-pointer
+                rounded-md text-lg leading-tight transition duration-300 text-white px-9 py-4
+                hover:bg-[rgba(41,41,82,0.9)] active:bg-[rgba(32,32,65,0.9)]"
+              >
+            Go Back
+        </button>
         <button onClick={handleDiscussProblemClick}
                 className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
                 cursor-pointer text-lg leading-tight transition duration-300
                 hover:bg-[#512fcace] active:bg-[#381aa2ce]">
           Discuss Problem
         </button>
-        <button
-          onClick={() => navigate("/problems")}
-                className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
-                  cursor-pointer text-lg leading-tight transition duration-300
-                  hover:bg-[#512fcace] active:bg-[#381aa2ce]"
-        >
-          Go Back
-        </button>
+        
         <button onClick={handleSolveProblem}
                 className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
                 cursor-pointer text-lg leading-tight transition duration-300
