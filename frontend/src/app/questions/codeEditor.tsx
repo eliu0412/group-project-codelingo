@@ -5,7 +5,7 @@ import { java } from "@codemirror/lang-java";
 import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { runCode } from "./problemApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface TestCaseResult {
   correct: boolean;
@@ -16,13 +16,25 @@ interface Result {
 }
 
 const CodeEditor = () => {
+  const navigate = useNavigate();
   const location = useLocation();
 
   const [language, setLanguage] = useState("python");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(true);
   const [problem] = useState(location.state?.problem || {});
-  const [result, setResult] = useState<Result>({results: [] });
+  const [lobbyCode] = useState(location.state?.lobbyCode || null);
+  const [result, setResult] = useState<Result>({ results: [] });
+
+  let seconds = 0; // Local variable instead of state
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      seconds++;
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   const getParameterString = () => {
     return Object.keys(problem.testCases[0].input).join(", ");
@@ -82,6 +94,13 @@ const CodeEditor = () => {
 
   const stringify = (value) => {
     return JSON.stringify(value, null, 2);
+  };
+
+  const handleFinish = () => {
+    if (lobbyCode) {
+      navigate("/post-game", { state: { lobbyCode: lobbyCode } });
+    }
+    navigate("/post-game");
   };
 
   return (
@@ -164,6 +183,14 @@ const CodeEditor = () => {
       <div className="mt-4 p-2 bg-gray-800 rounded">
         <h3 className="text-lg font-semibold">Tests passed:</h3>
         <pre className="whitespace-pre-wrap">{output}</pre>
+      </div>
+      <div className="flex flex-col mt-5 justify-items-center items-center">
+        <button
+          onClick={handleFinish}
+          className="bg-blue-500 p-2 w-1/5 rounded-3xl hover:bg-blue-700 transition"
+        >
+          Submit
+        </button>
       </div>
     </div>
   );

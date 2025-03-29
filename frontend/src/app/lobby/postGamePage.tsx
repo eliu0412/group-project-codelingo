@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Import hooks from React Router
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // Import hooks from React Router
 import background from "../../assets/landing.jpg"; // Import background image for styling
-import '../styles/general.css'; // Import general styles
-import './postGamePage.css'; // Import specific review page styles
+import "../styles/general.css"; // Import general styles
+import "./postGamePage.css"; // Import specific review page styles
+import { useNavigate } from "react-router-dom";
+import { useSocket } from "../../socketContext";
+
 
 interface GameData {
   username: string;
@@ -11,18 +14,24 @@ interface GameData {
 }
 
 const PostGameReview = () => {
+  const socket = useSocket();
   const { username } = useParams<{ username: string }>(); // Extract username from URL
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [players, setPlayers] = useState<string[]>([]);
   //const history = useHistory();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGameData = async () => {
       try {
-        const response = await fetch(`http://localhost:8082/api/user/gamescore?username=${username}`);
+        const response = await fetch(
+          `http://localhost:8082/api/user/gamescore?username=${username}`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch game data');
+          throw new Error("Failed to fetch game data");
         }
         const data = await response.json();
 
@@ -38,20 +47,18 @@ const PostGameReview = () => {
   }, [username]); // Re-run fetch when the username parameter changes
 
   const handleNewGame = () => {
-    // Navigate to new game setup (assuming a route for setting up a new game)
-    
+    navigate("/join-lobby");
   };
-
 
   return (
     <div
       className="review page-background"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url(${background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        width: '100%',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        width: "100%",
       }}
     >
       <div className="page-content">
@@ -60,19 +67,39 @@ const PostGameReview = () => {
         {loading && <p>Loading game data...</p>}
         {error && <p className="error">{error}</p>}
 
+        <p>Waiting...</p>
+        <p>Waiting...</p>
+        <p>Waiting...</p>
+        <p>Waiting...</p>
+
         {gameData && (
-          <div className={`game-summary ${gameData.lastMatchResult.toLowerCase()}`}>
-            <p><strong>Username:</strong> {gameData.username}</p>
-            <p><strong>Score:</strong> {gameData.score}</p>
+          <div
+            className={`game-summary ${gameData.lastMatchResult.toLowerCase()}`}
+          >
+            <p>
+              <strong>Username:</strong> {gameData.username}
+            </p>
+            <p>
+              <strong>Score:</strong> {gameData.score}
+            </p>
             <p>
               <strong>Last Match Result:</strong>
-              {gameData.lastMatchResult === 'win' ? <span className="win">Win 🏆</span> : <span className="loss">Loss 😞</span>}
+              {gameData.lastMatchResult === "win" ? (
+                <span className="win">Win 🏆</span>
+              ) : (
+                <span className="loss">Loss 😞</span>
+              )}
             </p>
           </div>
         )}
 
         <div className="button-group">
-          <button onClick={handleNewGame} className="action-button">New Game</button>
+          <button
+            onClick={handleNewGame}
+            className="bg-blue-500 p-2 rounded-3xl hover:bg-blue-700 transition"
+          >
+            New Game
+          </button>
         </div>
       </div>
     </div>
