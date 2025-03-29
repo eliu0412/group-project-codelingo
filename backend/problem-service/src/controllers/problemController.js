@@ -309,3 +309,31 @@ export const getAllTags = async (req, res) => {
   }
 };
 
+export const generateChallengeProblem = async (req, res) => {
+  try {
+    const { problemType, problemDifficulty, tags, userOptions } = req.body;
+    console.log("req.body:", req.body);
+
+    if (!problemType || !problemDifficulty) {
+      return res
+        .status(400)
+        .json({ error: "Missing parameters in the request body" });
+    }
+
+    const newProblem = await problemService.generateChallengeProblem({
+      problemType,
+      problemDifficulty,
+      tags,
+      userOptions,
+    });
+
+    if (!newProblem) {
+      return res.status(500).json({ error: "Failed to generate problem" });
+    }
+
+    res.status(200).json(newProblem);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};

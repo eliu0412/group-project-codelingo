@@ -85,7 +85,7 @@ const Lobby = () => {
                         dark:shadow-lg dark:shadow-cyan-800/80 font-bold
                         rounded-xl text-2xl px-10 py-3 w-full max-w-md
                         text-center mb-6 transition-all duration-300">
-              Match
+              Enter the Daily Challenge!
             </button>
       </div>
     </div>
