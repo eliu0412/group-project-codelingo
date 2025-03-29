@@ -77,7 +77,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle }) 
                     }}
                     className="p-2 hover:bg-blue-100 cursor-pointer"
                   >
-                    {tag.tag} {tag.count > 5 && "🔥"}
+                    {tag.tag}
                   </div>
                 ))
               )}

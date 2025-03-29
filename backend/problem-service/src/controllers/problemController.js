@@ -221,6 +221,8 @@ export const generateProblem = async (req, res) => {
       return res.status(500).json({ error: "Failed to generate problem" });
     }
 
+    console.log(newProblem);
+
     res.status(200).json(newProblem);
   } catch (error) {
     console.error(error);

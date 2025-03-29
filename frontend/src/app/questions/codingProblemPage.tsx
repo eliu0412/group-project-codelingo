@@ -38,12 +38,12 @@ const CodingProblemPage: React.FC<CodingProblemProps> = ({ problem }) => {
                 <div className="space-y-1">
                   <div>
                     <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
-                      Input: {tc.input}
+                      {"<Input>"} {tc.input}
                     </code>
                   </div>
                   <div>
                     <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
-                      Output: {tc.output}
+                      {"<Output>"} {tc.output}
                     </code>
                   </div>
                 </div>
