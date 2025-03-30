@@ -1,5 +1,3 @@
-name: CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -7,6 +5,21 @@ on:
       - 'fix/user-service-tests'
 
 jobs:
+  cleanup:
+    name: Cleanup Docker Containers and Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into EC2 and Clean Up Docker
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker stop $(docker ps -a -q) || true
+            docker rm $(docker ps -a -q) || true
+            docker rmi -f $(docker image ls -a -q) || true
+  
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -33,63 +46,65 @@ jobs:
           cd ${{ matrix.service }}
           npm test
         continue-on-error: true # Continue even if tests fail
+
   build-and-push:
-      name: Build and Push Docker Images
-      runs-on: ubuntu-latest
-      needs: test
-      strategy:
-        matrix:
-          service: [backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
-      env:
-        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
-    
-        - name: Log in to Docker Hub
-          uses: docker/login-action@v3
-          with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
-    
-        - name: Build Docker Image
-          run: |
-            SERVICE_NAME=$(basename ${{ matrix.service }})
-            echo "Building service: $SERVICE_NAME"
-            docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest ${{ matrix.service }}
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        service: [backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
+    env:
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+  
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+  
+      - name: Build Docker Image
+        run: |
+          SERVICE_NAME=$(basename ${{ matrix.service }})
+          echo "Building service: $SERVICE_NAME"
+          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest ${{ matrix.service }}
+        
+      - name: List Docker Images
+        run: docker images
+        
+      - name: Verify Docker Image Exists
+        run: |
+          SERVICE_NAME=$(basename ${{ matrix.service }})
+          if ! docker image inspect ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest > /dev/null 2>&1; then
+            echo "Docker image ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest does not exist."
+            exit 1
+          fi
+  
+      - name: Push Docker image to Docker Hub
+        run: |
+          SERVICE_NAME=$(basename ${{ matrix.service }})
+          docker push ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
           
-        - name: List Docker Images
-          run: docker images
-          
-        - name: Verify Docker Image Exists
-          run: |
-            SERVICE_NAME=$(basename ${{ matrix.service }})
-            if ! docker image inspect ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest > /dev/null 2>&1; then
-              echo "Docker image ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest does not exist."
-              exit 1
-            fi
-    
-        - name: Push Docker image to Docker Hub
-          run: |
-            SERVICE_NAME=$(basename ${{ matrix.service }})
-            docker push ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
-            
-        - name: Log in to AWS
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws-region: ${{ secrets.AWS_REGION }}
-    
-        - name: Log in to AWS ECR
-          run: |
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125481123.dkr.ecr.us-east-1.amazonaws.com
-    
-        - name: Tag and Push Docker image to ECR
-          run: |
-            SERVICE_NAME=$(basename ${{ matrix.service }})
-            docker tag christiangrogers/$SERVICE_NAME:latest 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
-            docker push 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
+      - name: Log in to AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+  
+      - name: Log in to AWS ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125481123.dkr.ecr.us-east-1.amazonaws.com
+  
+      - name: Tag and Push Docker image to ECR
+        run: |
+          SERVICE_NAME=$(basename ${{ matrix.service }})
+          docker tag christiangrogers/$SERVICE_NAME:latest 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
+          docker push 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
+
   build-and-push-frontend:
     name: Build and Push Frontend Docker Image
     runs-on: ubuntu-latest
@@ -121,28 +136,78 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
   deploy-backend:
-      name: Deploy Backend Services to AWS Lambda
-      runs-on: ubuntu-latest
-      needs: build-and-push
-      strategy:
-        matrix:
-          service: [backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
-      env:
-        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      steps:
-        - name: Log in to AWS
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ secrets.AWS_REGION }}
-    
-        - name: Deploy to Lambda
-          run: |
-            SERVICE_NAME=$(basename ${{ matrix.service }})
-            LAMBDA_FUNCTION_NAME=codeify-${SERVICE_NAME//\//-}
-            aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
+    name: Deploy Backend Services to EC2
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Deploy User Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=user-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8082:8082 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Auth Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=auth-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8081:8081 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Problem Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=problem-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8083:8083 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Lesson Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=lesson-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8085:8085 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Match Making Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=match-making-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+            
+            # Pull the latest image
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8087:8087 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
@@ -155,8 +220,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker rmi -f $(docker image ls -a -q)
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
             docker run -d -p 5173:5173 --name frontend ${{ secrets.DOCKER_USERNAME }}/frontend:latest
