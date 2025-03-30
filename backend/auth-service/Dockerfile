@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 
 
 WORKDIR /app
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8081
 
 
-CMD ["npm", "test"]
+CMD ["npm", "run", "start"]

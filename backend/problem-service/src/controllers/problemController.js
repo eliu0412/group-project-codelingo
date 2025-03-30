@@ -1,4 +1,4 @@
-import { db } from '../../../shared/initFirebase.js';
+import { db } from '../../shared/initFirebase.js';
 // import database from "../../../shared/firebaseConfig.js";
 import {
   ref,
@@ -220,6 +220,8 @@ export const generateProblem = async (req, res) => {
     if (!newProblem) {
       return res.status(500).json({ error: "Failed to generate problem" });
     }
+
+    console.log(newProblem);
 
     res.status(200).json(newProblem);
   } catch (error) {

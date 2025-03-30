@@ -38,8 +38,17 @@ const CodingProblemPage: React.FC<CodingProblemProps> = ({ problem }) => {
                 <div className="space-y-1">
                   <div>
                     <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
-                      Input: {tc.input}
+                      Input:
                     </code>
+                    <br />
+                    {Object.entries(tc.input).map(([key, value], i) => (
+                    <div>
+                      <code key={i} className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
+                        {key}: {JSON.stringify(value)}
+                      </code>
+                      <br />
+                    </div>
+                    ))}
                   </div>
                   <div>
                     <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
