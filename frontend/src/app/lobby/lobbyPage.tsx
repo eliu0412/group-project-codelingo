@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import background from "../../assets/landing.jpg"; // Import background image
 import "../styles/general.css"; // Import existing general styles
 import "./lobbyPage.css"; // Import your specific lobby styles
+import { getDailyChallenge } from "./lobbyPageAPI";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Leader {
   username: string;
@@ -9,6 +11,8 @@ interface Leader {
 }
 
 const Lobby = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,8 +40,19 @@ const Lobby = () => {
     fetchLeaders();
   }, []);
 
-  const handleMatch = () => {
-    console.log("Match button clicked");
+  const handleMatch = async (e: React.FormEvent) => {
+    e.preventDefault();
+        setLoading(true);
+        setError(null);
+    
+    try {
+      const data = await getDailyChallenge();
+      navigate('/solve-challenge', { state: { generatedProblem: data } }); // Navigate to new page with data
+    } catch (err) {
+      setError("Failed to generate question");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
