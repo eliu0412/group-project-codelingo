@@ -83,13 +83,13 @@ jobs:
     
         - name: Log in to AWS ECR
           run: |
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125481123.dkr.ecr.us-east-1.amazonaws.com
     
         - name: Tag and Push Docker image to ECR
           run: |
             SERVICE_NAME=$(basename ${{ matrix.service }})
-            docker tag ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest ${{ secrets.ECR_REGISTRY }}/$SERVICE_NAME:latest
-            docker push ${{ secrets.ECR_REGISTRY }}/$SERVICE_NAME:latest
+            docker tag christiangrogers/$SERVICE_NAME:latest 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
+            docker push 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
   build-and-push-frontend:
     name: Build and Push Frontend Docker Image
     runs-on: ubuntu-latest
@@ -136,7 +136,67 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            SERVICE_NAME=$(basename ${{ matrix.service }})
+            SERVICE_NAME=user-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            docker rmi -f $(docker images -q ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest) || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Auth Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=auth-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            docker rmi -f $(docker images -q ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest) || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Problem Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=problem-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            docker rmi -f $(docker images -q ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest) || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Lesson Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=lesson-service
+            INSTANCE_NAME=codelingo-$SERVICE_NAME
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            docker rmi -f $(docker images -q ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest) || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Deploy Match Making Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE_NAME=match-making-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
             docker stop $INSTANCE_NAME || true
             docker rm $INSTANCE_NAME || true
@@ -155,8 +215,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker stop frontend || true
-            docker rm frontend || true
-            docker rmi -f $(docker image ls -q ${{ secrets.DOCKER_USERNAME }}/frontend:latest) || true
+            docker stop $(docker ps -a -q) || true
+            docker rm $(docker ps -a -q) || true
+            docker rmi -f $(docker image ls -a -q)
             docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
             docker run -d -p 5173:5173 --name frontend ${{ secrets.DOCKER_USERNAME }}/frontend:latest
