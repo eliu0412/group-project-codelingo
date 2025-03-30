@@ -6,7 +6,7 @@ jest.unstable_mockModule('../src/services/authService.js', () => ({
 }));
 
 // Mock the Firebase initialization module used by authController.js
-jest.unstable_mockModule('../../shared/initFirebase.js', () => {
+jest.unstable_mockModule('../shared/initFirebase.js', () => {
   const mockGet = jest.fn().mockResolvedValue({ exists: () => false });
   const mockEqualTo = jest.fn((value) => ({ get: mockGet }));
   const mockOrderByChild = jest.fn((child) => ({ equalTo: mockEqualTo }));
@@ -68,7 +68,7 @@ describe('Auth Controller Integration Tests', () => {
   let mockAuth, mockDb, mockOrderByChild, mockEqualTo, mockGet, mockOnce, mockSet;
 
   beforeEach(async () => {
-    const initFirebase = await import('../../shared/initFirebase.js');
+    const initFirebase = await import('../shared/initFirebase.js');
     mockAuth = initFirebase.admin.auth();
     mockDb = initFirebase.db;
 

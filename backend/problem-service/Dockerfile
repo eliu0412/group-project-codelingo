@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8083
 
 
-CMD ["npm", "run"]
+CMD ["npm", "run", "start"]
