@@ -10,7 +10,6 @@ import {
   update,
 } from "firebase/database";
 
-const problemRef = ref(db, "problems");
 const problemRef = ref(db, 'problems');
 const challengeProblemRef = ref(db, 'challenge');
 
