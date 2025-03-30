@@ -134,7 +134,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST_USER_SERVICE }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY_USER_SERVICE }}
+          key: ${{ secrets.EC2_EC2_SSH_KEY }}
           script: |
             SERVICE_NAME=user-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME-service
@@ -149,7 +149,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST_AUTH_SERVICE }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY_AUTH_SERVICE }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             SERVICE_NAME=auth-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME-service
@@ -164,7 +164,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST_PROBLEM_SERVICE }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY_PROBLEM_SERVICE }}
+          key: ${{ secrets.EEC2_SSH_KEY }}
           script: |
             SERVICE_NAME=problem-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME-service
@@ -179,7 +179,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST_LESSON_SERVICE }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY_LESSON_SERVICE }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             SERVICE_NAME=lesson-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME-service
@@ -194,7 +194,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST_MATCH_MAKING_SERVICE }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY_MATCH_MAKING_SERVICE }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             SERVICE_NAME=match-making-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME-service
