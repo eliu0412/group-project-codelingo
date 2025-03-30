@@ -50,7 +50,7 @@ function createPrompt(baseProblem, params) {
         "problemType": "coding",
         "problemDifficulty": "1/2/3/4/5/6/7/9/10",
         "problemDescription": "Problem Description",
-        "testCases": [{ "input": "...", "output": "..." }],
+        "testCases": [{ "input": { arg name: value, ... }, "output": "..." }],
         "constraints": ["..."],
         "options": [empty],
         "correctAnswer": "empty",

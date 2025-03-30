@@ -17,8 +17,45 @@ function Landing() {
           height: "100vh",
           width: "100%",
         }}
-        className="landing flex flex-col justify-center items-center"
+        className="landing flex flex-col items-center"
       >
+        {user && (
+        <div className="fade-in mt-60 flex flex-col items-center">
+          <h1
+            className="text-white text-6xl font-mono font-bold"
+            style={{ whiteSpace: "pre" }}
+          >
+            {("Welcome " + user.displayName).split("").map((char, index) => (
+              <span
+                key={index}
+                className="letter"
+                style={{
+                  animationDelay: `${index * 0.1}s`,
+                }}
+              >
+                {char}
+              </span>
+            ))}
+          </h1>
+
+          <h1>to</h1>
+          <h1 className="text-white text-6xl m-4 font-mono font-bold">
+          {(text + "!").split("").map((char, index) => (
+            <span
+              key={index}
+              className="letter"
+              style={{
+                animationDelay: `${index * 0.1}s`,
+              }}
+            >
+              {char}
+            </span>
+          ))}
+        </h1>
+        </div>
+        )}
+        {!user && (
+        <div className="flex flex-col justify-center items-center mt-45">
         <h1
           className="text-white text-6xl m-4 font-mono font-bold
 "
@@ -46,22 +83,25 @@ function Landing() {
           engaging and interactive way to level up your coding game. Compete,
           learn, and grow—one question at a time!
         </p>
+        </div>
+        )} 
         {!user && (
-          <div className="fade-in">
-            <Link
-              to="/login"
-              className="bg-white font-light py-2 px-16 m-10 rounded-full mt-10"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="bg-sky-200 font-light py-2 px-15 m-10 rounded-full mt-10"
-            >
-              Register
-            </Link>
-          </div>
+        <div className="fade-in">
+          <Link
+            to="/login"
+            className="bg-white font-light py-2 px-16 m-10 rounded-full mt-10"
+          >
+            Login
+          </Link>
+          <Link
+            to="/register"
+            className="bg-sky-200 font-light py-2 px-15 m-10 rounded-full mt-10"
+          >
+            Register
+          </Link>
+        </div>
         )}
+        
       </div>
     </>
   );

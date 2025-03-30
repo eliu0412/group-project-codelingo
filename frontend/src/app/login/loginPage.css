@@ -46,24 +46,6 @@ a:active {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.login-button {
-    background-color: #5a3dc3ce;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: 0.3s;
-}
-
-.login-button:hover {
-    background-color: #512fcace;
-}
-
-.login-button:active {
-    background-color: #381aa2ce;
-}
 
 .success {
     color: green;
@@ -73,18 +55,4 @@ a:active {
 .error {
     color: red;
     font-weight: bold;
-}
-
-.forgot-password-button {
-    background-color: transparent;
-    border: 1px solid #666;
-    cursor: pointer;
-}
-
-.forgot-password-button:hover {
-    background-color: rgba(41, 41, 82, 0.9);
-}
-
-.forgot-password-button:active {
-    background-color: rgba(32, 32, 65, 0.9);
 }

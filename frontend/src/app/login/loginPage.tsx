@@ -82,8 +82,22 @@ const LoginPage: React.FC = () => {
                         onChange={handleChange}
                         required
                     />
-                    <button className="login-button" type="submit">Submit</button>
-                    <button className="forgot-password-button" onClick={() => window.location.href = "/reset-password"}>Forgot Password?</button>
+                    <button
+                        className="bg-[#5a3dc3ce] text-white
+                                    px-6 py-3 border-none rounded-md
+                                    cursor-pointer text-lg transition
+                                    duration-300 mt-2 hover:bg-[#512fcace]
+                                    active:bg-[#381aa2ce]"
+                        type="submit">
+                        Submit
+                    </button>
+                    <button
+                        className="bg-transparent border border-[#666] cursor-pointer
+                            rounded-md text-lg transition duration-300 text-white px-6 py-3
+                            mt-1 mb-2 hover:bg-[rgba(41,41,82,0.9)] active:bg-[rgba(32,32,65,0.9)]"
+                        onClick={() => window.location.href = "/reset-password"}>
+                            Forgot Password?
+                    </button>
                     <p>Don't have an account? <a href="/register" className="link">Register here</a></p>
                 </form>
             </div>
