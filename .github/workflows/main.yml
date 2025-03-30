@@ -138,9 +138,14 @@ jobs:
           script: |
             SERVICE_NAME=user-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker rmi -f $(docker image ls -a -q)
+            # Stop and remove the existing container if it exists
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            
+            # Remove unused images (if applicable)
+            docker image prune -af || true
+            
+            # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8082:8082 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -153,9 +158,14 @@ jobs:
           script: |
             SERVICE_NAME=auth-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker rmi -f $(docker image ls -a -q)
+            # Stop and remove the existing container if it exists
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            
+            # Remove unused images (if applicable)
+            docker image prune -af || true
+            
+            # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8081:8081 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -168,9 +178,14 @@ jobs:
           script: |
             SERVICE_NAME=problem-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker rmi -f $(docker image ls -a -q)
+            # Stop and remove the existing container if it exists
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            
+            # Remove unused images (if applicable)
+            docker image prune -af || true
+            
+            # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8083:8083 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -183,9 +198,14 @@ jobs:
           script: |
             SERVICE_NAME=lesson-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker rmi -f $(docker image ls -a -q)
+            # Stop and remove the existing container if it exists
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            
+            # Remove unused images (if applicable)
+            docker image prune -af || true
+            
+            # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8085:8085 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -198,9 +218,14 @@ jobs:
           script: |
             SERVICE_NAME=match-making-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker rmi -f $(docker image ls -a -q)
+            # Stop and remove the existing container if it exists
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            
+            # Remove unused images (if applicable)
+            docker image prune -af || true
+            
+            # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8087:8087 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
   deploy-frontend:
