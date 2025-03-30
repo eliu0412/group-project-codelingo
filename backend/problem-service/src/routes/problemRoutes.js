@@ -8,9 +8,9 @@ import {
   getProblemsAll,
   executeCode,
   getAllTags,
+  generateChallengeProblem,
 } from "../controllers/problemController.js";
 
-import { addDailyChallengeProblem, getDailyChallengeByDate } from "../controllers/challengeController.js";
 
 export const problemRouter = express.Router();
 
@@ -38,7 +38,5 @@ problemRouter.post("/execute", executeCode);
 // GET route to get all tags
 problemRouter.get("/all-tags", getAllTags);
 
-problemRouter.post("/daily-challenge", addDailyChallengeProblem);
-problemRouter.get("/daily-challenge/:date", getDailyChallengeByDate);
-
+problemRouter.post("/generate-challenge", generateChallengeProblem);
 export default problemRouter;

@@ -76,6 +76,8 @@ export default {
 
   async createChallengeProblem(problem) {
     try {
+      console.log('Creating challenge problem...');
+      console.log(problem);
       // Get today's date in YYYY-MM-DD format
       const today = new Date().toISOString().split('T')[0];
   
