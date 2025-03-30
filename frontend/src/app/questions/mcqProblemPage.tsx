@@ -32,23 +32,21 @@ const McqProblem: React.FC<CodingProblemProps> = ({ problem }) => {
         <div className="detail mt-5">
             <div className="options-display mt-3">
             {problem.options && problem.options.length > 0 ? (
-                problem.options.map((option, index) => (
-                <div key={index} className="option mt-4">
-                    <label className="text-white">
-                    Option {String.fromCharCode(65 + index)}:
-                    </label>
-                    <textarea
-                    value={option.option}
-                    readOnly
-                    className="problem-result"
-                    style={{
-                        width: "100%",
-                        height: "100px",
-                        marginTop: "5px",
-                    }}
-                    />
+                <div className="flex flex-wrap -mx-2">
+                {problem.options.map((option, index) => (
+                    <div
+                    key={index}
+                    className="w-full md:w-1/2 px-2 mt-4"
+                    >
+                    <div className="flex flex-col h-full bg-gray-800 text-white p-3 rounded min-h-[130px]">
+                        <p className="font-semibold mb-2">
+                        Option {String.fromCharCode(65 + index)}:
+                        </p>
+                        <div className="flex-1">{option.option}</div>
+                    </div>
+                    </div>
+                ))}
                 </div>
-                ))
             ) : (
                 <p className="text-white">No options available.</p>
             )}

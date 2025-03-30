@@ -72,7 +72,7 @@ const Register: React.FC = () => {
                         required
                     />
                     <button type="submit">Submit</button>
-                    <p>Already have an account? <a href="/login">Login here</a></p>
+                    <p>Already have an account? <a  className="link" href="/login">Login here</a></p>
                 </form>
             </div>
         </div>

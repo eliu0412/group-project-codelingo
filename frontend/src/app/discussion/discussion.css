@@ -1,21 +1,6 @@
 /* Discussion Page Styles */
 .discussions-page {
     /* General form and button styles */
-    button,
-    .pagination button {
-      background-color: #5a3dc3ce;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 5px;
-    }
-  
-    button:hover,
-    .pagination button:hover {
-      background-color: #3ec4a9;
-    }
   
     form {
       margin-top: 10px;
@@ -113,4 +98,3 @@
   .view-details:hover {
     background-color: #3ec4a9; /* Green accent for hover */
   }
-  

@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { generateProblem } from './problemApi';
 import background from "../../assets/landing.jpg";
-import '../styles/general.css';
 import './problem.css'
 import TagSelector from "./tagSelector";
 
@@ -146,8 +145,9 @@ const ProblemPage = () => {
         alignItems: "center", // Center the content horizontally
       }}
     >
-      <div className="flex flex-col justify-center items-center h-full w-full py-50">
-        {!showForm && !generatedProblem && (
+      {!showForm && !generatedProblem && (
+        <div className="flex flex-col justify-center items-center h-full w-full">
+        
           <>
             <h1 className="text-white text-6xl m-5 font-mono font-bold">
               Create New Question
@@ -163,70 +163,110 @@ const ProblemPage = () => {
                         focus:ring-3 focus:outline-none focus:ring-cyan-300
                         dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50
                         dark:shadow-lg dark:shadow-cyan-800/80 font-bold
-                        rounded-2xl text-2xl px-10 py-6 w-full max-w-md text-center mb-6 transition-all duration-300"
+                        rounded-xl text-2xl px-10 py-3 w-full max-w-md
+                        text-center mb-6 transition-all duration-300"
             >
               Generate Question
             </button>
           </>
+          </div>
         )}
-
-        {showForm && !generatedProblem && (
-          <form onSubmit={handleSubmit} style={{width: "600px"}}>
-            <label className="text-white font-thin italic">Problem Type</label>
-            <select
-              id="problemType"
-              name="problemType"
-              value={formData.problemType}
-              onChange={handleInputChange}
-            >
-              {typeOptions.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
-
-            <label className="text-white font-thin italic">
-              Problem Difficulty
-            </label>
-            <select
-              id="problemDifficulty"
-              name="problemDifficulty"
-              value={formData.problemDifficulty}
-              onChange={handleInputChange}
-            >
-              {difficulties.map((difficulty) => (
-                <option key={difficulty} value={difficulty}>
-                  {difficulty}
-                </option>
-              ))}
-            </select>
-
-            <TagSelector selectedTags={formData.tags} onTagToggle={toggleTag} />
-
-            <label className="text-white font-thin italic">User Options</label>
-            <textarea
-              id="userOptions"
-              name="userOptions"
-              value={formData.userOptions}
-              onChange={handleOptionChange}
-            />
-
-            <div className="flex justify-center gap-5 m-10">
-              <button onClick={handleBackToListClick} className="flex-1 p-3 m-10">
-                Go Back
-              </button>
-              <button type="submit" className="flex-1 p-3 m-10" disabled={loading}>Generate</button>
-            </div>
-          </form>
-        )}
-      </div>
-
-      {/* Loading... */}
-      {loading && <p>Generating...</p>}
-
+        
+        {loading && <p>Generating...</p>}
         {/* Show error */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
+        {showForm && !generatedProblem && (
+          <div className='w-1/2 bg-gray-900 flex justify-center rounded-2xl shadow-2xl'>
+            <form onSubmit={handleSubmit} style={{width: "600px"}}>
+              <div className='pt-10 flex flex-row justify-between gap-28 items-center'>
+                <label className="text-white text-lg min-w-max">Problem Type:</label>
+                <select
+                  id="problemType"
+                  name="problemType"
+                  //className='form-select'
+                  className="block py-2.5 px-0 w-3/4 bg-gray-900
+                            text-lg text-gray-400 border-0 border-b-2 
+                            border-gray-200 appearance-none dark:text-gray-400
+                            dark:border-gray-700 focus:outline-none focus:ring-0
+                            focus:border-gray-200 peer"
+                  value={formData.problemType}
+                  onChange={handleInputChange}
+                >
+                  <option selected disabled hidden>Choose a Problem Type</option>
+                  {typeOptions.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className='pt-10 flex flex-row justify-between gap-20 items-center'>
+                <label className="text-white text-lg min-w-max">
+                  Problem Difficulty:
+                </label>
+                <select
+                  id="problemDifficulty"
+                  name="problemDifficulty"
+                  className="block py-2.5 px-0 w-full bg-gray-900
+                            text-lg text-gray-400 border-0 border-b-2 
+                            border-gray-200 appearance-none dark:text-gray-400
+                            dark:border-gray-700 focus:outline-none focus:ring-0
+                            focus:border-gray-200 peer flex flex-end"
+                  value={formData.problemDifficulty}
+                  onChange={handleInputChange}
+                >
+                  {difficulties.map((difficulty) => (
+                    <option key={difficulty} value={difficulty}>
+                      {difficulty}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <TagSelector selectedTags={formData.tags} onTagToggle={toggleTag} />
+              </div>
+              
+              <div className='pt-10 flex flex-col justify-between gap-5'>
+                <label className="text-white text-lg min-w-max">User Options:</label>
+                <textarea
+                  className="block p-2.5 w-full text-base text-gray-50 bg-gray-900
+                            rounded-sm border border-gray-500 focus:outline-none focus:ring-0
+                            dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white h-30"
+                  placeholder="Write your options here..."
+                  id="userOptions"
+                  name="userOptions"
+                  value={formData.userOptions}
+                  onChange={handleOptionChange}
+                />
+              </div>
+              <div>
+              <div className="flex justify-between items-center my-10">
+                <button
+                  onClick={handleBackToListClick}
+                  className="bg-transparent border border-[#666] cursor-pointer
+                  rounded-md text-lg leading-tight transition duration-300 text-white px-9 py-4
+                  hover:bg-[rgba(41,41,82,0.9)] active:bg-[rgba(32,32,65,0.9)]"
+                >
+                  Go Back
+                </button>
+                
+                <button
+                  type="submit"
+                  className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
+                  cursor-pointer text-lg leading-tight transition duration-300
+                  hover:bg-[#512fcace] active:bg-[#381aa2ce]"
+                  disabled={loading}
+                >
+                  Generate
+                </button>
+              </div>
+            </div>
+
+              
+            </form>
+          </div>
+        )}
     </div>
   );
 };

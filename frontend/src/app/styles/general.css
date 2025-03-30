@@ -16,26 +16,6 @@
   height: 100%;
 }
 
-/* Buttons */
-button {
-  background-color: #5a3dc3ce;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 5px;
-}
-
-button:hover {
-  background-color: #3ec4a9;
-}
-
-button:disabled {
-  background-color: #a8a8a8;
-  cursor: not-allowed;
-}
-
 /* Text Styles */
 h1, h2 {
   color: white;
@@ -88,7 +68,7 @@ p {
 .pagination button:hover {
   background-color: #3ec4a9;
 }
-
+/*
 input[type="text"],
 input[type="textarea"] {
   width: 100%;
@@ -99,7 +79,7 @@ input[type="textarea"] {
   background-color: #1f273b;
   color: white;
 }
-
+*/
 /* Style for the tags chips */
 .selected-tags {
   margin-top: 10px;
