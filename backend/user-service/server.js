@@ -13,7 +13,6 @@ app.use(cors({
   origin: '*'
 }));
 
-app.use(cors(corsConfig));
 app.use(express.json());
 app.use(bodyParser.json());
 
