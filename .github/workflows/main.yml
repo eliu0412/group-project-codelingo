@@ -122,27 +122,27 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
   deploy-backend:
-      name: Deploy Backend Services to AWS Lambda
-      runs-on: ubuntu-latest
-      needs: build-and-push
-      strategy:
-        matrix:
-          service: [backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
-      env:
-        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      steps:
-        - name: Log in to AWS
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ secrets.AWS_REGION }}
-    
-        - name: Deploy to Lambda
-          run: |
+    name: Deploy Backend Services to EC2
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    strategy:
+      matrix:
+        service: [backend/user-service, backend/auth-service, backend/problem-service, backend/lesson-service, backend/match-making-service]
+    steps:
+      - name: SSH into EC2 and Deploy Backend Service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets[format('EC2_HOST_{0}', matrix.service | upper | replace('-', '_') | replace('/', '_'))] }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
             SERVICE_NAME=$(basename ${{ matrix.service }})
-            LAMBDA_FUNCTION_NAME=codeify-${SERVICE_NAME//\//-}
-            aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri 211125481123.dkr.ecr.us-east-1.amazonaws.com/$SERVICE_NAME:latest
+            INSTANCE_NAME=codelingo-$SERVICE_NAME-service
+            docker stop $INSTANCE_NAME || true
+            docker rm $INSTANCE_NAME || true
+            docker rmi -f $(docker images -q ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest) || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
+            docker run -d --restart always --name $INSTANCE_NAME -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
