@@ -9,6 +9,7 @@ import {
   executeCode,
   getAllTags,
   generateChallengeProblem,
+  getChallengeProblemsByDate,
 } from "../controllers/problemController.js";
 
 
@@ -39,4 +40,6 @@ problemRouter.post("/execute", executeCode);
 problemRouter.get("/all-tags", getAllTags);
 
 problemRouter.post("/generate-challenge", generateChallengeProblem);
+
+problemRouter.get("/get-challenge", getChallengeProblemsByDate);
 export default problemRouter;

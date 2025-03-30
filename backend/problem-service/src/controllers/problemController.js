@@ -337,3 +337,29 @@ export const generateChallengeProblem = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getChallengeProblemsByDate = async (req, res) => {
+  try {
+    const { date } = req.params;
+    const dateKey = date || new Date().toISOString().split('T')[0]; // Use today if not provided
+    const challengeRef = ref(db, `challenge/${dateKey}`);
+
+    const snapshot = await get(challengeRef);
+    if (!snapshot.exists()) {
+      return []; // No problems for this date
+    }
+
+    const problemsData = snapshot.val();
+
+    // Convert object to array and attach the ID
+    const problems = Object.entries(problemsData).map(([id, data]) => ({
+      id,
+      ...data,
+    }));
+
+    return res.status(200).json(problems);
+  } catch (error) {
+    console.error('Error fetching challenge problems:', error);
+    throw new Error('Failed to fetch challenge problems');
+  }
+};
