@@ -25,7 +25,7 @@ const CodeEditor = () => {
   const [problem] = useState(location.state?.problem || {});
   const [lobbyCode] = useState(location.state?.lobbyCode || null);
   const [result, setResult] = useState<Result>({ results: [] });
-  let correctNumber = 0;
+  const [correctNumber, setCorrectNumber] = useState(0);
 
   let seconds = 0; // Local variable instead of state
 
@@ -60,7 +60,7 @@ const CodeEditor = () => {
         amountCorrect++;
       }
     }
-    correctNumber = amountCorrect;
+    setCorrectNumber(amountCorrect);
     setOutput(`${amountCorrect}/${result.results.length}`);
   };
 

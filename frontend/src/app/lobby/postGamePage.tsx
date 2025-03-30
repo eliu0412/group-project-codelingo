@@ -19,11 +19,33 @@ const PostGameReview = () => {
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [players, setPlayers] = useState<string[]>([]);
+  const [players, setPlayers] = useState([]);
   const lobbyCode = location.state?.lobbyCode || null;
+  const [score, setScore] = useState(location.state?.finalScore || 0);
   //const history = useHistory();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (socket && lobbyCode) {
+      socket.emit("updateScore", lobbyCode);
+    }
+  }, []);
+
+  function sortByScore(obj) {
+    return Object.entries(obj)
+      .map(([id, score]) => ({ id, score }))
+      .sort((a, b) => b.score - a.score);
+  }
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("updateScoreEvent", (scores) => {
+        const sortedPlayers = sortByScore(scores);
+        setPlayers(sortedPlayers);
+      });
+    }
+  }, [socket]);
 
   useEffect(() => {
     const fetchGameData = async () => {
@@ -68,10 +90,29 @@ const PostGameReview = () => {
         {loading && <p>Loading game data...</p>}
         {error && <p className="error">{error}</p>}
 
-        <p>Waiting...</p>
-        <p>Waiting...</p>
-        <p>Waiting...</p>
-        <p>Waiting...</p>
+        {lobbyCode && (
+          <div>
+            {players.map((player, index) => {
+              return (
+                <div key={index} className="player-score text-black">
+                  <p>
+                    <span className="text-black">
+                      {index + 1}. {Object.keys(player)[0]} {player.score}
+                    </span>
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {!lobbyCode && (
+          <div>
+            <p>
+              <span className="text-black">Score: {score}</span>
+            </p>
+          </div>
+        )}
 
         {gameData && (
           <div

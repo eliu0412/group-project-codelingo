@@ -120,6 +120,9 @@ io.on("connection", (socket) => {
     if (lobbies[lobbyCode]) {
       lobbies[lobbyCode].scores[socket.id] = score;
       console.log(lobbies[lobbyCode].scores);
+      lobbies[lobbyCode].users.forEach((userId) => {
+        io.to(userId).emit("updateScoreEvent", lobbies[lobbyCode].scores);
+      });
     }
   });
 

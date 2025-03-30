@@ -25,7 +25,9 @@ function PlayerLobby() {
     });
 
     socket.on("codingProblem", (lobbyProblem) => {
-      navigate("/coding", { state: { problem: lobbyProblem } });
+      navigate("/coding", {
+        state: { problem: lobbyProblem, lobbyCode: lobbyCode },
+      });
     });
 
     return () => {
