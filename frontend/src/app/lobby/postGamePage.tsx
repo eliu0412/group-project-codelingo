@@ -3,9 +3,8 @@ import { useParams } from "react-router-dom"; // Import hooks from React Router
 import background from "../../assets/landing.jpg"; // Import background image for styling
 import "../styles/general.css"; // Import general styles
 import "./postGamePage.css"; // Import specific review page styles
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSocket } from "../../socketContext";
-
 
 interface GameData {
   username: string;
@@ -14,12 +13,14 @@ interface GameData {
 }
 
 const PostGameReview = () => {
+  const location = useLocation();
   const socket = useSocket();
   const { username } = useParams<{ username: string }>(); // Extract username from URL
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [players, setPlayers] = useState<string[]>([]);
+  const lobbyCode = location.state?.lobbyCode || null;
   //const history = useHistory();
 
   const navigate = useNavigate();

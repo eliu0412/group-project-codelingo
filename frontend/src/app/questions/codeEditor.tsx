@@ -25,6 +25,7 @@ const CodeEditor = () => {
   const [problem] = useState(location.state?.problem || {});
   const [lobbyCode] = useState(location.state?.lobbyCode || null);
   const [result, setResult] = useState<Result>({ results: [] });
+  let correctNumber = 0;
 
   let seconds = 0; // Local variable instead of state
 
@@ -59,6 +60,7 @@ const CodeEditor = () => {
         amountCorrect++;
       }
     }
+    correctNumber = amountCorrect;
     setOutput(`${amountCorrect}/${result.results.length}`);
   };
 
@@ -97,10 +99,15 @@ const CodeEditor = () => {
   };
 
   const handleFinish = () => {
+    const adjustedTime = Math.max(1, seconds / 60);
+    const finalScore = correctNumber * (10 / (1 + Math.log(adjustedTime))) * 10;
+
     if (lobbyCode) {
-      navigate("/post-game", { state: { lobbyCode: lobbyCode } });
+      navigate("/post-game", {
+        state: { lobbyCode: lobbyCode, finalScore: finalScore },
+      });
     }
-    navigate("/post-game");
+    navigate("/post-game", { state: { finalScore: finalScore } });
   };
 
   return (

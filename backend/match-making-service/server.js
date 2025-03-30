@@ -27,7 +27,7 @@ io.on("connection", (socket) => {
   // Handle lobby creation
   socket.on("createLobby", (problem, callback) => {
     const lobbyCode = Math.random().toString(36).substr(2, 6); // Generate a unique code
-    lobbies[lobbyCode] = { users: [], lobbyProblem: problem }; // Initialize the lobby with the creator's socket ID
+    lobbies[lobbyCode] = { users: [], lobbyProblem: problem, scores: {} }; // Initialize the lobby with the creator's socket ID
 
     console.log(socket.id, `created lobby: ${lobbyCode}`);
     console.log(lobbies);
@@ -49,6 +49,7 @@ io.on("connection", (socket) => {
         return;
       }
       lobbies[lobbyCode].users.push(socket.id);
+      lobbies[lobbyCode].scores[socket.id] = 0;
 
       console.log(`User joined lobby: ${lobbyCode}`);
       // Emit the updated user list to the lobby
@@ -114,6 +115,14 @@ io.on("connection", (socket) => {
       });
     }
   });
+
+  socket.on("updateScore", (lobbyCode, score) => {
+    if (lobbies[lobbyCode]) {
+      lobbies[lobbyCode].scores[socket.id] = score;
+      console.log(lobbies[lobbyCode].scores);
+    }
+  });
+
 });
 
 // Set the server to listen on port 8087
