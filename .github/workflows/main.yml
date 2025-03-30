@@ -134,7 +134,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST_USER_SERVICE }}
           username: ubuntu
-          key: ${{ secrets.EC2_EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             SERVICE_NAME=user-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME-service
@@ -164,7 +164,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST_PROBLEM_SERVICE }}
           username: ubuntu
-          key: ${{ secrets.EEC2_SSH_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             SERVICE_NAME=problem-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME-service
