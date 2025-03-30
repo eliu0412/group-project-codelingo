@@ -7,6 +7,20 @@ on:
       - 'fix/user-service-tests'
 
 jobs:
+  cleanup:
+      name: Cleanup Docker Containers and Images
+      runs-on: ubuntu-latest
+      steps:
+        - name: SSH into EC2 and Clean Up Docker
+          uses: appleboy/ssh-action@v0.1.10
+          with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ubuntu
+            key: ${{ secrets.EC2_SSH_KEY }}
+            script: |
+              docker stop $(docker ps -a -q) || true
+              docker rm $(docker ps -a -q) || true
+              docker rmi -f $(docker image ls -a -q) || true
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -138,14 +152,7 @@ jobs:
           script: |
             SERVICE_NAME=user-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            # Stop and remove the existing container if it exists
-            docker stop $INSTANCE_NAME || true
-            docker rm $INSTANCE_NAME || true
-            
-            # Remove unused images (if applicable)
-            docker image prune -af || true
-            
-            # Pull the latest image
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8082:8082 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -158,14 +165,7 @@ jobs:
           script: |
             SERVICE_NAME=auth-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            # Stop and remove the existing container if it exists
-            docker stop $INSTANCE_NAME || true
-            docker rm $INSTANCE_NAME || true
-            
-            # Remove unused images (if applicable)
-            docker image prune -af || true
-            
-            # Pull the latest image
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8081:8081 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -178,14 +178,7 @@ jobs:
           script: |
             SERVICE_NAME=problem-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            # Stop and remove the existing container if it exists
-            docker stop $INSTANCE_NAME || true
-            docker rm $INSTANCE_NAME || true
-            
-            # Remove unused images (if applicable)
-            docker image prune -af || true
-            
-            # Pull the latest image
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8083:8083 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -198,14 +191,7 @@ jobs:
           script: |
             SERVICE_NAME=lesson-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            # Stop and remove the existing container if it exists
-            docker stop $INSTANCE_NAME || true
-            docker rm $INSTANCE_NAME || true
-            
-            # Remove unused images (if applicable)
-            docker image prune -af || true
-            
-            # Pull the latest image
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
             docker run -d --restart always --name $INSTANCE_NAME -p 8085:8085 ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
 
@@ -218,12 +204,6 @@ jobs:
           script: |
             SERVICE_NAME=match-making-service
             INSTANCE_NAME=codelingo-$SERVICE_NAME
-            # Stop and remove the existing container if it exists
-            docker stop $INSTANCE_NAME || true
-            docker rm $INSTANCE_NAME || true
-            
-            # Remove unused images (if applicable)
-            docker image prune -af || true
             
             # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE_NAME:latest
@@ -240,8 +220,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker rmi -f $(docker image ls -a -q)
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
             docker run -d -p 5173:5173 --name frontend ${{ secrets.DOCKER_USERNAME }}/frontend:latest
