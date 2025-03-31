@@ -6,6 +6,8 @@ import "./postGamePage.css"; // Import specific review page styles
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSocket } from "../../socketContext";
 
+import { config } from '../../config.ts';
+
 interface GameData {
   username: string;
   score: number;
@@ -54,7 +56,7 @@ const PostGameReview = () => {
     const fetchGameData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8082/api/user/gamescore?username=${username}`
+          `${config.api.user}/gamescore?username=${username}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch game data");
