@@ -15,30 +15,23 @@ interface Result {
   results: TestCaseResult[];
 }
 
-interface CodeEditorProps {
-  onResultUpdate?: (score: number) => void;
-}
-
-
-const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
+const CodeEditor = () => {
   const location = useLocation();
-  const [score, setScore] = useState(0);
+
   const [language, setLanguage] = useState("python");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(true);
   const [problem] = useState(location.state?.problem || {});
-  const [problemIndex] = useState(location.state?.problemIndex || 0);
-  const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
   const [result, setResult] = useState<Result>({results: [] });
 
   const getParameterString = () => {
-    return Object.keys(problem[problemIndex].testCases[0].input).join(", ");
+    return Object.keys(problem.testCases[0].input).join(", ");
   };
   const [code, setCode] = useState(`def run(${getParameterString()}):\n`);
 
   useEffect(() => {
-    setLoading(Object.keys(problem[problemIndex]).length === 0);
-  }, [problem[problemIndex]]);
+    setLoading(Object.keys(problem).length === 0);
+  }, [problem]);
 
   const defaultCode = {
     python: `def run(${getParameterString()}):\n`,
@@ -46,12 +39,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
     java: `public class Main {\n    public static void run() {\n        \n    }\n}`,
   };
 
-  useEffect(() => {
-    if (!result || !result.results || result.results.length === 0)  {
-      setScore(0);
-      return;
-    }
-    
+  const calculateResult = () => {
     let amountCorrect = 0;
     for (let i = 0; i < result.results.length; i++) {
       const testcaseResult = result.results[i];
@@ -59,9 +47,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         amountCorrect++;
       }
     }
-    onResultUpdate?.(amountCorrect/result.results.length);
     setOutput(`${amountCorrect}/${result.results.length}`);
-  }, [result]);
+  };
+
   const getLanguageExtension = () => {
     switch (language) {
       case "python":
@@ -83,11 +71,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
 
   const handleRunCode = async () => {
     try {
-      setOutput("");
-      const result = await runCode(language, code, problem[problemIndex].testCases);
-      console.log(result);
-      
+      const result = await runCode(language, code, problem.testCases);
       await setResult(result);
+      calculateResult();
     } catch (error) {
       console.log(error);
       await setOutput("Error running code.");
@@ -104,9 +90,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         <h2 className="text-lg font-bold mb-10">Loading...</h2>
       ) : (
         <div>
-          <h2 className="text-lg font-bold">{problem[problemIndex]?.title}</h2>
+          <h2 className="text-lg font-bold">{problem?.title}</h2>
           <div className="tag-container">
-            {problem[problemIndex].tags.map((tag, index) => (
+            {problem.tags.map((tag, index) => (
               <span
                 key={index}
                 className="tag bg-sky-200 text-xs text-black rounded-full px-3 py-1 mr-2 mb-2"
@@ -115,10 +101,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
               </span>
             ))}
           </div>
-          <p className="mt-8 mb-4">{problem[problemIndex]?.problemDescription}</p>
+          <p className="mt-8 mb-4">{problem?.problemDescription}</p>
           <p>Sample test cases: </p>
           <div className="test-cases-container">
-            {problem[problemIndex].testCases.slice(0, 2).map((testCase, index) => (
+            {problem.testCases.slice(0, 2).map((testCase, index) => (
               <div
                 key={index}
                 className="bg-gray-500 test-case mb-4 rounded font-mono text-sm p-2"
@@ -163,7 +149,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
       />
       <p className="mt-4">Constraints: </p>
       <div className="test-cases-container">
-        {problem[problemIndex].constraints.map((constraint, index) => (
+        {problem.constraints.map((constraint, index) => (
           <div
             key={index}
             className="bg-gray-500 test-case mb-4 rounded font-mono text-sm p-2"
@@ -179,41 +165,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         <h3 className="text-lg font-semibold">Tests passed:</h3>
         <pre className="whitespace-pre-wrap">{output}</pre>
       </div>
-      {result?.results?.length > 0 && (
-  <div className="mt-4">
-    <h3 className="text-lg font-semibold mb-2">Test Case Results:</h3>
-    <div className="test-cases-container">
-      {result.results.map((testCase, index) => (
-        <div
-          key={index}
-          className={`mb-4 rounded font-mono text-sm p-2 ${
-            testCase.correct ? "bg-green-600" : "bg-red-600"
-          }`}
-        >
-          <div className="mb-1">
-            <strong>Input:</strong>{" "}
-            <span>Hidden</span>
-          </div>
-          <div className="mb-1">
-            <strong>Expected:</strong>{" "}
-            <span>{stringify(testCase.expected)}</span>
-          </div>
-          <div className="mb-1">
-            <strong>Actual:</strong>{" "}
-            <span>{stringify(testCase.actual?.replace?.(/\r/g, ""))}</span>
-          </div>
-          <div className="mt-1">
-            <strong>Result:</strong>{" "}
-            <span className="font-bold">
-              {testCase.correct ? "✅ Passed" : "❌ Failed"}
-            </span>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
-
     </div>
   );
 };
