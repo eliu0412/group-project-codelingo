@@ -4,6 +4,8 @@ import "../styles/general.css"; // Import existing general styles
 import "./lobbyPage.css"; // Import your specific lobby styles
 import { getDailyChallenge } from "./lobbyPageAPI";
 import { useLocation, useNavigate } from "react-router-dom";
+import { config } from "../../config.ts";
+const { user } = config.api;
 
 interface Leader {
   username: string;
@@ -21,7 +23,7 @@ const Lobby = () => {
     const fetchLeaders = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8082/api/user/top-users"
+          `${user}/top-users`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch leaderboard data");
