@@ -21,7 +21,7 @@ import { AuthProvider } from "./app/context/AuthContext";
 import PrivateRoute from "./app/context/PrivateRoute";
 import McqPage from "./app/questions/mcqPage";
 import PostGameReview from "./app/lobby/postGamePage";
-import FillBlankPage from "./app/questions/fillBlankPage";
+import FillBlankPage from "./app/questions/fillBlankPage.tsx";
 
 function App() {
   return (
