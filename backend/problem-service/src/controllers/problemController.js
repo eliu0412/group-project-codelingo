@@ -481,11 +481,48 @@ export const saveUserScore = async (req, res) => {
         });
         await updateLeaderboard(uid, email, username, score);
         console.log("User data saved in database:", uid);
-        res.status(200).json({ message: "Score saved successfully" });
+        return res.status(200).json({ message: "Score saved successfully" });
     } else {
         console.log("User data already exists in database:", uid);
     }
-    res.status(400).json({ message: "User Already Exists" });
+    return res.status(400).json({ message: "User Already Exists" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getLeaderboard = async (req, res) => {
+  try {
+    const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
+    const leaderboardRef = db.ref(`challenge/${dateKey}/top-5-users`);
+
+    const snapshot = await leaderboardRef.once("value");
+    if (!snapshot.exists()) {
+      return res.status(404).json({ error: "Leaderboard not found" });
+    }
+
+    const leaderboardData = snapshot.val();
+    return res.status(200).json(leaderboardData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserScore = async (req, res) => {
+  try {
+    const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
+    const { uid } = req.body;
+    const userRef = db.ref(`challenge/${dateKey}/users/${uid}`);
+
+    const snapshot = await userRef.once("value");
+    if (!snapshot.exists()) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userData = snapshot.val();
+    return res.status(200).json(userData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });

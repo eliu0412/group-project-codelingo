@@ -21,3 +21,21 @@ export const getDailyChallenge = async () => {
     throw new Error("Failed to generate problemassadas");
   }
 };
+
+export const getLeaderboard = async () => {
+  try {
+    const response = await fetch(`${prob}/problems/get-leaderboard`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch leaderboard data");
+    }
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    throw new Error("Failed to fetch leaderboard data");
+  }
+};

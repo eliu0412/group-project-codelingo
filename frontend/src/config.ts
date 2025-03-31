@@ -1,4 +1,4 @@
-/*
+
  export const config = {
    api: {
      auth: "http://localhost:8081/api/auth",
@@ -8,8 +8,8 @@
      user: "http://localhost:8082/api/user"
    },
  };
-*/
 
+/*
 export const config = {
   api: {
     auth: "http://3.149.235.1:8081/api/auth",
@@ -19,3 +19,4 @@ export const config = {
     user: "http://3.149.235.1:8082/api/user",
   },
 };
+*/

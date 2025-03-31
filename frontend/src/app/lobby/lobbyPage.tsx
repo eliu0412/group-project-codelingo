@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import background from "../../assets/landing.jpg"; // Import background image
 import "../styles/general.css"; // Import existing general styles
 import "./lobbyPage.css"; // Import your specific lobby styles
-import { getDailyChallenge } from "./lobbyPageAPI";
+import { getDailyChallenge, getLeaderboard } from "./lobbyPageAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface Leader {
@@ -17,6 +17,26 @@ const Lobby = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [topUsers, setTopUsers] = useState([]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const usersData = await getLeaderboard();
+      console.log("bruh" + usersData);
+      // Convert object to array and sort by score descending
+      const sortedUsers = Object.entries(usersData)
+        .map(([id, user]) => ({ id, ...user }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5); // Take top 5
+
+      setTopUsers(sortedUsers);
+    };
+
+    fetchUsers();
+  }, []);
+
+
   useEffect(() => {
     const fetchLeaders = async () => {
       try {
@@ -30,6 +50,7 @@ const Lobby = () => {
 
         // Directly set the leaders data without sorting
         setLeaders(data);
+        console.log(data);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -87,24 +108,26 @@ const Lobby = () => {
         {loading && <p>Loading leaderboard...</p>}
         {error && <p className="error">{error}</p>}
 
-        {leaders.length > 0 && (
-          <table className="leaderboard">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Username</th>
+        {topUsers.length > 0 && (
+        <table className="leaderboard">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {topUsers.map((user, index) => (
+              <tr key={user.id}>
+                <td>{index + 1}</td>
+                <td>{user.username}</td>
+                <td>{user.score}</td>
               </tr>
-            </thead>
-            <tbody>
-              {leaders.slice(0, 5).map((leader, index) => (
-                <tr key={index}>
-                  <td>{leader.rank}</td>
-                  <td>{leader.username}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+            ))}
+          </tbody>
+        </table>
+      )}
 
 
         <button
