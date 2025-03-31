@@ -11,9 +11,11 @@ import './src/scheduler.js';
 const app = express();
 const port = 8083;
 
-app.use(cors({
-  origin: '*'
-}));
+const corsConfig = {
+  origin: ['http://localhost:3000', 'http://localhost:5173'],
+  credentials: true
+};
+app.use(cors(corsConfig));
 app.use(express.json());
 app.use(bodyParser.json());
 

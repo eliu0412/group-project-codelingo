@@ -1,8 +1,13 @@
+import { useState } from "react";
 import background from "../../assets/landing.jpg";
 import CodeEditor from "./codeEditor";
 import Timer from "./timer";
+import { useLocation } from "react-router-dom";
 
 function CodingPage() {
+  const location = useLocation();
+  const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
+
   return (
     <>
       <div
@@ -21,6 +26,12 @@ function CodingPage() {
       >
         <Timer />
         <CodeEditor />
+        {dailyChallenge && (
+          <div>
+            <button type="submit"> IDKK</button>
+          </div>
+        )}
+        
       </div>
     </>
   );

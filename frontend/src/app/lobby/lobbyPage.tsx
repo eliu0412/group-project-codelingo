@@ -46,8 +46,23 @@ const Lobby = () => {
         setError(null);
     
     try {
+      console.log("Generating daily challenge...");
       const data = await getDailyChallenge();
-      navigate('/solve-challenge', { state: { generatedProblem: data } }); // Navigate to new page with data
+      console.log(data);
+      console.log(data[0]);
+      switch (data[0].problemType) {
+        case "coding":
+          navigate("/coding", { state: { problem: data, problemIndex: 0, dailyChallenge: true } });
+          break;
+        case "mcq":
+          navigate("/mcq", { state: { problem: data, problemIndex: 0, dailyChallenge: true } });
+          break;
+        case "fill":
+          navigate("/fill-in-the-blank", { state: { problem: data, problemIndex: 0, dailyChallenge: true } });
+          break;
+        default:
+          break;
+      }
     } catch (err) {
       setError("Failed to generate question");
     } finally {

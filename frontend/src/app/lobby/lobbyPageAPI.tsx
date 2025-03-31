@@ -3,6 +3,7 @@ const { prob } = config.api;
 
 export const getDailyChallenge = async () => {
   try {
+    console.log("getDailyChallenge");
     const response = await fetch(`${prob}/problems/get-challenge`, {
       method: "GET",
       headers: {

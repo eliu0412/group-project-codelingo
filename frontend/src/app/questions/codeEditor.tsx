@@ -22,16 +22,18 @@ const CodeEditor = () => {
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(true);
   const [problem] = useState(location.state?.problem || {});
+  const [problemIndex] = useState(location.state?.problemIndex || 0);
+  const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
   const [result, setResult] = useState<Result>({results: [] });
 
   const getParameterString = () => {
-    return Object.keys(problem.testCases[0].input).join(", ");
+    return Object.keys(problem[problemIndex].testCases[0].input).join(", ");
   };
   const [code, setCode] = useState(`def run(${getParameterString()}):\n`);
 
   useEffect(() => {
-    setLoading(Object.keys(problem).length === 0);
-  }, [problem]);
+    setLoading(Object.keys(problem[problemIndex]).length === 0);
+  }, [problem[problemIndex]]);
 
   const defaultCode = {
     python: `def run(${getParameterString()}):\n`,
@@ -71,7 +73,7 @@ const CodeEditor = () => {
 
   const handleRunCode = async () => {
     try {
-      const result = await runCode(language, code, problem.testCases);
+      const result = await runCode(language, code, problem[problemIndex].testCases);
       await setResult(result);
       calculateResult();
     } catch (error) {
@@ -90,9 +92,9 @@ const CodeEditor = () => {
         <h2 className="text-lg font-bold mb-10">Loading...</h2>
       ) : (
         <div>
-          <h2 className="text-lg font-bold">{problem?.title}</h2>
+          <h2 className="text-lg font-bold">{problem[problemIndex]?.title}</h2>
           <div className="tag-container">
-            {problem.tags.map((tag, index) => (
+            {problem[problemIndex].tags.map((tag, index) => (
               <span
                 key={index}
                 className="tag bg-sky-200 text-xs text-black rounded-full px-3 py-1 mr-2 mb-2"
@@ -101,10 +103,10 @@ const CodeEditor = () => {
               </span>
             ))}
           </div>
-          <p className="mt-8 mb-4">{problem?.problemDescription}</p>
+          <p className="mt-8 mb-4">{problem[problemIndex]?.problemDescription}</p>
           <p>Sample test cases: </p>
           <div className="test-cases-container">
-            {problem.testCases.slice(0, 2).map((testCase, index) => (
+            {problem[problemIndex].testCases.slice(0, 2).map((testCase, index) => (
               <div
                 key={index}
                 className="bg-gray-500 test-case mb-4 rounded font-mono text-sm p-2"
@@ -149,7 +151,7 @@ const CodeEditor = () => {
       />
       <p className="mt-4">Constraints: </p>
       <div className="test-cases-container">
-        {problem.constraints.map((constraint, index) => (
+        {problem[problemIndex].constraints.map((constraint, index) => (
           <div
             key={index}
             className="bg-gray-500 test-case mb-4 rounded font-mono text-sm p-2"
