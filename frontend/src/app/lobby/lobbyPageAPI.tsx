@@ -9,7 +9,7 @@ export const getDailyChallenge = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      // credentials: "include",
     });
     console.log(response);
     if (!response.ok) {
