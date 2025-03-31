@@ -15,9 +15,14 @@ interface Result {
   results: TestCaseResult[];
 }
 
-const CodeEditor = () => {
-  const location = useLocation();
+interface CodeEditorProps {
+  onResultUpdate?: (score: number) => void;
+}
 
+
+const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
+  const location = useLocation();
+  const [score, setScore] = useState(0);
   const [language, setLanguage] = useState("python");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(true);
@@ -42,7 +47,10 @@ const CodeEditor = () => {
   };
 
   useEffect(() => {
-    if (!result || !result.results || result.results.length === 0) return;
+    if (!result || !result.results || result.results.length === 0)  {
+      setScore(0);
+      return;
+    }
     
     let amountCorrect = 0;
     for (let i = 0; i < result.results.length; i++) {
@@ -51,7 +59,7 @@ const CodeEditor = () => {
         amountCorrect++;
       }
     }
-  
+    onResultUpdate?.(amountCorrect/result.results.length);
     setOutput(`${amountCorrect}/${result.results.length}`);
   }, [result]);
   const getLanguageExtension = () => {

@@ -11,6 +11,11 @@ function CodingPage() {
   const [problem] = useState(location.state?.problem || {});
   const [problemIndex] = useState(location.state?.problemIndex || 0);
 
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [score, setScore] = useState(0);
+
+  
+
   const handleSubmit = async () => {
     if (!dailyChallenge) return;
 
@@ -18,6 +23,9 @@ function CodingPage() {
       navigate("/lobby");
       return;
     }
+    const finalScore = Math.floor(score * 10000 - elapsedTime * 5);
+    console.log("Final Score:", finalScore);
+
     switch (problem[problemIndex + 1].problemType) {
       case "coding":
         navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
@@ -49,8 +57,8 @@ function CodingPage() {
         }}
         className="flex flex-col justify-center items-center"
       >
-        <Timer />
-        <CodeEditor />
+        <Timer onTimeUpdate={setElapsedTime} />
+        <CodeEditor onResultUpdate={setScore} />
         {dailyChallenge && (
           <div>
             <button 

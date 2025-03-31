@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
 
-function Timer() {
+interface TimerProps {
+  onTimeUpdate?: (elapsedTime: number) => void;
+}
+
+const Timer: React.FC<TimerProps> = ({ onTimeUpdate }) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     // Start the timer when the component mounts
     const interval = setInterval(() => {
-      setSeconds((prevSeconds) => prevSeconds + 1);
+      setSeconds((prevSeconds) => {
+        const next = prevSeconds + 1;
+        onTimeUpdate?.(next);
+        return next;
+      });
     }, 1000); // Updates every second
 
     // Cleanup the interval when the component unmounts
