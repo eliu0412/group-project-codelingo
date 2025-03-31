@@ -41,7 +41,9 @@ const CodeEditor = () => {
     java: `public class Main {\n    public static void run() {\n        \n    }\n}`,
   };
 
-  const calculateResult = () => {
+  useEffect(() => {
+    if (!result || !result.results || result.results.length === 0) return;
+    
     let amountCorrect = 0;
     for (let i = 0; i < result.results.length; i++) {
       const testcaseResult = result.results[i];
@@ -49,9 +51,9 @@ const CodeEditor = () => {
         amountCorrect++;
       }
     }
+  
     setOutput(`${amountCorrect}/${result.results.length}`);
-  };
-
+  }, [result]);
   const getLanguageExtension = () => {
     switch (language) {
       case "python":
@@ -73,9 +75,11 @@ const CodeEditor = () => {
 
   const handleRunCode = async () => {
     try {
+      setOutput("");
       const result = await runCode(language, code, problem[problemIndex].testCases);
+      console.log(result);
+      
       await setResult(result);
-      calculateResult();
     } catch (error) {
       console.log(error);
       await setOutput("Error running code.");
@@ -167,6 +171,41 @@ const CodeEditor = () => {
         <h3 className="text-lg font-semibold">Tests passed:</h3>
         <pre className="whitespace-pre-wrap">{output}</pre>
       </div>
+      {result?.results?.length > 0 && (
+  <div className="mt-4">
+    <h3 className="text-lg font-semibold mb-2">Test Case Results:</h3>
+    <div className="test-cases-container">
+      {result.results.map((testCase, index) => (
+        <div
+          key={index}
+          className={`mb-4 rounded font-mono text-sm p-2 ${
+            testCase.correct ? "bg-green-600" : "bg-red-600"
+          }`}
+        >
+          <div className="mb-1">
+            <strong>Input:</strong>{" "}
+            <span>Hidden</span>
+          </div>
+          <div className="mb-1">
+            <strong>Expected:</strong>{" "}
+            <span>{stringify(testCase.expected)}</span>
+          </div>
+          <div className="mb-1">
+            <strong>Actual:</strong>{" "}
+            <span>{stringify(testCase.actual?.replace?.(/\r/g, ""))}</span>
+          </div>
+          <div className="mt-1">
+            <strong>Result:</strong>{" "}
+            <span className="font-bold">
+              {testCase.correct ? "✅ Passed" : "❌ Failed"}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

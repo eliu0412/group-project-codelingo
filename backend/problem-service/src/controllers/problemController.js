@@ -12,10 +12,19 @@ import {
 } from "firebase/database";
 import problemService from "../services/problemService.js";
 import { exec } from "child_process";
+import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import { promisify } from 'util';
 
 // Allowable problem types
 const allowableTypes = ["coding", "mcq", "fill"];
 
+const execAsync = promisify(exec);
+
+// Define __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export const addProblem = (req, res) => {
   const {
     title,
@@ -247,48 +256,75 @@ export const getProblemsAll = async (req, res) => {
   }
 };
 
-export const executeCode = (req, res) => {
+export const executeCode = async (req, res) => {
   const { language, code, testCases } = req.body;
 
   if (language !== "python") {
     return res.status(400).json({ error: "Unsupported language" });
   }
 
-  // Generate test case print statements
-  let modifiedCode = code + "\n"; // Start with user's function
+  let modifiedCode = code + "\n";
+  const executedTestCases = [];
 
-  testCases.forEach((testCase) => {
-    // Extract the values in order, join them as arguments
+  testCases.forEach((testCase, index) => {
+    if (testCase.input == null) {
+      console.warn(`Skipping test case ${index}: missing input`);
+      return;
+    }
+
     const args = Object.values(testCase.input)
-      .map((value) => JSON.stringify(value)) // Ensure correct Python formatting
+      .map((v) => JSON.stringify(v))
       .join(", ");
-
     modifiedCode += `print(run(${args}))\n`;
+    executedTestCases.push(testCase);
   });
 
-  // Execute the modified Python code
-  exec(
-    `python3 -c "${modifiedCode.replace(/"/g, '\\"')}"`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.log(stderr);
-        return res.status(500).json({ error: stderr });
-      }
+  if (executedTestCases.length === 0) {
+    return res.json({ results: [], score: "0/0" });
+  }
 
-      // Process stdout and compare results
-      const outputLines = stdout.trim().split("\n");
-      const results = testCases.map((testCase, index) => ({
-        input: testCase,
-        expected: testCase.output,
-        actual:
-          outputLines[index] !== undefined ? outputLines[index].trim() : null,
-        correct:
-          outputLines[index] &&
-          outputLines[index].trim() === String(testCase.output),
-      }));
-      return res.json({ results });
-    }
-  );
+  try {
+    const filePath = path.join(__dirname, "temp_exec.py");
+
+    // ✅ Await writing the file
+    await fs.writeFile(filePath, modifiedCode);
+    const fileContents = await fs.readFile(filePath, "utf-8");
+console.log("READ-BACK FILE CONTENTS BEFORE EXEC:\n", fileContents);
+
+    // ✅ Await Python execution
+    const { stdout, stderr } = await execAsync(`python "${filePath}"`);
+
+    // ✅ Clean up
+    await fs.unlink(filePath);
+
+    console.log("----- MODIFIED CODE -----\n" + modifiedCode);
+console.log("----- EXECUTED TEST CASES -----\n", executedTestCases);
+console.log("----- RAW STDOUT -----\n", stdout);
+console.log("----- STDOUT SPLIT LINES -----\n", stdout.trim().split("\n"));
+console.log("----- STDERR -----\n", stderr);
+
+    const outputLines = stdout.trim().split("\n");
+
+    const results = executedTestCases.map((testCase, index) => ({
+      input: testCase.input ?? {},
+      expected: testCase.output,
+      actual: outputLines[index] ?? null,
+      correct: outputLines[index]?.trim() === String(testCase.output),
+    }));
+
+    const correctCount = results.filter((r) => r.correct).length;
+    const totalCount = results.length;
+
+    console.log("----- RESULTS -----\n", results);
+    console.log("----- CORRECT COUNT -----\n", correctCount);
+    console.log("----- TOTAL COUNT -----\n", totalCount);
+
+    return res.json({ results, score: `${correctCount}/${totalCount}` });
+
+  } catch (err) {
+    console.error("Execution error:", err.stderr || err);
+    return res.status(500).json({ error: err.stderr || "Execution failed" });
+  }
 };
 
 
