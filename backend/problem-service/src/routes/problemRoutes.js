@@ -8,6 +8,8 @@ import {
   getProblemsAll,
   executeCode,
   getAllTags,
+  generateChallengeProblem,
+  getChallengeProblemsByDate,
 } from "../controllers/problemController.js";
 
 export const problemRouter = express.Router();
@@ -35,5 +37,9 @@ problemRouter.post("/execute", executeCode);
 
 // GET route to get all tags
 problemRouter.get("/all-tags", getAllTags);
+
+problemRouter.post("/generate-challenge", generateChallengeProblem);
+
+problemRouter.get("/get-challenge", getChallengeProblemsByDate);
 
 export default problemRouter;

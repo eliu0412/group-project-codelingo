@@ -5,6 +5,7 @@ import express from 'express';
 import cors from 'cors';
 import problemRouter from './src/routes/problemRoutes.js';
 import bodyParser from 'body-parser';
+import './src/scheduler.js';
 
 const app = express();
 const port = 8083;
