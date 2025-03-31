@@ -80,16 +80,17 @@ function createPrompt(baseProblem, params) {
     `;
   } else if (baseProblem.problemType === "fill") {
     prompt += `
+      Fill in the blank question that is knowledge based / conceptual
       Output JSON format:
       {
         "title": "Fill in the Blank Question Title",
         "problemType": "fill",
-        "problemDifficulty": "1/2/3/4/5/6/7/9/10",
-        "problemDescription": "Fill in the blank with the correct answer",
+        "problemDifficulty": "1/2/3/4/5/6/7/8/9/10",
+        "problemDescription": "Example: The most efficient sorting method is ___ sort",
         "testCases": [empty],
         "constraints": [empty],
         "options": [{empty}],
-        "correctAnswer": "Correct Answer",
+        "correctAnswer": "Correct Answer (single string)",
         "tags": ["..."]
       }
     `;

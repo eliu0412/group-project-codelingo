@@ -20,6 +20,7 @@ import JoinLobby from "./app/lobby/joinLobby";
 import { AuthProvider } from "./app/context/AuthContext";
 import PrivateRoute from "./app/context/PrivateRoute";
 import McqPage from "./app/questions/mcqPage";
+import FillBlankPage from "./app/questions/fillBlankPage";
 
 
 function App() {
@@ -63,7 +64,12 @@ function App() {
                 <Route path="/mcq" element={
                   <PrivateRoute>
                     <McqPage />
-                    </PrivateRoute>} 
+                  </PrivateRoute>} 
+                />
+                <Route path="/fill-in-the-blank" element={
+                  <PrivateRoute>
+                    <FillBlankPage />
+                  </PrivateRoute>} 
                 />
                 <Route
                   path="/problems/generated"
@@ -89,6 +95,11 @@ function App() {
                     <JoinLobby />
                   </PrivateRoute>}
                 />
+                <Route path="/solve-challenge" element={
+                  <PrivateRoute>
+                    
+                  </PrivateRoute>
+                }/>
               </Routes> 
           </BrowserRouter>
         </SocketProvider>
