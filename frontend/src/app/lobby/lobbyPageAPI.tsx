@@ -11,13 +11,13 @@ export const getDailyChallenge = async () => {
       },
       credentials: "include",
     });
-
+    console.log(response);
     if (!response.ok) {
       throw new Error("Failed to generate problem");
     }
 
     return response.json();
   } catch (err) {
-    throw new Error("Failed to generate problem");
+    throw new Error("Failed to generate problemassadas");
   }
 };
