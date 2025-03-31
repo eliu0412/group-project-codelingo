@@ -96,7 +96,7 @@ const Lobby = () => {
               </tr>
             </thead>
             <tbody>
-              {leaders.map((leader, index) => (
+              {leaders.slice(0, 5).map((leader, index) => (
                 <tr key={index}>
                   <td>{leader.rank}</td>
                   <td>{leader.username}</td>
@@ -105,6 +105,7 @@ const Lobby = () => {
             </tbody>
           </table>
         )}
+
 
         <button
               onClick={handleMatch}
