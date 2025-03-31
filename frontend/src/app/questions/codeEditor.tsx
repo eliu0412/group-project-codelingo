@@ -29,7 +29,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
   const [loading, setLoading] = useState(true);
   const [problem] = useState(location.state?.problem || {});
   const [lobbyCode] = useState(location.state?.lobbyCode || null);
-  const [correctNumber, setCorrectNumber] = useState(0);
 
   const [problemIndex] = useState(location.state?.problemIndex || 0);
   const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
@@ -46,12 +45,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
   }, []);
 
   const getParameterString = () => {
+    console.log(problem[problemIndex]);
     return Object.keys(problem[problemIndex].testCases[0].input).join(", ");
   };
   const [code, setCode] = useState(`def run(${getParameterString()}):\n`);
 
   useEffect(() => {
     setLoading(Object.keys(problem[problemIndex]).length === 0);
+    console.log(loading);
   }, [problem[problemIndex]]);
 
   const defaultCode = {
@@ -73,9 +74,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         amountCorrect++;
       }
     }
+    setScore(amountCorrect);
     onResultUpdate?.(amountCorrect / result.results.length);
     setOutput(`${amountCorrect}/${result.results.length}`);
   }, [result]);
+
   const getLanguageExtension = () => {
     switch (language) {
       case "python":
@@ -118,11 +121,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
 
   const handleFinish = () => {
     const adjustedTime = Math.max(1, seconds / 60);
-    const finalScore = correctNumber * (10 / (1 + Math.log(adjustedTime))) * 10;
+    const finalScore = score * (10 / (1 + Math.log(adjustedTime))) * 10;
 
     if (lobbyCode) {
       navigate("/post-game", {
-        state: { finalScore, lobbyCode },
+        state: {
+          finalScore: finalScore,
+          lobbyCode: lobbyCode,
+        },
       });
     } else {
       navigate("/post-game", { state: { finalScore: finalScore } });

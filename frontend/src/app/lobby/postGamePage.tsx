@@ -22,6 +22,7 @@ const PostGameReview = () => {
   const [players, setPlayers] = useState([]);
   const [lobbyCode] = useState(location.state?.lobbyCode || null);
   const [score, setScore] = useState(location.state?.finalScore || 0);
+  const [nameMap, setNameMap] = useState({});
   //const history = useHistory();
 
   const navigate = useNavigate();
@@ -41,7 +42,8 @@ const PostGameReview = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on("updateScoreEvent", (scores) => {
+      socket.on("updateScoreEvent", (scores, nameMap) => {
+        setNameMap(nameMap);
         const sortedPlayers = sortByScore(scores);
         setPlayers(sortedPlayers);
       });
@@ -89,20 +91,34 @@ const PostGameReview = () => {
         <h1>Post Game Review</h1>
 
         {loading && <p>Loading game data...</p>}
-        {error && <p className="error">{error}</p>}
 
         {lobbyCode && (
-          <div>
+          <div className="bg-gray-600 w-4/5 p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-black">Players</h2>
+            <p>
+              <span className="text-sm">Name | Score</span>
+            </p>
             {players.map((player, index) => {
               console.log(player);
               const playerScore =
                 player.score !== null ? player.score : "Waiting on result";
 
               return (
-                <div key={index} className="player-score text-black">
-                  <p>
-                    <span className="text-black">
-                      {index + 1}. {player.id} {playerScore}
+                <div
+                  key={index}
+                  className="flex justify-between items-center py-3 border-b border-gray-200"
+                >
+                  <p className="text-lg text-black">
+                    <span className="font-semibold">{index + 1}. </span>
+                    {nameMap[player.id]} |{" "}
+                    <span
+                      className={`${
+                        playerScore === "Waiting on result"
+                          ? "text-yellow-500"
+                          : "text-green-500"
+                      }`}
+                    >
+                      {playerScore}
                     </span>
                   </p>
                 </div>
@@ -111,10 +127,11 @@ const PostGameReview = () => {
           </div>
         )}
 
+        {/* If lobbyCode is not present */}
         {!lobbyCode && (
-          <div>
-            <p>
-              <span className="text-black">Score: {score}</span>
+          <div className="bg-gray-600 w-4/5 p-6 rounded-lg shadow-md mt-6">
+            <p className="text-xl text-center text-black font-semibold">
+              <span className="text-green-600">Score:</span> {score} points
             </p>
           </div>
         )}
@@ -140,7 +157,7 @@ const PostGameReview = () => {
           </div>
         )}
 
-        <div className="button-group">
+        <div className="button-group mt-10">
           <button
             onClick={handleNewGame}
             className="bg-blue-500 p-2 rounded-3xl hover:bg-blue-700 transition"
