@@ -10,7 +10,8 @@ import {
   update,
 } from "firebase/database";
 
-const problemRef = ref(db, "problems");
+const problemRef = ref(db, 'problems');
+const challengeProblemRef = ref(db, 'challenge');
 
 export default {
   async getRandomProblem({ problemType, problemDifficulty, tags }) {
@@ -82,4 +83,37 @@ export default {
       throw new Error("Failed to create problem");
     }
   },
+  async createChallengeProblem(problem) {
+    try {
+      // Get today's date in YYYY-MM-DD format
+      const today = new Date().toISOString().split('T')[0];
+  
+      // Reference to challenge/yyyy-mm-dd/
+      const challengeProblemRef = ref(db, `challenge/${today}`);
+      const newProblemRef = push(challengeProblemRef);
+  
+      // Save the problem under the date path
+      await set(newProblemRef, problem);
+  
+      // Tag tracking logic remains the same
+      if (problem.tags && Array.isArray(problem.tags)) {
+        for (const tag of problem.tags) {
+          const tagRef = ref(db, `tags/${tag}`);
+  
+          const snapshot = await get(tagRef);
+          if (snapshot.exists()) {
+            const currentCount = snapshot.val().count;
+            await update(tagRef, { count: currentCount + 1 });
+          } else {
+            await set(tagRef, { tag, count: 1 });
+          }
+        }
+      }
+  
+      return { ...problem, id: newProblemRef.key };
+    } catch (error) {
+      console.error('Error creating challenge problem:', error);
+      throw new Error('Failed to create challenge problem');
+    }
+  }
 };
