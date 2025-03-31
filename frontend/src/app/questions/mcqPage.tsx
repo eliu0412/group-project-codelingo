@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import background from "../../assets/landing.jpg";
 import "../styles/general.css";
+import Timer from "./timer";
 
 interface Option {
   option: string;
@@ -40,8 +41,24 @@ const McqPage = () => {
   const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
   const [problemIndex] = useState(location.state?.problemIndex || 0);
 
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  const [points] = useState(location.state?.points || 0);
+  
   const handleNext = () => {
     if (!dailyChallenge) return;
+
+    let finalScore = 0;
+    handleSubmit();
+    if (!isAnswered || !isCorrect ) {
+      finalScore = Math.floor(0) + points;
+      console.log("Final Score:", finalScore);
+    }
+    else {
+      finalScore = Math.floor(2000 - elapsedTime * 5) + points;
+      console.log("Final Score:", finalScore);
+    }
+    
 
     if (!problem[problemIndex + 1]) {
       navigate("/lobby");
@@ -49,13 +66,13 @@ const McqPage = () => {
     }
     switch (problem[problemIndex + 1].problemType) {
       case "coding":
-        navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+        navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore} });
         break;
       case "mcq":
-        navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+        navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore } });
         break;
       case "fill":
-        navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true }});
+        navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore }});
         break;
       default:
         break;
@@ -127,6 +144,7 @@ const McqPage = () => {
         paddingBottom: "10vh",
       }}
     >
+      <Timer onTimeUpdate={setElapsedTime} />
       <div className='w-3/4 bg-gray-900 rounded-2xl shadow-2xl p-10 mt-10'>
         <h2 className="text-white text-3xl font-thick mt-10 mb-5">
           {problem[problemIndex].title}

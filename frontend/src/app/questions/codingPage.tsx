@@ -11,6 +11,7 @@ function CodingPage() {
   const [problem] = useState(location.state?.problem || {});
   const [problemIndex] = useState(location.state?.problemIndex || 0);
 
+  const [points] = useState(location.state?.points || 0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [score, setScore] = useState(0);
 
@@ -19,22 +20,23 @@ function CodingPage() {
   const handleSubmit = async () => {
     if (!dailyChallenge) return;
 
+    const finalScore = Math.max(Math.floor(score * 10000 - elapsedTime * 5 + points), 0);
+    console.log("Final Score:", finalScore);
+
     if (!problem[problemIndex + 1]) {
       navigate("/lobby");
       return;
     }
-    const finalScore = Math.floor(score * 10000 - elapsedTime * 5);
-    console.log("Final Score:", finalScore);
-
+    
     switch (problem[problemIndex + 1].problemType) {
       case "coding":
-        navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+        navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore } });
         break;
       case "mcq":
-        navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+        navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore } });
         break;
       case "fill":
-        navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true }});
+        navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore }});
         break;
       default:
         break;

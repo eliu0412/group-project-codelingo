@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import background from "../../assets/landing.jpg";
 import "../styles/general.css";
+import Timer from "./timer";
 
 interface Option {
   option: string;
@@ -40,23 +41,41 @@ const FillBlankPage = () => {
     const [showLengthHint, setShowLengthHint] = useState(false);
     const [showFirstLetterHint, setShowFirstLetterHint] = useState(false);
     const [showAnswer, setShowAnswer] = useState(false);
+
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [points] = useState(location.state?.points || 0);
   
     const handleNext = () => {
       if (!dailyChallenge) return;
   
+      let finalScore = points;
+      if (!isCorrect || showAnswer) {
+        finalScore = Math.floor(0 + points);
+        console.log("Final Score:", finalScore);
+      } else if (showLengthHint && showFirstLetterHint) {
+        finalScore = Math.max(Math.floor(1000 - elapsedTime * 5), 0) + points;
+        console.log("Final Score:", finalScore);
+      } else if (showLengthHint) {
+        finalScore = Math.max(Math.floor(2000 - elapsedTime * 5), 0) + points;
+        console.log("Final Score:", finalScore);
+      }
+      else {
+        finalScore = Math.max(Math.floor(3000 - elapsedTime * 5), 0) + points;
+        console.log("Final Score:", finalScore);
+      }
       if (!problem[problemIndex + 1]) {
         navigate("/lobby");
         return;
       }
       switch (problem[problemIndex + 1].problemType) {
         case "coding":
-          navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+          navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore}, });
           break;
         case "mcq":
-          navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+          navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore } });
           break;
         case "fill":
-          navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true }});
+          navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore }});
           break;
         default:
           break;
@@ -117,6 +136,7 @@ const FillBlankPage = () => {
         paddingBottom: "10vh",
         }}
         >
+          <Timer onTimeUpdate={setElapsedTime} />
             <div className='w-3/4 bg-gray-900 rounded-2xl shadow-2xl p-10 mt-10'>
             <h2 className="text-white text-3xl font-bold mt-10 mb-5">
                 {problem[problemIndex].title}
