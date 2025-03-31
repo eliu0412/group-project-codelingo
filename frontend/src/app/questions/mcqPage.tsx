@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import background from "../../assets/landing.jpg";
 import "../styles/general.css";
+import Timer from "./timer";
 
 interface Option {
   option: string;
@@ -37,6 +38,46 @@ const McqPage = () => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   
+  const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
+  const [problemIndex] = useState(location.state?.problemIndex || 0);
+
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  const [points] = useState(location.state?.points || 0);
+  
+  const handleNext = () => {
+    if (!dailyChallenge) return;
+
+    let finalScore = 0;
+    handleSubmit();
+    if (!isAnswered || !isCorrect ) {
+      finalScore = Math.floor(0) + points;
+      console.log("Final Score:", finalScore);
+    }
+    else {
+      finalScore = Math.floor(2000 - elapsedTime * 5) + points;
+      console.log("Final Score:", finalScore);
+    }
+    
+
+    if (!problem[problemIndex + 1]) {
+      navigate("/lobby");
+      return;
+    }
+    switch (problem[problemIndex + 1].problemType) {
+      case "coding":
+        navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore} });
+        break;
+      case "mcq":
+        navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore } });
+        break;
+      case "fill":
+        navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore }});
+        break;
+      default:
+        break;
+    }
+  }
 
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
@@ -44,7 +85,7 @@ const McqPage = () => {
 
   const handleSubmit = () => {
     if (selectedOption) {
-      const correctOption = problem?.options?.find(
+      const correctOption = problem[problemIndex]?.options?.find(
         (option) => option.option === selectedOption && option.isCorrect
       );
       if (correctOption) {
@@ -60,7 +101,7 @@ const McqPage = () => {
     navigate(-1); // Go back to previous page
   };
 
-  if (!problem) {
+  if (!problem[problemIndex]) {
     return (
       <div
         className="text-white text-center"
@@ -103,20 +144,21 @@ const McqPage = () => {
         paddingBottom: "10vh",
       }}
     >
+      <Timer onTimeUpdate={setElapsedTime} />
       <div className='w-3/4 bg-gray-900 rounded-2xl shadow-2xl p-10 mt-10'>
         <h2 className="text-white text-3xl font-thick mt-10 mb-5">
-          {problem.title}
+          {problem[problemIndex].title}
         </h2>
         <div>
-          <p className="mt-4">{problem.problemDescription}</p>
+          <p className="mt-4">{problem[problemIndex].problemDescription}</p>
         </div>
         
         
 
         <div className="options-display mt-3">
-          {problem.options && problem.options.length > 0 ? (
+          {problem[problemIndex].options && problem[problemIndex].options.length > 0 ? (
             <div className="flex flex-wrap -mx-2">
-              {problem.options.map((option, index) => (
+              {problem[problemIndex].options.map((option, index) => (
                 <div
                   key={index}
                   className="w-full md:w-1/2 px-2 mt-4"
@@ -172,6 +214,15 @@ const McqPage = () => {
         >
           Submit
         </button>
+        {dailyChallenge &&  (
+          <button
+          onClick={handleNext}
+          type="submit"
+          className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
+          cursor-pointer text-lg leading-tight transition duration-300
+          hover:bg-[#512fcace] active:bg-[#381aa2ce]"> Next 
+        </button>
+        )}
       </div>
     </div>
   );

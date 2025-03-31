@@ -134,7 +134,11 @@ function App() {
                   </PrivateRoute>
                 }
               />
-            </Routes>
+              <Route path="/solve-challenge" element={
+                  <PrivateRoute>
+
+                  </PrivateRoute>
+                }/>
           </BrowserRouter>
         </SocketProvider>
       </AuthProvider>
