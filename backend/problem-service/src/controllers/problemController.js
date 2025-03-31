@@ -9,6 +9,8 @@ import {
   get,
   update,
   set,
+  remove,
+  child
 } from "firebase/database";
 import problemService from "../services/problemService.js";
 import { exec } from "child_process";
@@ -404,3 +406,88 @@ export const getAllTags = async (req, res) => {
   }
 };
 
+
+
+const updateLeaderboard = async (uid, email, username, score) => {
+  try {
+    const dateKey = new Date().toISOString().split("T")[0]; // e.g., "2025-03-31"
+    const leaderboardRef = ref(db, `challenge/${dateKey}/top-5-users`);
+
+    const snapshot = await get(leaderboardRef);
+    const leaderboard = snapshot.exists() ? snapshot.val() : {};
+
+    // Convert leaderboard to array
+    const leaderboardArray = Object.entries(leaderboard).map(([key, data]) => ({
+      uid: key,
+      ...data,
+    }));
+
+    // Check if user already exists in leaderboard
+    const existingIndex = leaderboardArray.findIndex(entry => entry.uid === uid);
+    if (existingIndex !== -1) {
+      if (score <= leaderboardArray[existingIndex].score) {
+        console.log("User already in leaderboard with equal or better score. No update needed.");
+        return;
+      }
+      leaderboardArray.splice(existingIndex, 1); // Remove old entry
+    }
+
+    // Add new user score
+    leaderboardArray.push({ uid, email, username, score });
+
+    // Sort descending and check if we exceed 5 users
+    leaderboardArray.sort((a, b) => b.score - a.score);
+
+    // Save top 5 only
+    const top5 = leaderboardArray.slice(0, 5);
+
+    // Write the new user's score
+    const userRef = child(leaderboardRef, uid);
+    await set(userRef, { email, username, score });
+
+    // If now there are more than 5 users, remove the lowest one
+    if (leaderboardArray.length > 5) {
+      const removedUser = leaderboardArray[5];
+      const removedRef = child(leaderboardRef, removedUser.uid);
+      await remove(removedRef);
+    }
+
+    console.log("Leaderboard updated.");
+
+  } catch (error) {
+    console.error("Error updating leaderboard:", error);
+  }
+};
+
+
+export const saveUserScore = async (req, res) => {
+  try {
+    console.log("Saving user score...");
+    const { uid, email, username, score } = req.body;
+
+    const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
+
+    if (!uid || !email || !username || !score) {
+      return res.status(400).json({ error: "Missing parameters in the request body" });
+    }
+
+    const userRef = db.ref(`challenge/${dateKey}/users/${uid}`);
+    const snapshot = await userRef.once("value");
+    if (!snapshot.exists()) {
+        await userRef.set({
+            email,
+            username,
+            score
+        });
+        await updateLeaderboard(uid, email, username, score);
+        console.log("User data saved in database:", uid);
+        res.status(200).json({ message: "Score saved successfully" });
+    } else {
+        console.log("User data already exists in database:", uid);
+    }
+    res.status(400).json({ message: "User Already Exists" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
