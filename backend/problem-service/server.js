@@ -11,11 +11,11 @@ const app = express();
 const port = 8083;
 
 // has to be this cors or get like error with just app.use(cors(corsConfig));
-const corsConfig = {
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://3.149.235.1:5173/'],
-  credentials: true
-};
-app.use(cors(corsConfig));
+// const corsConfig = {
+//   origin: ['http://localhost:3000', 'http://localhost:5173', 'http://3.149.235.1:5173/'],
+//   credentials: true
+// };
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
