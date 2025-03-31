@@ -95,6 +95,11 @@ function App() {
                     <JoinLobby />
                   </PrivateRoute>}
                 />
+                <Route path="/solve-challenge" element={
+                  <PrivateRoute>
+                    
+                  </PrivateRoute>
+                }/>
               </Routes> 
           </BrowserRouter>
         </SocketProvider>
