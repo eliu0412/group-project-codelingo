@@ -1,27 +1,34 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import bodyParser from 'body-parser';
+
 dotenv.config();
 
-import express from 'express';
-import cors from 'cors';
-import authRoutes from './src/routes/authRoutes.js';
+import express from "express";
+import cors from "cors";
+import authRoutes from "./src/routes/authRoutes.js";
 
 const app = express();
 const port = 8081;
 
-app.use(cors());
-app.use(express.json({ limit: '10mb' })); // Allow up to 1MB request body size
+app.use(cors({
+  origin: '*'
+}));
+
+app.use(express.json());
+app.use(bodyParser.json());
 
 // Log incoming requests for debugging
 app.use((req, res, next) => {
-    console.log(`Auth-Service received: ${req.method} ${req.url}`);
-    console.log(`Request Body:`, req.body);
-    next();
+  console.log(`Auth-Service received: ${req.method} ${req.url}`);
+  console.log(`Request Body:`, req.body);
+  next();
 });
 
-app.use('/api/auth', authRoutes);
+app.use("/api/auth", authRoutes);
 
-app.listen(port, () => {
-    console.log(`Auth Service running on http://localhost:${port}`);
+const server = app.listen(port, () => {
+  console.log(`Auth-Service running on http://localhost:${port}`);
 });
 
-export default app;
+export default server;
+

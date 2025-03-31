@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
 // ✅ Mock the shared Firebase init module
-jest.unstable_mockModule('../../shared/initFirebase.js', () => {
+jest.unstable_mockModule('../shared/initFirebase.js', () => {
   const mockPush = jest.fn().mockResolvedValue();
   const mockGet = jest.fn().mockResolvedValue({
     exists: () => false,

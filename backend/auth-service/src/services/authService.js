@@ -1,4 +1,4 @@
-import firebaseConfig from "../../../shared/firebaseConfig.js";
+import firebaseConfig from "../../shared/firebaseConfig.js";
 import { sendSignInLinkToEmail } from "firebase/auth";
 
 const { auth } = firebaseConfig;
@@ -11,7 +11,7 @@ export const sendVerificationEmail = async (email, verificationUrl) => {
             handleCodeInApp: true,
             //dynamicLinkDomain: 'your-project-id.page.link'
         };
-        
+
         await sendSignInLinkToEmail(auth, email, actionCodeSettings);
         console.log("Verification email sent!");
         return { success: true, message: "Verification email sent!" };
