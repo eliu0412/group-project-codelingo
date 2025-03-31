@@ -34,7 +34,7 @@ const { disc } = config.api;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(newDiscussion),
-      credentials: 'include'
+      // credentials: 'include'
     });
   
     if (!response.ok) {
