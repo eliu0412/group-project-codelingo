@@ -51,9 +51,12 @@ const CodingProblemPage: React.FC<CodingProblemProps> = ({ problem }) => {
                         </div>
                       ))
                     ) : (
-                      <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
-                        {JSON.stringify(tc.input)}
-                      </code>
+                      <div>
+                        <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
+                          {JSON.stringify(tc.input)}
+                        </code>
+                        <br />
+                      </div>
                     )}
                   </div>
                   <div>
