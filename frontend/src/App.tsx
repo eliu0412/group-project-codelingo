@@ -23,7 +23,6 @@ import McqPage from "./app/questions/mcqPage";
 import PostGameReview from "./app/lobby/postGamePage";
 import FillBlankPage from "./app/questions/fillBlankPage";
 
-
 function App() {
   return (
     <>
@@ -74,23 +73,30 @@ function App() {
                 element={
                   <PrivateRoute>
                     <McqPage />
-                  </PrivateRoute>}
-                />
-                <Route path="/fill-in-the-blank" element={
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/fill-in-the-blank"
+                element={
                   <PrivateRoute>
                     <FillBlankPage />
-                  </PrivateRoute>}
-                />
-                <Route
-                  path="/problems/generated"
-                  element={
-                    <PrivateRoute>
-                      <GeneratedProblemPage />
-                    </PrivateRoute>}
-                />
-                <Route path="/verify-email" element={<VerifyEmail />} />
-                <Route path="/reset-password" element={<ForgotPassword />} />
-                <Route path="/lobby" element={
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/problems/generated"
+                element={
+                  <PrivateRoute>
+                    <GeneratedProblemPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/reset-password" element={<ForgotPassword />} />
+              <Route
+                path="/lobby"
+                element={
                   <PrivateRoute>
                     <Lobby />
                   </PrivateRoute>
@@ -109,6 +115,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <JoinLobby />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/post-game/:code"
+                element={
+                  <PrivateRoute>
+                    <PostGameReview />
                   </PrivateRoute>
                 }
               />

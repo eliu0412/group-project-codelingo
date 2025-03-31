@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
         return;
       }
       lobbies[lobbyCode].users.push(socket.id);
-      lobbies[lobbyCode].scores[socket.id] = 0;
+      lobbies[lobbyCode].scores[socket.id] = null;
 
       console.log(`User joined lobby: ${lobbyCode}`);
       // Emit the updated user list to the lobby
@@ -125,7 +125,6 @@ io.on("connection", (socket) => {
       });
     }
   });
-
 });
 
 // Set the server to listen on port 8087

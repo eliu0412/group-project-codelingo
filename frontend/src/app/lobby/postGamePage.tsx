@@ -20,15 +20,16 @@ const PostGameReview = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [players, setPlayers] = useState([]);
-  const lobbyCode = location.state?.lobbyCode || null;
+  const [lobbyCode] = useState(location.state?.lobbyCode || null);
   const [score, setScore] = useState(location.state?.finalScore || 0);
   //const history = useHistory();
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(location.state);
     if (socket && lobbyCode) {
-      socket.emit("updateScore", lobbyCode);
+      socket.emit("updateScore", lobbyCode, score);
     }
   }, []);
 
@@ -93,11 +94,15 @@ const PostGameReview = () => {
         {lobbyCode && (
           <div>
             {players.map((player, index) => {
+              console.log(player);
+              const playerScore =
+                player.score !== null ? player.score : "Waiting on result";
+
               return (
                 <div key={index} className="player-score text-black">
                   <p>
                     <span className="text-black">
-                      {index + 1}. {Object.keys(player)[0]} {player.score}
+                      {index + 1}. {player.id} {playerScore}
                     </span>
                   </p>
                 </div>

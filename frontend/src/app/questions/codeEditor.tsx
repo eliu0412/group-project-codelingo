@@ -104,10 +104,11 @@ const CodeEditor = () => {
 
     if (lobbyCode) {
       navigate("/post-game", {
-        state: { lobbyCode: lobbyCode, finalScore: finalScore },
+        state: { finalScore, lobbyCode },
       });
+    } else {
+      navigate("/post-game", { state: { finalScore: finalScore } });
     }
-    navigate("/post-game", { state: { finalScore: finalScore } });
   };
 
   return (
@@ -196,7 +197,7 @@ const CodeEditor = () => {
           onClick={handleFinish}
           className="bg-blue-500 p-2 w-1/5 rounded-3xl hover:bg-blue-700 transition"
         >
-          Submit
+          Finish
         </button>
       </div>
     </div>
