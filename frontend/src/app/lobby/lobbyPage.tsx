@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import background from "../../assets/landing.jpg"; // Import background image
 import "../styles/general.css"; // Import existing general styles
 import "./lobbyPage.css"; // Import your specific lobby styles
+import { getDailyChallenge } from "./lobbyPageAPI";
+import { useLocation, useNavigate } from "react-router-dom";
+import { config } from '../../config.ts';
 
 interface Leader {
   username: string;
@@ -17,7 +20,7 @@ const Lobby = () => {
     const fetchLeaders = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8082/api/user/top-users"
+          `${config.api.user}/top-users`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch leaderboard data");
@@ -51,7 +54,7 @@ const Lobby = () => {
         width: "100%",
       }}
     >
-      <div className="page-content">
+      <div className="flex flex-col items-center pt-20">
         <h1 className="pb-6">Ranked Leaderboard</h1>
 
         {loading && <p>Loading leaderboard...</p>}
