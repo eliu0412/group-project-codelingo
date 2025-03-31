@@ -32,6 +32,8 @@ const FillBlankPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const problem: Problem = location.state?.problem;
+    const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
+    const [problemIndex] = useState(location.state?.problemIndex || 0);
   
     const [userAnswer, setUserAnswer] = useState("");
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -39,8 +41,29 @@ const FillBlankPage = () => {
     const [showFirstLetterHint, setShowFirstLetterHint] = useState(false);
     const [showAnswer, setShowAnswer] = useState(false);
   
+    const handleNext = () => {
+      if (!dailyChallenge) return;
+  
+      if (!problem[problemIndex + 1]) {
+        navigate("/lobby");
+        return;
+      }
+      switch (problem[problemIndex + 1].problemType) {
+        case "coding":
+          navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+          break;
+        case "mcq":
+          navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+          break;
+        case "fill":
+          navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true }});
+          break;
+        default:
+          break;
+      }
+    }
     const handleSubmit = () => {
-      if (userAnswer.trim().toLowerCase() === problem.correctAnswer?.toLowerCase()) {
+      if (userAnswer.trim().toLowerCase() === problem[problemIndex].correctAnswer?.toLowerCase()) {
         setIsCorrect(true);
       } else {
         setIsCorrect(false);
@@ -51,7 +74,7 @@ const FillBlankPage = () => {
         navigate(-1);
     };
 
-    if (!problem) {
+    if (!problem[problemIndex]) {
         return (
           <div
             className="text-white text-center"
@@ -96,9 +119,9 @@ const FillBlankPage = () => {
         >
             <div className='w-3/4 bg-gray-900 rounded-2xl shadow-2xl p-10 mt-10'>
             <h2 className="text-white text-3xl font-bold mt-10 mb-5">
-                {problem.title}
+                {problem[problemIndex].title}
             </h2>
-            <p className="mt-4">{problem.problemDescription}</p>
+            <p className="mt-4">{problem[problemIndex].problemDescription}</p>
             
             <input
                 type="text"
@@ -118,7 +141,7 @@ const FillBlankPage = () => {
                     </button>
                     )}
                     {showLengthHint && (
-                    <p className="text-gray-300">Answer Length: {problem.correctAnswer?.length} characters</p>
+                    <p className="text-gray-300">Answer Length: {problem[problemIndex].correctAnswer?.length} characters</p>
                     )}
         
                     {!showFirstLetterHint && (
@@ -130,7 +153,7 @@ const FillBlankPage = () => {
                     </button>
                     )}
                     {showFirstLetterHint && (
-                    <p className="text-gray-300">First Letter: {problem.correctAnswer?.charAt(0)}</p>
+                    <p className="text-gray-300">First Letter: {problem[problemIndex].correctAnswer?.charAt(0)}</p>
                     )}
                     {!showAnswer && (
                         <button 
@@ -143,7 +166,7 @@ const FillBlankPage = () => {
                 </div>
 
                 {showAnswer && (
-                    <p className="mt-4">Answer: {problem.correctAnswer}</p>
+                    <p className="mt-4">Answer: {problem[problemIndex].correctAnswer}</p>
                 )}
 
                 {isCorrect !== null && (
@@ -176,6 +199,15 @@ const FillBlankPage = () => {
                 >
                 Submit
                 </button>
+                {dailyChallenge &&  (
+                <button
+                onClick={handleNext}
+                type="submit"
+                className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md
+                cursor-pointer text-lg leading-tight transition duration-300
+                hover:bg-[#512fcace] active:bg-[#381aa2ce]"> Next 
+              </button>
+              )}
             </div>
         </div>
       );

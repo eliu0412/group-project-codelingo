@@ -345,10 +345,9 @@ export const getChallengeProblemsByDate = async (req, res) => {
     const { date } = req.params;
     const dateKey = date || new Date().toISOString().split('T')[0]; // Use today if not provided
     const challengeRef = ref(db, `challenge/${dateKey}`);
-
     const snapshot = await get(challengeRef);
     if (!snapshot.exists()) {
-      return []; // No problems for this date
+      return res.status(200).json([]);
     }
 
     const problemsData = snapshot.val();

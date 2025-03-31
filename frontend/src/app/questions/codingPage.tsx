@@ -2,11 +2,36 @@ import { useState } from "react";
 import background from "../../assets/landing.jpg";
 import CodeEditor from "./codeEditor";
 import Timer from "./timer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function CodingPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
+  const [problem] = useState(location.state?.problem || {});
+  const [problemIndex] = useState(location.state?.problemIndex || 0);
+
+  const handleSubmit = async () => {
+    if (!dailyChallenge) return;
+
+    if (!problem[problemIndex + 1]) {
+      navigate("/lobby");
+      return;
+    }
+    switch (problem[problemIndex + 1].problemType) {
+      case "coding":
+        navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+        break;
+      case "mcq":
+        navigate("/mcq", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true } });
+        break;
+      case "fill":
+        navigate("/fill-in-the-blank", {state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true }});
+        break;
+      default:
+        break;
+    }
+  }
 
   return (
     <>
@@ -28,7 +53,14 @@ function CodingPage() {
         <CodeEditor />
         {dailyChallenge && (
           <div>
-            <button type="submit"> IDKK</button>
+            <button 
+                onClick={handleSubmit}
+                className="bg-[#5a3dc3ce] text-white
+                px-6 py-3 border-none rounded-md
+                cursor-pointer text-lg transition
+                duration-300 mt-2 hover:bg-[#512fcace]
+                active:bg-[#381aa2ce]"
+                > Submit</button>
           </div>
         )}
         
