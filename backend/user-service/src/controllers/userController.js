@@ -1,9 +1,9 @@
 import { db } from '../../shared/initFirebase.js';
-// import verifyToken from '../../../shared/verifyToken.js';
+import verifyToken from '../../../shared/verifyToken.js';
 
 export default {
     createDiscussion: [
-        //verifyToken,
+        // verifyToken,
         async (req, res) => {
             console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
             console.log(`➡️ Forwarding request to user service at http://localhost:8082${req.url}`);
@@ -13,6 +13,13 @@ export default {
 
                 if (!title || !content) {
                     return res.status(400).json({ error: 'Missing parameters in the request body' });
+                }
+
+                // Extract the user ID from the verified token
+                const author = req.headers.authorization?.split(' ')[1]; // Assuming `req.user.id` contains the user ID
+
+                if (!author) {
+                    return res.status(401).json({ error: 'Unauthorized: User ID not found' });
                 }
 
                 const checkExistDiscussion = await db.ref('discussions').orderByChild('title').equalTo(title).get();
@@ -25,7 +32,7 @@ export default {
                 await newDiscussionRef.set({
                     title,
                     content,
-                    author: "wDGIvXiaB5cJQcAM9QbMHwS3PCZ2",
+                    author,
                     createdAt: Date.now()
                 });
 
@@ -75,7 +82,24 @@ export default {
                 discussions = discussions.filter(discussion => regex.test(discussion.title));
             }
 
-            return res.status(200).json(discussions);
+            const discussionsWithAuthorNames = await Promise.all(
+              discussions.map(async (discussion) => {
+                  if (discussion.author) {
+                      const userSnapshot = await db.ref('users').orderByKey().equalTo(discussion.author).get();
+                      if (userSnapshot.exists()) {
+                          const user = Object.values(userSnapshot.val())[0];
+                          discussion.author = user.username; // Add the author's name
+                      } else {
+                           // Fallback if user not found
+                      }
+                  } else {
+                      // Fallback if no author ID
+                  }
+                  return discussion;
+              })
+          );
+
+            return res.status(200).json(discussionsWithAuthorNames);
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: err.message });

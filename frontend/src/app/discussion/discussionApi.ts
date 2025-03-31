@@ -27,11 +27,12 @@ const { disc } = config.api;
   };
   
   // Create new discussion
-  export const createDiscussion = async (newDiscussion: { title: string; content: string }): Promise<CreateDiscussionResponse> => {
+  export const createDiscussion = async (newDiscussion: { title: string; content: string}, user: any ): Promise<any> => {
     const response = await fetch(`${disc}/user/discussion`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.uid}`,
       },
       body: JSON.stringify(newDiscussion),
       credentials: 'include'
