@@ -23,7 +23,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const [score, setScore] = useState(0);
+
   const [language, setLanguage] = useState("python");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(true);
@@ -54,6 +54,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
     setLoading(Object.keys(problem[problemIndex]).length === 0);
     console.log(loading);
   }, [problem[problemIndex]]);
+
 
   const defaultCode = {
     python: `def run(${getParameterString()}):\n`,
@@ -109,6 +110,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
       console.log(result);
 
       await setResult(result);
+      calculateResult();
     } catch (error) {
       console.log(error);
       await setOutput("Error running code.");
@@ -141,9 +143,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         <h2 className="text-lg font-bold mb-10">Loading...</h2>
       ) : (
         <div>
-          <h2 className="text-lg font-bold">{problem[problemIndex]?.title}</h2>
+          <h2 className="text-lg font-bold">{problem?.title}</h2>
           <div className="tag-container">
-            {problem[problemIndex].tags.map((tag, index) => (
+            {problem.tags.map((tag, index) => (
               <span
                 key={index}
                 className="tag bg-sky-200 text-xs text-black rounded-full px-3 py-1 mr-2 mb-2"
@@ -204,7 +206,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
       />
       <p className="mt-4">Constraints: </p>
       <div className="test-cases-container">
-        {problem[problemIndex].constraints.map((constraint, index) => (
+        {problem.constraints.map((constraint, index) => (
           <div
             key={index}
             className="bg-gray-500 test-case mb-4 rounded font-mono text-sm p-2"
@@ -266,6 +268,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
       </div>
       )}
       
+
     </div>
   );
 };

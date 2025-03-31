@@ -3,6 +3,7 @@ import background from "../../assets/landing.jpg";
 import "../styles/general.css";
 import CodingProblemPage from "./codingProblemPage";
 import McqProblemPage from "./mcqProblemPage";
+import FillProblemPage from "./fillProblemPage";
 import { useSocket } from "../../socketContext";
 
 interface TestCase {
@@ -50,10 +51,10 @@ const GeneratedProblemPage = () => {
 
     switch (generatedProblem.problemType) {
       case "coding":
-        navigate("/coding", { state: { problem: [generatedProblem] } });
+        navigate("/coding", { state: { problem: generatedProblem } });
         break;
       case "mcq":
-        navigate("/mcq", { state: { problem: [generatedProblem] } });
+        navigate("/mcq", { state: { problem: generatedProblem } });
         break;
       case "fill":
         navigate("/fill-in-the-blank", {
@@ -171,6 +172,16 @@ const GeneratedProblemPage = () => {
             <McqProblemPage problem={generatedProblem} />
           )}
         </div>
+        
+        {generatedProblem.problemType === "coding" && (
+          <CodingProblemPage problem={generatedProblem} />
+        )}
+        {generatedProblem.problemType === "mcq" && (
+          <McqProblemPage problem={generatedProblem} />
+        )}
+        {generatedProblem.problemType === "fill" && (
+          <FillProblemPage problem={generatedProblem} />
+        )}
       </div>
 
       <div className="flex justify-between items-center justify-center gap-8 m-10">
