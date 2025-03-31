@@ -6,7 +6,6 @@ import { cpp } from "@codemirror/lang-cpp";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { runCode } from "./problemApi";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 
 interface TestCaseResult {
   correct: boolean;
@@ -24,7 +23,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
   const navigate = useNavigate();
 
   const location = useLocation();
-
+  const [score, setScore] = useState(0);
   const [language, setLanguage] = useState("python");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(true);
@@ -34,12 +33,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
   const [problemIndex] = useState(location.state?.problemIndex || 0);
   const [dailyChallenge] = useState(location.state?.dailyChallenge || false);
   const [result, setResult] = useState<Result>({ results: [] });
-
-  // State for Save Code feature
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [filename, setFilename] = useState("");
-  const [repoUrl, setRepoUrl] = useState("");
-  const [accessToken, setAccessToken] = useState(""); // Assume this is set elsewhere after OAuth
 
   let seconds = 0; // Local variable instead of state
 
@@ -61,7 +54,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
     setLoading(Object.keys(problem[problemIndex]).length === 0);
     console.log(loading);
   }, [problem[problemIndex]]);
-
 
   const defaultCode = {
     python: `def run(${getParameterString()}):\n`,
@@ -117,78 +109,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
       console.log(result);
 
       await setResult(result);
-      calculateResult();
     } catch (error) {
       console.log(error);
       await setOutput("Error running code.");
     }
-  };
-
-  const handleSaveCode = () => {
-    setIsPopupOpen(true);
-  };
-
-  const parseRepositoryUrl = (url) => {
-    const match = url.match(/https:\/\/github\.com\/([^/]+)\/([^/]+)/);
-    if (match) {
-      const username = match[1];
-      const repoName = match[2];
-      return { username, repoName };
-    } else {
-      throw new Error("Invalid GitHub repository URL");
-    }
-  };
-
-  const handleSaveToGithub = async () => {
-    try {
-      const { username, repoName } = parseRepositoryUrl(repoUrl);
-
-       // 1. Check if the file already exists to get the SHA
-    let fileSha = null;
-    try {
-      const getResponse = await axios.get(
-        `https://api.github.com/repos/${username}/${repoName}/contents/${filename}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      fileSha = getResponse.data.sha;
-    } catch (err) {
-      if (err.response?.status === 404) {
-        // File doesn't exist — it's a new file
-        fileSha = null;
-      } else {
-        console.error("Error checking file existence:", err);
-        alert("Error checking file on GitHub.");
-        return;
-      }
-    }
-
-    // 2. Prepare payload for creation or update
-    const payload = {
-      message: fileSha ? "Update code file" : "Create new code file",
-      content: btoa(code), // Encode code to base64
-      ...(fileSha && { sha: fileSha }), // Include sha only if updating
-    };
-
-    // 3. Send the PUT request
-    const response = await axios.put(
-      `https://api.github.com/repos/${username}/${repoName}/contents/${filename}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-      alert("Code saved to GitHub successfully!");
-    } catch (error) {
-      console.error("Error saving to GitHub: ", error);
-      alert("Failed to save code to GitHub.");
-    }
-    setIsPopupOpen(false);
   };
 
   const stringify = (value) => {
@@ -217,9 +141,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         <h2 className="text-lg font-bold mb-10">Loading...</h2>
       ) : (
         <div>
-          <h2 className="text-lg font-bold">{problem?.title}</h2>
+          <h2 className="text-lg font-bold">{problem[problemIndex]?.title}</h2>
           <div className="tag-container">
-            {problem.tags.map((tag, index) => (
+            {problem[problemIndex].tags.map((tag, index) => (
               <span
                 key={index}
                 className="tag bg-sky-200 text-xs text-black rounded-full px-3 py-1 mr-2 mb-2"
@@ -260,12 +184,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         >
           Run Code
         </button>
-        <button
-          className="bg-green-500 p-2 rounded hover:bg-green-600 transition"
-          onClick={handleSaveCode}
-        >
-          Save Code
-        </button>
         <select
           className="p-3 bg-gray-700 text-white rounded"
           value={language}
@@ -286,7 +204,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
       />
       <p className="mt-4">Constraints: </p>
       <div className="test-cases-container">
-        {problem.constraints.map((constraint, index) => (
+        {problem[problemIndex].constraints.map((constraint, index) => (
           <div
             key={index}
             className="bg-gray-500 test-case mb-4 rounded font-mono text-sm p-2"
@@ -302,56 +220,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
         <h3 className="text-lg font-semibold">Tests passed:</h3>
         <pre className="whitespace-pre-wrap">{output}</pre>
       </div>
-      {isPopupOpen && (
-        <div className="popup fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="popup-inner bg-white p-6 rounded shadow-lg text-black">
-            <h3 className="font-bold mb-4">Save to GitHub</h3>
-            <label className="block font-medium">
-              GitHub Repository URL:
-              <input
-                type="text"
-                value={repoUrl}
-                onChange={(e) => setRepoUrl(e.target.value)}
-                className="block p-2 border border-gray-300 rounded mt-2 mb-4 w-full"
-                placeholder="https://github.com/username/repo"
-              />
-            </label>
-            <label className="block font-medium">
-              GitHub Token:
-              <input
-                type="text"
-                value={accessToken}
-                onChange={(e) => setAccessToken(e.target.value)}
-                className="block p-2 border border-gray-300 rounded mt-2 mb-4 w-full"
-                placeholder=""
-              />
-            </label>
-            <label className="block font-medium">
-              Filename:
-              <input
-                type="text"
-                value={filename}
-                onChange={(e) => setFilename(e.target.value)}
-                className="block p-2 border border-gray-300 rounded mt-2 mb-4 w-full"
-              />
-            </label>
-            <div className="flex justify-end">
-              <button
-                onClick={handleSaveToGithub}
-                className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setIsPopupOpen(false)}
-                className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition ml-2"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       {result?.results?.length > 0 && (
         <div className="mt-4">
           <h3 className="text-lg font-semibold mb-2">Test Case Results:</h3>
@@ -398,7 +266,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
       </div>
       )}
       
-
     </div>
   );
 };
