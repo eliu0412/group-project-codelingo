@@ -23,7 +23,7 @@ const Lobby = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       const usersData = await getLeaderboard();
-      console.log("bruh" + usersData);
+      console.log("bruhil" + usersData);
       // Convert object to array and sort by score descending
       const sortedUsers = Object.entries(usersData)
         .map(([id, user]) => ({ id, ...user }))
@@ -34,32 +34,7 @@ const Lobby = () => {
     };
 
     fetchUsers();
-  }, []);
-
-
-  useEffect(() => {
-    const fetchLeaders = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:8082/api/user/top-users"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch leaderboard data");
-        }
-        const data = await response.json();
-
-        // Directly set the leaders data without sorting
-        setLeaders(data);
-        console.log(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLeaders();
-  }, []);
+  }, [location.key]);
 
   const handleMatch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,10 +42,8 @@ const Lobby = () => {
         setError(null);
     
     try {
-      console.log("Generating daily challenge...");
+      console.log("Getting daily challenge...");
       const data = await getDailyChallenge();
-      console.log(data);
-      console.log(data[0]);
       switch (data[0].problemType) {
         case "coding":
           navigate("/coding", { state: { problem: data, problemIndex: 0, dailyChallenge: true } });
@@ -105,10 +78,9 @@ const Lobby = () => {
       <div className="flex flex-col items-center pt-20">
         <h1 className="pb-6">Ranked Leaderboard</h1>
 
-        {loading && <p>Loading leaderboard...</p>}
         {error && <p className="error">{error}</p>}
 
-        {topUsers.length > 0 && (
+
         <table className="leaderboard">
           <thead>
             <tr>
@@ -118,17 +90,26 @@ const Lobby = () => {
             </tr>
           </thead>
           <tbody>
-            {topUsers.map((user, index) => (
-              <tr key={user.id}>
-                <td>{index + 1}</td>
-                <td>{user.username}</td>
-                <td>{user.score}</td>
-              </tr>
-            ))}
+            {[...Array(5)].map((_, index) => {
+              const user = topUsers[index];
+              return (
+                <tr key={user?.id || `empty-${index}`}>
+                  <td>{index + 1}</td>
+                  <td>{user?.username || '-'}</td>
+                  <td>{user?.score ?? '-'}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-      )}
 
+        <table>
+          <tbody>
+            <tr>
+              
+            </tr>
+          </tbody>
+        </table>
 
         <button
               onClick={handleMatch}

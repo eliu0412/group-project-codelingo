@@ -366,7 +366,7 @@ export const getChallengeProblemsByDate = async (req, res) => {
   try {
     const { date } = req.params;
     const dateKey = date || new Date().toISOString().split('T')[0]; // Use today if not provided
-    const challengeRef = ref(db, `challenge/${dateKey}`);
+    const challengeRef = ref(db, `challenge/${dateKey}/problems`);
     const snapshot = await get(challengeRef);
     if (!snapshot.exists()) {
       return res.status(200).json([]);
@@ -464,14 +464,15 @@ export const saveUserScore = async (req, res) => {
   try {
     console.log("Saving user score...");
     const { uid, email, username, score } = req.body;
-
+    console.log("req.body:", req.body);
     const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
-
-    if (!uid || !email || !username || !score) {
+    console.log("dateKey:", dateKey);
+    if (!uid || !email || !username) {
       return res.status(400).json({ error: "Missing parameters in the request body" });
     }
-
+    console.log("uid:", uid);
     const userRef = db.ref(`challenge/${dateKey}/users/${uid}`);
+    console.log("userRef:", userRef);
     const snapshot = await userRef.once("value");
     if (!snapshot.exists()) {
         await userRef.set({
@@ -481,11 +482,12 @@ export const saveUserScore = async (req, res) => {
         });
         await updateLeaderboard(uid, email, username, score);
         console.log("User data saved in database:", uid);
-        return res.status(200).json({ message: "Score saved successfully" });
+        return res.status(200).json({ message: "Score uploaded to leaderboard" });
     } else {
         console.log("User data already exists in database:", uid);
     }
-    return res.status(400).json({ message: "User Already Exists" });
+    console.log("User data already exists in database:", uid);
+    return res.status(201).json({ message: "User Already Exists" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
@@ -499,7 +501,7 @@ export const getLeaderboard = async (req, res) => {
 
     const snapshot = await leaderboardRef.once("value");
     if (!snapshot.exists()) {
-      return res.status(404).json({ error: "Leaderboard not found" });
+      return res.status(201).json({});
     }
 
     const leaderboardData = snapshot.val();
