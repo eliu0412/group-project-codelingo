@@ -43,13 +43,12 @@ export const getUserScore = async (data: { uid: string; }) => {
   try {
     console.log(data);
     const response = await fetch(`${prob}/problems/get-user-score`, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    console.log("bruh" + response);
     if (!response.ok) {
       throw new Error("Failed to fetch user score data");
     }
