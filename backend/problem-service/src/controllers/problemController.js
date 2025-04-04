@@ -514,13 +514,14 @@ export const getLeaderboard = async (req, res) => {
 
 export const getUserScore = async (req, res) => {
   try {
+    console.log("Getting user score...");
     const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
     const { uid } = req.body;
     const userRef = db.ref(`challenge/${dateKey}/users/${uid}`);
 
     const snapshot = await userRef.once("value");
     if (!snapshot.exists()) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(201).json({ message: "User does not exist" });
     }
 
     const userData = snapshot.val();

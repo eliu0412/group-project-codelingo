@@ -45,7 +45,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onResultUpdate }) => {
   }, []);
 
   const getParameterString = () => {
-    console.log(problem[problemIndex]);
     return Object.keys(problem[problemIndex].testCases[0].input).join(", ");
   };
   const [code, setCode] = useState(`def run(${getParameterString()}):\n`);

@@ -74,7 +74,7 @@ export const runCode = async (language, code, testCases) => {
   }
 };
 
-export const saveUserData = async (data) => {
+export const saveUserData = async (data: { uid: string; email: string; username: string; score: number; }) => {
   try {
     const response = await fetch(`${prob}/problems/save-user-score`, {
       method: "POST",

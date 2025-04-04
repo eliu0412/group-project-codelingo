@@ -9,7 +9,6 @@ export const getDailyChallenge = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
     });
     console.log(response);
     if (!response.ok) {
@@ -37,5 +36,26 @@ export const getLeaderboard = async () => {
     return data;
   } catch (err) {
     throw new Error("Failed to fetch leaderboard data");
+  }
+};
+
+export const getUserScore = async (data: { uid: string; }) => {
+  try {
+    console.log(data);
+    const response = await fetch(`${prob}/problems/get-user-score`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    console.log("bruh" + response);
+    if (!response.ok) {
+      throw new Error("Failed to fetch user score data");
+    }
+    const userScore = await response.json();
+    return userScore;
+  } catch (err) {
+    throw new Error("Failed to fetch user score data");
   }
 };

@@ -4,7 +4,6 @@ import background from "../../assets/landing.jpg";
 import "../styles/general.css";
 import Timer from "./timer";
 import { useAuth } from "../context/AuthContext";
-import { config } from "../../config.ts";
 import { saveUserData } from './problemApi';
 
 interface Option {

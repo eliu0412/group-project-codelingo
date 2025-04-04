@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import background from "../../assets/landing.jpg"; // Import background image
 import "../styles/general.css"; // Import existing general styles
 import "./lobbyPage.css"; // Import your specific lobby styles
-import { getDailyChallenge, getLeaderboard } from "./lobbyPageAPI";
+import { getDailyChallenge, getLeaderboard, getUserScore } from "./lobbyPageAPI";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 interface Leader {
   username: string;
@@ -18,12 +19,12 @@ const Lobby = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [topUsers, setTopUsers] = useState([]);
+  const { user } = useAuth();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetchUsers = async () => {
       const usersData = await getLeaderboard();
-      console.log("bruhil" + usersData);
       // Convert object to array and sort by score descending
       const sortedUsers = Object.entries(usersData)
         .map(([id, user]) => ({ id, ...user }))
@@ -35,6 +36,17 @@ const Lobby = () => {
 
     fetchUsers();
   }, [location.key]);
+
+  useEffect(() => {
+    const fetchUserScore = async () => {
+      const userData = await getUserScore({ uid: user.uid });
+      console.log("hallo " + userData);
+    };
+
+    fetchUserScore();
+  }, [location.key]);
+
+
 
   const handleMatch = async (e: React.FormEvent) => {
     e.preventDefault();
