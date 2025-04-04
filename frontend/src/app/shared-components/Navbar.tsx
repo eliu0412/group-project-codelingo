@@ -27,16 +27,6 @@ function Navbar() {
             Home
           </NavLink>
         </li>
-        <li>
-          <NavLink to="/about" className={navStyle}>
-            About
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/contact" className={navStyle}>
-            Contact
-          </NavLink>
-        </li>
 
         {user && (
           <>
