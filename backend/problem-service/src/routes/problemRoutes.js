@@ -49,6 +49,6 @@ problemRouter.post("/save-user-score", saveUserScore);
 
 problemRouter.get("/get-leaderboard", getLeaderboard);
 
-problemRouter.get("/get-user-score", getUserScore);
+problemRouter.post("/get-user-score", getUserScore);
 
 export default problemRouter;

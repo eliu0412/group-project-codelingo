@@ -521,7 +521,7 @@ export const getUserScore = async (req, res) => {
 
     const snapshot = await userRef.once("value");
     if (!snapshot.exists()) {
-      return res.status(201).json({ message: "User does not exist" });
+      return res.status(201).json({ score: -1 });
     }
 
     const userData = snapshot.val();

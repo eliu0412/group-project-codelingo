@@ -19,6 +19,7 @@ const Lobby = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [topUsers, setTopUsers] = useState([]);
+  const [userScore, setUserScore] = useState(-1);
   const { user } = useAuth();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,6 +42,10 @@ const Lobby = () => {
     const fetchUserScore = async () => {
       const userData = await getUserScore({ uid: user.uid });
       console.log("hallo " + userData);
+      if (userData.score !== null) {
+        setUserScore(userData.score);
+      }
+      console.log(userScore);
     };
 
     fetchUserScore();
@@ -122,6 +127,12 @@ const Lobby = () => {
             </tr>
           </tbody>
         </table>
+        {(userScore !== -1) && (
+          <p className="fade-in mb-3 mt-2 text-white font-bold">You can try again, but your score will remain the same: {userScore}</p>
+        )}
+        {(userScore === -1) && (
+          <p className="fade-in mb-3 mt-2 text-white font-bold">Only your first attempt will be recorded</p>
+        )}
 
         <button
               onClick={handleMatch}
