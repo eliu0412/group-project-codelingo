@@ -2,7 +2,7 @@
 
 As per the project requirements, a `NFR.pdf` only needs to be submitted if a team has made **modifications or improvements** to their selected non-functional requirements (NFRs) after Sprint 3.
 
-Our team, **CodeLingo**, has **fully implemented all three of our selected NFRs by the end of Sprint 3**, and no further changes were made in Sprint 4. Below is a summary of each NFR and how it was addressed:
+Our team has **fully implemented all three of our selected NFRs**, and no further changes were made in Sprint 4. Below is a summary of each NFR and how it was addressed:
 
 ---
 
@@ -35,7 +35,6 @@ User data is protected, and access to critical components is limited to authoriz
 - Deployed the application on a stable cloud platform (AWS EC2) with high uptime.
 - Ensured that key features such as login, game sessions, lesson content, and review functionality are always available.
 - Designed the system to support simultaneous multiplayer sessions and real-time collaboration with minimal downtime.
-- Avoided vendor lock-in to keep the platform free and accessible.
 
 **Result:**  
 Our platform remained up and functional throughout testing and demo sessions. Core features are available 24/7, ensuring accessibility for all users.
