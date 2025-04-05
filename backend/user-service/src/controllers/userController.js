@@ -1,4 +1,5 @@
 import { db } from '../../shared/initFirebase.js';
+import moment from 'moment';
 // import verifyToken from '../../../shared/verifyToken.js';
 
 export default {
@@ -306,6 +307,54 @@ export default {
       }
     }
   ],
+  getAndUpdateStreak: [
+    async (req, res) => {
+        try {
+            const username = req.query.username; 
+
+            if (!username) {
+                return res.status(400).json({ error: 'Username is required' });
+            }
+
+            const userSnapshot = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).get();
+
+            if (!userSnapshot.exists()) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            const userKey = Object.keys(userSnapshot.val())[0];
+            const userRef = db.ref(`users/${userKey}`);
+            const userData = userSnapshot.val()[userKey];
+
+            const lastDayOfStreak = moment(userData.lastDayOfStreak);
+            const today = moment().startOf('day'); 
+            const yesterday = moment().subtract(1, 'days').startOf('day');
+
+            let updatedStreakValue = userData.streakValue || 0;
+
+            
+            if (lastDayOfStreak.isSame(yesterday, 'day')) {
+                updatedStreakValue += 1;
+            } else if (!lastDayOfStreak.isSame(today, 'day')) {
+                updatedStreakValue = 0; 
+            }
+
+            
+            await userRef.update({
+                streakValue: updatedStreakValue,
+                lastDayOfStreak: today.valueOf()
+            });
+
+            return res.status(200).json({
+                username,
+                streakValue: updatedStreakValue
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err.message });
+        }
+    }
+  ]
 };
 
 

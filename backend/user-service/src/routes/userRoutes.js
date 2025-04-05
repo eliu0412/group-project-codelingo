@@ -18,4 +18,6 @@ userRouter.post('/user', userController.addUser); // New endpoint for adding a u
 userRouter.post('/gamescore', userController.setGameScore);
 userRouter.get('/gamescore', userController.getGameScore);
 
+userRouter.get('/streak', userController.getAndUpdateStreak);
+
 export default userRouter;
