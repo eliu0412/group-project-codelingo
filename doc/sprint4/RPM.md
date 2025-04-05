@@ -1,77 +1,75 @@
+# Release Plan - Sprint 4
 
-# Release Plan - Sprint 3
-
-## Release Name: Sprint 3
+## Release Name: Sprint 4
 
 ## Release Objectives
 
 ### Specific Goals
-- Introduce user progress tracking for modules and questions.
-- Launch real-time collaborative coding feature for competitions.
-- Refactor backend for improved scalability and modularity.
-- Expand admin capabilities with bulk import/export of problems.
-- Finalize full CRUD for lessons, questions, and test cases.
-- Improve overall user interface responsiveness and accessibility.
+- Launch GitHub integration for user code uploads and sharing.
+- Implement gamified streak system to encourage daily engagement.
+- Finalize competitive coding mode and post-game lobby.
+- Enable fill-in-the-blank questions for lessons.
+- Deploy final version of simplified navbar and UI refinements.
+- Complete CI/CD pipeline for automated testing and production deployment.
 
 ### Metrics for Measurement
-- User progress data accurately logged and retrieved (checked via test cases and Firebase analytics).
-- Real-time coding collaboration operates without latency (monitored via socket logs and user testing).
-- Backend endpoints exhibit improved performance and lower response time (measured through load testing).
-- Admin bulk operations perform successfully and reflect in the database (verified via UI logs and DB entries).
-- Successful CRUD operations for content management (validated via automated and manual tests).
-- UI improvements positively impact engagement and lower bounce rate (tracked through analytics).
+- GitHub uploads succeed via API and confirm on GitHub repo (tracked via webhook logs).
+- Streaks update accurately with daily logins and lesson completions (verified via test cases).
+- Competitive mode and post-game lobby display correct results and scores (confirmed via multiplayer tests).
+- Fill-in-the-blank questions render correctly and submit answers reliably (monitored via frontend logs).
+- CI/CD pipeline executes backend/frontend tests and auto-deploys with no manual intervention.
+- UI updates reduce bounce rates and increase average time-on-page (measured via Firebase/Google Analytics).
 
 ## Release Scope
 
 ### Included Features
-- **Progress Tracking**: Store and visualize user progress across modules and problem sets.
-- **Real-Time Collaboration**: Users can join coding sessions together for competitions.
-- **Admin Enhancements**: Bulk import/export problems, filter content, manage tags.
-- **Lesson & Question Management**: Full CRUD implementation for all content types.
-- **Improved Architecture**: Backend refactored for microservice-friendly design and scalability.
-- **Responsive UI Improvements**: Optimized layout and accessibility for better user experience.
-
-### Excluded Features
-- **Gamification Features (Points/Leaderboard)**: To be released in Sprint 4.
-- **Personalized AI Recommendations**: Still under development and data collection.
+- **GitHub Integration**: Users can upload and share code files directly from the platform.
+- **Streak System**: Tracks user learning streaks with motivational UI feedback.
+- **Competitive Coding Mode**: Real-time challenge solving between users with a game lobby and leaderboard.
+- **Post-Game Lobby**: Visual breakdown of player performance after game sessions.
+- **Fill-in-the-Blank Lessons**: Interactive lesson type to boost user engagement.
+- **Simplified Navbar**: Cleaned up navigation bar for streamlined user experience.
+- **Discussion Comments**: Users can comment and reply within discussion threads.
+- **CI/CD Pipeline Finalization**: Automatic test execution and deployment to production on push.
 
 ### Bug Fixes
-- Addressed lag issues in the coding environment on lower-end devices.
-- Resolved token expiry issues in user sessions.
-- Fixed inconsistencies in lesson save/publish flow.
-- Corrected duplicate rendering in discussion panel.
+- Resolved lesson test failures and increased test coverage.
+- Fixed user-service bugs related to authentication and session handling.
+- Addressed frontend state issues with streak visuals.
+- Fixed inconsistencies in discussion post rendering.
 
 ## Non-Functional Requirements
-- Achieve under 200ms average response time for all major API calls.
-- Ensure collaboration sync accuracy within 1 second.
-- Maintain system stability for 100+ concurrent users during peak usage.
-- Meet WCAG 2.1 accessibility standards in redesigned UI components.
+- Maintain 95%+ test pass rate in CI pipeline before deploy.
+- Ensure < 200ms response time for major API endpoints under load.
+- Support concurrent multiplayer games with stable socket communication.
+- Ensure WCAG 2.1 AA compliance in new UI components and navigation.
 
 ## Dependencies and Limitations
 
 ### External Dependencies
-- Firebase for user progress tracking and authentication.
-- WebSockets/Socket.io for real-time collaboration.
-- React + Redux for frontend state management.
-- Node.js/Express for backend APIs.
+- Firebase for auth, analytics, and progress tracking.
+- GitHub REST API for code uploads.
+- WebSockets (Socket.io) for real-time game communication.
+- CI/CD powered by GitHub Actions and Docker.
+- React + Redux + TypeScript frontend stack.
 
 ### Known Limitations
-- Real-time collaboration feature may be affected under unstable network conditions.
-- Admin interface bulk actions currently lack undo functionality.
-- Progress tracking is limited to questions and lessons, not discussions or competitions.
+- Streaks do not yet support backfilling missed days.
+- Competitive mode not optimized for more than 4 users per session.
 
 ## Deployment Plan
 
 ### Steps to Carry Out the Deployment
-1. Merge Sprint 3 branch into `main`.
-2. Run full automated test suite and QA review.
-3. Push to staging environment for internal verification.
-4. Deploy to production via CI/CD pipeline.
-5. Monitor metrics and logs for anomalies.
+1. Merge Sprint 4 branches into `main`.
+2. Run backend and frontend tests through CI.
+3. Push build to staging for internal QA and verification.
+4. Tag a production release and trigger automated deployment.
+5. Monitor real-time logs and analytics for issues or regressions.
 
 ### PIV (Post Implementation Verification) Instructions
-- Confirm user progress is saved and displayed accurately across sessions.
-- Validate real-time coding works with multiple users simultaneously.
-- Ensure admin tools support correct import/export with no data loss.
-- Test responsiveness and keyboard accessibility in UI.
-- Check that all CRUD operations reflect changes in the database in real-time.
+- Upload test code to GitHub and confirm appearance in linked repo.
+- Log in daily and verify streak counter updates accurately.
+- Play multiplayer challenge and ensure score breakdown is correct.
+- Complete a fill-in-the-blank lesson and verify answer submission and feedback.
+- Navigate app using keyboard to confirm accessibility compliance.
+- Review CI/CD logs for test pass/fail and deployment completion.
