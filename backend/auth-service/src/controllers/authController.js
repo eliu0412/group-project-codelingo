@@ -58,7 +58,7 @@ export default {
                 secretKey
             ).toString();
 
-            const verificationUrl = `http://localhost:5173/verify-email?data=${encodeURIComponent(encryptedData)}`;
+            const verificationUrl = `http://3.149.235.1:5173/verify-email?data=${encodeURIComponent(encryptedData)}`;
             await sendVerificationEmail(email, verificationUrl);
         
             return res.status(201).json({
