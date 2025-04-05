@@ -1,4 +1,3 @@
-// In userRoutes.js
 import express from 'express';
 import userController from '../controllers/userController.js';
 
@@ -7,6 +6,8 @@ const userRouter = express.Router();
 userRouter.post('/discussion', userController.createDiscussion);
 userRouter.get('/discussion', userController.getDiscussion);
 userRouter.patch('/discussion/:postID', userController.modifyDiscussion);
+userRouter.get('/discussion/:id', userController.getDiscussionById); // Fetch a single discussion
+userRouter.post('/discussion/:id/comment', userController.addComment); // Add a comment to a discussion
 
 userRouter.post('/rank', userController.addRankToUser);
 userRouter.get('/rank', userController.getRankFromUser);
@@ -17,5 +18,7 @@ userRouter.post('/user', userController.addUser); // New endpoint for adding a u
 
 userRouter.post('/gamescore', userController.setGameScore);
 userRouter.get('/gamescore', userController.getGameScore);
+
+userRouter.get('/streak', userController.getAndUpdateStreak);
 
 export default userRouter;

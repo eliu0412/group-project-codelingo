@@ -1,9 +1,8 @@
 import "./App.css";
 import Navbar from "./app/shared-components/Navbar";
 import Landing from "./app/home/landing";
-import About from "./app/home/about";
-import Contact from "./app/home/contact";
 import DiscussionsPage from "./app/discussion/discussionPage";
+import DiscussionDetail from "./app/discussion/discussionDetail";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./app/registration/registrationPage";
 import Login from "./app/login/loginPage";
@@ -32,8 +31,6 @@ function App() {
             <Navbar />
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
               <Route
                 path="/discussions"
                 element={
@@ -49,6 +46,14 @@ function App() {
                     <DiscussionFormPage />
                   </PrivateRoute>
                 }
+              />
+              <Route 
+                path="/discussion/:id" 
+                element={
+                <PrivateRoute>
+                  <DiscussionDetail />
+                </PrivateRoute>
+                } 
               />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
@@ -134,10 +139,10 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route
+              {/* <Route
                 path="/solve-challenge"
                 element={<PrivateRoute></PrivateRoute>}
-              />
+              /> */}
             </Routes>
           </BrowserRouter>
         </SocketProvider>

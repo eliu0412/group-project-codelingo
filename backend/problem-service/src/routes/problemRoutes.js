@@ -10,6 +10,9 @@ import {
   getAllTags,
   generateChallengeProblem,
   getChallengeProblemsByDate,
+  saveUserScore,
+  getLeaderboard,
+  getUserScore
 } from "../controllers/problemController.js";
 
 export const problemRouter = express.Router();
@@ -41,5 +44,11 @@ problemRouter.get("/all-tags", getAllTags);
 problemRouter.post("/generate-challenge", generateChallengeProblem);
 
 problemRouter.get("/get-challenge", getChallengeProblemsByDate);
+
+problemRouter.post("/save-user-score", saveUserScore);
+
+problemRouter.get("/get-leaderboard", getLeaderboard);
+
+problemRouter.post("/get-user-score", getUserScore);
 
 export default problemRouter;

@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import background from "../../assets/landing.jpg";
 import "../styles/general.css";
 import Timer from "./timer";
+import { useAuth } from "../context/AuthContext";
+import { saveUserData } from './problemApi';
 
 interface Option {
   option: string;
@@ -44,8 +46,8 @@ const FillBlankPage = () => {
 
     const [elapsedTime, setElapsedTime] = useState(0);
     const [points] = useState(location.state?.points || 0);
-  
-    const handleNext = () => {
+    const { user } = useAuth();
+    const handleNext = async () => {
       if (!dailyChallenge) return;
   
       let finalScore = points;
@@ -64,9 +66,18 @@ const FillBlankPage = () => {
         console.log("Final Score:", finalScore);
       }
       if (!problem[problemIndex + 1]) {
-        navigate("/lobby");
+        console.log("No more problems available.");
+        await saveUserData({
+          uid: user.uid,
+          email: user.email,
+          username: user.displayName,
+          score: points
+        });
+        console.log("User data saved successfully.");
+        navigate("/lobby", { state: { refresh: true } });
         return;
       }
+      
       switch (problem[problemIndex + 1].problemType) {
         case "coding":
           navigate("/coding", { state: { problem: problem, problemIndex: problemIndex + 1, dailyChallenge: true, points: finalScore}, });
@@ -80,7 +91,8 @@ const FillBlankPage = () => {
         default:
           break;
       }
-    }
+    };
+
     const handleSubmit = () => {
       if (userAnswer.trim().toLowerCase() === problem[problemIndex].correctAnswer?.toLowerCase()) {
         setIsCorrect(true);

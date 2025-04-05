@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import background from "../../assets/landing.jpg";
 import "../styles/general.css";
 import Timer from "./timer";
+import { useAuth } from "../context/AuthContext";
+import { saveUserData } from './problemApi';
+
 
 interface Option {
   option: string;
@@ -44,8 +47,9 @@ const McqPage = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
 
   const [points] = useState(location.state?.points || 0);
+  const { user } = useAuth();
   
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!dailyChallenge) return;
 
     let finalScore = 0;
@@ -61,7 +65,15 @@ const McqPage = () => {
     
 
     if (!problem[problemIndex + 1]) {
-      navigate("/lobby");
+      console.log("No more problems available.");
+      await saveUserData({
+        uid: user.uid,
+        email: user.email,
+        username: user.displayName,
+        score: points
+      });
+      console.log("User data saved successfully.");
+      navigate("/lobby", { state: { refresh: true } });
       return;
     }
     switch (problem[problemIndex + 1].problemType) {
