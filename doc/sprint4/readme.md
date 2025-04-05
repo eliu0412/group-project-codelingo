@@ -41,10 +41,7 @@ Our platform remained up and functional throughout testing and demo sessions. Co
 
 ---
 
-### 🚫 Why No `NFR.pdf` is Included
+### Why No `NFR.pdf` is Included
 
 Since all of our selected NFRs were fully implemented by the end of Sprint 3 and remained unchanged in Sprint 4, **no NFR resubmission is necessary**.
 
-> ✅ **Nothing further is required for the NFR submission.**
-
-— Team CodeLingo
