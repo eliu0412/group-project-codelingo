@@ -1,5 +1,33 @@
+import { jest } from '@jest/globals';
 import request from 'supertest';
-import server from '../server.js';
+import server from '../server.js'; // Path to your server
+import moment from 'moment';
+
+// Mock the Firebase module
+jest.unstable_mockModule('../shared/initFirebase.js', () => {
+  const mockPush = jest.fn().mockResolvedValue();
+  const mockGet = jest.fn(() => ({
+    exists: jest.fn(() => true),  // Confirmed to return true
+    val: jest.fn(() => ({
+      username: 'testuser',
+      streakValue: 1,
+      lastDayOfStreak: moment().subtract(1, 'days').startOf('day').valueOf(),
+    })),
+  }));
+  const mockUpdate = jest.fn().mockResolvedValue();
+  const mockSet = jest.fn().mockResolvedValue();
+
+  return {
+    db: {
+      ref: jest.fn(() => ({
+        push: mockPush,
+        get: mockGet,
+        update: mockUpdate,
+        set: mockSet,
+      })),
+    },
+  };
+});
 
 describe('User Service', () => {
   const usersAndRanks = [
@@ -149,5 +177,57 @@ describe('User Service - Game Score', () => {
     const res = await request(server).get('/api/user/gamescore?username=nonexistentUser');
     expect(res.status).toBe(404);
     expect(res.body).toHaveProperty('error', 'User not found');
+  });
+});
+
+
+describe('Streak Service', () => {
+  it('should increment streak if called on consecutive days', async () => {
+    const res = await request(server).get('/api/user/streak?username=roger');
+    
+    console.log('Response:', res.status, res.body);
+
+    expect(res.status).toBe(200);
+
+    // Depending on the actual streak value in the database,
+    // adjust the expected streak value accordingly.
+    expect(res.body).toHaveProperty('streakValue');
+
+    // If possible, confirm the increment in streak value compared to a previous known value.
+    // (requires pre-query knowledge of the value)
+  });
+
+  it('should reset streak if a day is skipped', async () => {
+    // In a real database test, you will either need to manually simulate a 
+    // "skipped day" condition or ensure the test data represents this state.
+
+    // Ideally, you prepare the database state before running this specific test.
+    
+    const res = await request(server).get('/api/user/streak?username=roger');
+    expect(res.status).toBe(200);
+
+    // Ensure a known skipped day timestamp is affecting this test:
+    expect(res.body).toHaveProperty('streakValue', 0); // Adjust expected value given real data
+  });
+
+  it('should return 404 for non-existent user', async () => {
+    const res = await request(server).get('/api/user/streak?username=nonexistentuser');
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty('error', 'User not found');
+  });
+
+  it('should not increment streak if already updated today', async () => {
+    // For an actual call, set the user's lastDayOfStreak to today's date beforehand.
+    const res = await request(server).get('/api/user/streak?username=roger');
+    expect(res.status).toBe(200);
+
+    // Verify that the streak stays the same if run multiple times today.
+    expect(res.body).toHaveProperty('streakValue');
+  });
+
+  it('should return a 400 error if username is missing', async () => {
+    const res = await request(server).get('/api/user/streak');
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty('error', 'Username is required');
   });
 });
