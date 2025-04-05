@@ -10,7 +10,7 @@ import background from "../../assets/landing.jpg";
 import { addComment } from './discussionApi.ts';
 
 const DiscussionDetail = () => {
-    const { user } = useAuth(); // Get user from auth context
+    const { user } = useAuth();// Get user from auth context
     const { id } = useParams(); // Get discussion ID from URL
     const location = useLocation();
     const navigate = useNavigate();
@@ -39,11 +39,12 @@ const DiscussionDetail = () => {
     const handleAddComment = async () => {
         if (!newComment.trim()) return;
     
-        if (!user?.uid) {
+        if (!user) {
             return alert("You must be logged in to comment");
         }
     
         try {
+            console.log(user);
             const newCommentData = await addComment(id, { content: newComment }, user);
             setComments([...comments, newCommentData]);
             setNewComment('');

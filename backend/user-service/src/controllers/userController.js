@@ -3,7 +3,7 @@ import verifyToken from '../../../shared/verifyToken.js';
 
 export default {
     createDiscussion: [
-        verifyToken,
+        // verifyToken,
         async (req, res) => {
             console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
             console.log(`➡️ Forwarding request to user service at http://localhost:8082${req.url}`);
@@ -158,14 +158,15 @@ export default {
   ],
 
   addComment: [
-    verifyToken,
+    // verifyToken,
     async (req, res) => {
         try {
             const { id } = req.params; // Discussion ID from URL
             const { content } = req.body; // Comment content
 
-            const author = req.user?.uid;
+            const author = req.headers.authorization?.split(' ')[1];
 
+            console.log(`Author ID: ${author}`);
             if (!id || !content) {
                 return res.status(400).json({ error: 'Discussion ID and comment content are required' });
             }
@@ -192,7 +193,7 @@ export default {
   ],
 
   modifyDiscussion: [
-    verifyToken,
+    // verifyToken,
     async (req, res) => {
         try {
             const { postID: id } = req.params; // Discussion ID from URL

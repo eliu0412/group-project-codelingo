@@ -1,6 +1,6 @@
 import { admin } from './initFirebase.js';
 
-const verifyFirebaseToken = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
 
@@ -17,4 +17,4 @@ const verifyFirebaseToken = async (req, res, next) => {
     }
 };
 
-export default verifyFirebaseToken;
+export default verifyToken;
