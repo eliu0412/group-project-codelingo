@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use('/api/user', userRoutes);
 
 app.listen(port, () => {
-  console.log(`Lesson Service running on http://localhost:${port}`);
+  console.log(`User Service running on http://localhost:${port}`);
 });
 
 export default app;

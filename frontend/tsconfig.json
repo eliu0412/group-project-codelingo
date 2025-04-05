@@ -15,7 +15,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "skipLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true,
+   // "suppressImplicitAnyIndexErrors": true,
     "forceConsistentCasingInFileNames": false,
   }
   

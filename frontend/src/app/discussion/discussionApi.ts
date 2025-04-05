@@ -8,6 +8,13 @@ const { disc } = config.api;
   //   tag: string;
   // }
   
+  export interface Comment {
+    content: string;
+    author: string;
+    author_id: string;
+    createdAt: string;
+  }
+
   interface CreateDiscussionResponse {
     id: number;
     title: string;
@@ -27,14 +34,15 @@ const { disc } = config.api;
   };
   
   // Create new discussion
-  export const createDiscussion = async (newDiscussion: { title: string; content: string }): Promise<CreateDiscussionResponse> => {
+  export const createDiscussion = async (newDiscussion: { title: string; content: string}, user: any ): Promise<any> => {
     const response = await fetch(`${disc}/user/discussion`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.uid}`,
       },
       body: JSON.stringify(newDiscussion),
-      credentials: 'include'
+      // credentials: 'include'
     });
   
     if (!response.ok) {
@@ -43,4 +51,29 @@ const { disc } = config.api;
   
     return response.json();
   };
+
+  // Add comment to a discussion
+  export const addComment = async (discussionId: string, comment: { content: string }, user: any): Promise<any> => {
+    const response = await fetch(`${disc}/user/discussion/${discussionId}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.uid}`,
+      },
+      body: JSON.stringify(comment),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add comment');
+    }
+
+    return response.json();
+  };
   
+  export const getDiscussionById = async (id: string): Promise<Discussion> => {
+    const response = await fetch(`${disc}/user/discussion/${id}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch discussion');
+    }
+    return response.json();
+  };

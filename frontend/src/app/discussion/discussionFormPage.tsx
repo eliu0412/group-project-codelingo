@@ -5,8 +5,10 @@ import { useLocation } from 'react-router-dom';
 import '../styles/general.css';
 import './discussion.css';
 import background from "../../assets/landing.jpg";
+import { useAuth } from "../context/AuthContext";
 
 const DiscussionForm: React.FC = () => {
+  const { user } = useAuth()
   const navigate = useNavigate();
   const location = useLocation();
   const { previousPage, problemTitle, problemDescription } = location.state || {};
@@ -23,7 +25,7 @@ const DiscussionForm: React.FC = () => {
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createDiscussion(newDiscussion);
+      await createDiscussion(newDiscussion, user);
       navigate('/discussions');
     } catch (error) {
       console.error('Failed to create discussion:', error);

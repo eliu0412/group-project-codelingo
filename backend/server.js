@@ -9,7 +9,8 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: '*'
+  credentials: true,
+  origin: ['http://localhost:3000/', 'http://localhost:5173/', 'http://3.149.235.1:5173/']
 }));
 
 const proxy = httpProxy.createProxyServer();
