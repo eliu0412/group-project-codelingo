@@ -79,18 +79,17 @@ export default {
 
       return { ...problem, id: newProblemRef.key };
     } catch (error) {
-      console.error('Error creating problem:', error);
-      throw new Error('Failed to create problem');
+      console.error("Error creating problem:", error);
+      throw new Error("Failed to create problem");
     }
   },
-
   async createChallengeProblem(problem) {
     try {
       // Get today's date in YYYY-MM-DD format
       const today = new Date().toISOString().split('T')[0];
   
       // Reference to challenge/yyyy-mm-dd/
-      const challengeProblemRef = ref(db, `challenge/${today}`);
+      const challengeProblemRef = ref(db, `challenge/${today}/problems`);
       const newProblemRef = push(challengeProblemRef);
   
       // Save the problem under the date path

@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import background from "../../assets/landing.jpg"; // Import background image
 import "../styles/general.css"; // Import existing general styles
 import "./lobbyPage.css"; // Import your specific lobby styles
-import { getDailyChallenge } from "./lobbyPageAPI";
+import { getDailyChallenge, getLeaderboard, getUserScore } from "./lobbyPageAPI";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 interface Leader {
   username: string;
@@ -17,28 +18,40 @@ const Lobby = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchLeaders = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:8082/api/user/top-users"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch leaderboard data");
-        }
-        const data = await response.json();
+  const [topUsers, setTopUsers] = useState([]);
+  const [userScore, setUserScore] = useState(-1);
+  const { user } = useAuth();
 
-        // Directly set the leaders data without sorting
-        setLeaders(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const usersData = await getLeaderboard();
+      // Convert object to array and sort by score descending
+      const sortedUsers = Object.entries(usersData)
+        .map(([id, user]) => ({ id, ...user }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5); // Take top 5
+
+      setTopUsers(sortedUsers);
     };
 
-    fetchLeaders();
-  }, []);
+    fetchUsers();
+  }, [location.key]);
+
+  useEffect(() => {
+    const fetchUserScore = async () => {
+      const userData = await getUserScore({ uid: user.uid });
+      console.log("hallo " + userData);
+      if (userData.score !== null) {
+        setUserScore(userData.score);
+      }
+      console.log(userScore);
+    };
+
+    fetchUserScore();
+  }, [location.key]);
+
+
 
   const handleMatch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +59,8 @@ const Lobby = () => {
         setError(null);
     
     try {
-      console.log("Generating daily challenge...");
+      console.log("Getting daily challenge...");
       const data = await getDailyChallenge();
-      console.log(data);
-      console.log(data[0]);
       switch (data[0].problemType) {
         case "coding":
           navigate("/coding", { state: { problem: data, problemIndex: 0, dailyChallenge: true } });
@@ -84,28 +95,44 @@ const Lobby = () => {
       <div className="flex flex-col items-center pt-20">
         <h1 className="pb-6">Ranked Leaderboard</h1>
 
-        {loading && <p>Loading leaderboard...</p>}
         {error && <p className="error">{error}</p>}
 
-        {leaders.length > 0 && (
-          <table className="leaderboard">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Username</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaders.slice(0, 5).map((leader, index) => (
-                <tr key={index}>
-                  <td>{leader.rank}</td>
-                  <td>{leader.username}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
 
+        <table className="leaderboard">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...Array(5)].map((_, index) => {
+              const user = topUsers[index];
+              return (
+                <tr key={user?.id || `empty-${index}`}>
+                  <td>{index + 1}</td>
+                  <td>{user?.username || '-'}</td>
+                  <td>{user?.score ?? '-'}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <table>
+          <tbody>
+            <tr>
+              
+            </tr>
+          </tbody>
+        </table>
+        {(userScore !== -1) && (
+          <p className="fade-in mb-3 mt-2 text-white font-bold">You can try again, but your score will remain the same: {userScore}</p>
+        )}
+        {(userScore === -1) && (
+          <p className="fade-in mb-3 mt-2 text-white font-bold">Only your first attempt will be recorded</p>
+        )}
 
         <button
               onClick={handleMatch}

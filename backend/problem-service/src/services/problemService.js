@@ -42,7 +42,6 @@ export default {
       throw err;
     }
   },
-
   async generateChallengeProblem(param) {
     try {
       const { problemType, problemDifficulty, tags, userOptions } = param;

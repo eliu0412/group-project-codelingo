@@ -41,14 +41,23 @@ const CodingProblemPage: React.FC<CodingProblemProps> = ({ problem }) => {
                       Input:
                     </code>
                     <br />
-                    {Object.entries(tc.input).map(([key, value], i) => (
-                    <div>
-                      <code key={i} className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
-                        {key}: {JSON.stringify(value)}
-                      </code>
-                      <br />
-                    </div>
-                    ))}
+                    {tc.input && typeof tc.input === "object" && !Array.isArray(tc.input) ? (
+                      Object.entries(tc.input).map(([key, value], i) => (
+                        <div key={i}>
+                          <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
+                            {key}: {JSON.stringify(value)}
+                          </code>
+                          <br />
+                        </div>
+                      ))
+                    ) : (
+                      <div>
+                        <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">
+                          {JSON.stringify(tc.input)}
+                        </code>
+                        <br />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <code className="bg-gray-700 text-white px-2 py-1 rounded text-sm">

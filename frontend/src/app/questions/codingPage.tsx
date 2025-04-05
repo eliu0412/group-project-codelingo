@@ -3,6 +3,8 @@ import background from "../../assets/landing.jpg";
 import CodeEditor from "./codeEditor";
 import Timer from "./timer";
 import { useLocation, useNavigate } from "react-router-dom";
+import { saveUserData } from './problemApi';
+import { useAuth } from "../context/AuthContext";
 
 function CodingPage() {
   const location = useLocation();
@@ -14,6 +16,7 @@ function CodingPage() {
   const [points] = useState(location.state?.points || 0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [score, setScore] = useState(0);
+  const { user } = useAuth();
 
   
 
@@ -24,7 +27,15 @@ function CodingPage() {
     console.log("Final Score:", finalScore);
 
     if (!problem[problemIndex + 1]) {
-      navigate("/lobby");
+      console.log("No more problems available.");
+      await saveUserData({
+        uid: user.uid,
+        email: user.email,
+        username: user.displayName,
+        score: points
+      });
+      console.log("User data saved successfully.");
+      navigate("/lobby", { state: { refresh: true } });
       return;
     }
     

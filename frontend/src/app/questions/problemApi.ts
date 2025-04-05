@@ -21,7 +21,7 @@ export const generateProblem = async (formData: ProblemForm) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-      credentials: "include",
+      //credentials: "include",
     });
 
     if (!response.ok) {
@@ -38,7 +38,7 @@ export const getAllTags = async (): Promise<Tag[]> => {
   try {
     const response = await fetch(`${prob}/problems/all-tags`, {
       method: "GET",
-      credentials: "include",
+      //credentials: "include",
     });
 
     if (!response.ok) {
@@ -60,7 +60,7 @@ export const runCode = async (language, code, testCases) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ language, code, testCases }),
-      credentials: "include",
+      //credentials: "include",
     });
 
     if (!response.ok) {
@@ -73,3 +73,22 @@ export const runCode = async (language, code, testCases) => {
     throw new Error("Failed to execute code");
   }
 };
+
+export const saveUserData = async (data: { uid: string; email: string; username: string; score: number; }) => {
+  try {
+    const response = await fetch(`${prob}/problems/save-user-score`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+      //credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save user data");
+    }
+  } catch (err) {
+    throw new Error("Failed to save user data");
+  }
+}

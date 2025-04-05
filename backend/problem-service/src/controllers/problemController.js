@@ -9,6 +9,8 @@ import {
   get,
   update,
   set,
+  remove,
+  child
 } from "firebase/database";
 import problemService from "../services/problemService.js";
 import { exec } from "child_process";
@@ -25,6 +27,7 @@ const execAsync = promisify(exec);
 // Define __dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 export const addProblem = (req, res) => {
   const {
     title,
@@ -272,9 +275,12 @@ export const executeCode = async (req, res) => {
       return;
     }
 
+
+
     const args = Object.values(testCase.input)
       .map((v) => JSON.stringify(v))
       .join(", ");
+
     modifiedCode += `print(run(${args}))\n`;
     executedTestCases.push(testCase);
   });
@@ -327,26 +333,6 @@ console.log("----- STDERR -----\n", stderr);
   }
 };
 
-
-export const getAllTags = async (req, res) => {
-  const tagsRef = ref(db, "tags");
-
-  try {
-    const snapshot = await get(tagsRef);
-    if (!snapshot.exists()) {
-      return res.status(404).json({ message: "No tags found." });
-    }
-
-    const tagsData = Object.values(snapshot.val());
-    tagsData.sort((a, b) => b.count - a.count);
-
-    res.status(200).json(tagsData);
-  } catch (error) {
-    console.error("Error fetching tags:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
-  }
-};
-
 export const generateChallengeProblem = async (req, res) => {
   try {
     const { problemType, problemDifficulty, tags, userOptions } = req.body;
@@ -380,7 +366,7 @@ export const getChallengeProblemsByDate = async (req, res) => {
   try {
     const { date } = req.params;
     const dateKey = date || new Date().toISOString().split('T')[0]; // Use today if not provided
-    const challengeRef = ref(db, `challenge/${dateKey}`);
+    const challengeRef = ref(db, `challenge/${dateKey}/problems`);
     const snapshot = await get(challengeRef);
     if (!snapshot.exists()) {
       return res.status(200).json([]);
@@ -398,5 +384,150 @@ export const getChallengeProblemsByDate = async (req, res) => {
   } catch (error) {
     console.error('Error fetching challenge problems:', error);
     throw new Error('Failed to fetch challenge problems');
+  }
+};
+
+export const getAllTags = async (req, res) => {
+  const tagsRef = ref(db, "tags");
+
+  try {
+    const snapshot = await get(tagsRef);
+    if (!snapshot.exists()) {
+      return res.status(404).json({ message: "No tags found." });
+    }
+
+    const tagsData = Object.values(snapshot.val());
+    tagsData.sort((a, b) => b.count - a.count);
+
+    res.status(200).json(tagsData);
+  } catch (error) {
+    console.error("Error fetching tags:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+
+
+const updateLeaderboard = async (uid, email, username, score) => {
+  try {
+    const dateKey = new Date().toISOString().split("T")[0]; // e.g., "2025-03-31"
+    const leaderboardRef = ref(db, `challenge/${dateKey}/top-5-users`);
+
+    const snapshot = await get(leaderboardRef);
+    const leaderboard = snapshot.exists() ? snapshot.val() : {};
+
+    // Convert leaderboard to array
+    const leaderboardArray = Object.entries(leaderboard).map(([key, data]) => ({
+      uid: key,
+      ...data,
+    }));
+
+    // Check if user already exists in leaderboard
+    const existingIndex = leaderboardArray.findIndex(entry => entry.uid === uid);
+    if (existingIndex !== -1) {
+      if (score <= leaderboardArray[existingIndex].score) {
+        console.log("User already in leaderboard with equal or better score. No update needed.");
+        return;
+      }
+      leaderboardArray.splice(existingIndex, 1); // Remove old entry
+    }
+
+    // Add new user score
+    leaderboardArray.push({ uid, email, username, score });
+
+    // Sort descending and check if we exceed 5 users
+    leaderboardArray.sort((a, b) => b.score - a.score);
+
+    // Save top 5 only
+    const top5 = leaderboardArray.slice(0, 5);
+
+    // Write the new user's score
+    const userRef = child(leaderboardRef, uid);
+    await set(userRef, { email, username, score });
+
+    // If now there are more than 5 users, remove the lowest one
+    if (leaderboardArray.length > 5) {
+      const removedUser = leaderboardArray[5];
+      const removedRef = child(leaderboardRef, removedUser.uid);
+      await remove(removedRef);
+    }
+
+    console.log("Leaderboard updated.");
+
+  } catch (error) {
+    console.error("Error updating leaderboard:", error);
+  }
+};
+
+
+export const saveUserScore = async (req, res) => {
+  try {
+    console.log("Saving user score...");
+    const { uid, email, username, score } = req.body;
+    console.log("req.body:", req.body);
+    const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
+    console.log("dateKey:", dateKey);
+    if (!uid || !email || !username) {
+      return res.status(400).json({ error: "Missing parameters in the request body" });
+    }
+    console.log("uid:", uid);
+    const userRef = db.ref(`challenge/${dateKey}/users/${uid}`);
+    console.log("userRef:", userRef);
+    const snapshot = await userRef.once("value");
+    if (!snapshot.exists()) {
+        await userRef.set({
+            email,
+            username,
+            score
+        });
+        await updateLeaderboard(uid, email, username, score);
+        console.log("User data saved in database:", uid);
+        return res.status(200).json({ message: "Score uploaded to leaderboard" });
+    } else {
+        console.log("User data already exists in database:", uid);
+    }
+    console.log("User data already exists in database:", uid);
+    return res.status(201).json({ message: "User Already Exists" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getLeaderboard = async (req, res) => {
+  try {
+    const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
+    const leaderboardRef = db.ref(`challenge/${dateKey}/top-5-users`);
+
+    const snapshot = await leaderboardRef.once("value");
+    if (!snapshot.exists()) {
+      return res.status(201).json({});
+    }
+
+    const leaderboardData = snapshot.val();
+    return res.status(200).json(leaderboardData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserScore = async (req, res) => {
+  try {
+    console.log("Getting user score...");
+    const dateKey = new Date().toISOString().split('T')[0]; // Use today if not provided
+    const { uid } = req.body;
+    const userRef = db.ref(`challenge/${dateKey}/users/${uid}`);
+
+    const snapshot = await userRef.once("value");
+    if (!snapshot.exists()) {
+      return res.status(201).json({ score: -1 });
+    }
+
+    const userData = snapshot.val();
+    return res.status(200).json(userData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 };
