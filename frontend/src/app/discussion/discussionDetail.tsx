@@ -1,60 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { config } from '../../config.ts';
-const { disc } = config.api;
+import { useParams } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext.tsx";
 import '../styles/general.css';
 import './discussion.css';
 import background from "../../assets/landing.jpg";
-import { addComment } from './discussionApi.ts';
+import { addComment, getDiscussionById } from './discussionApi.ts';
 
 const DiscussionDetail = () => {
-    const { user } = useAuth();// Get user from auth context
+    const { user } = useAuth(); // Get user from auth context
     const { id } = useParams(); // Get discussion ID from URL
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [discussion, setDiscussion] = useState(null);
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
+    const [discussion, setDiscussion] = useState<any>(null);
+    const [comments, setComments] = useState<any[]>([]);
+    const [newComment, setNewComment] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(true); // Loading state to handle async fetching
 
     useEffect(() => {
-        if (location.state?.discussion) {
-            setDiscussion(location.state.discussion);
-            setComments(location.state.discussion.comments || []);
-        } else {
-            // If discussion is not passed through state, fetch it from the API
-            axios.get(`${disc}/discussion/${id}`)
-                .then(response => {
-                    setDiscussion(response.data);
-                    setComments(response.data.comments || []);
+        if (id) {
+            // Fetch the discussion by ID
+            getDiscussionById(id)
+                .then(discussionData => {
+                    setDiscussion(discussionData); // Set discussion data
+                    setComments(discussionData.comments || []); // Set comments
+                    setLoading(false); // Set loading to false when data is fetched
                 })
-                .catch(err => {
-                    console.error("Error fetching discussion:", err);
-                    // Handle error (could navigate back or show error message)
+                .catch((err) => {
+                    console.error("Error fetching discussion:", err.message);
+                    setLoading(false); // Set loading to false on error
                 });
         }
-    }, [id, location.state?.discussion]);
+    }, [id]);
 
     const handleAddComment = async () => {
-        if (!newComment.trim()) return;
+        if (!newComment.trim()) return; // Prevent adding empty comment
     
         if (!user) {
             return alert("You must be logged in to comment");
         }
     
         try {
-            console.log(user);
             const newCommentData = await addComment(id, { content: newComment }, user);
-            setComments([...comments, newCommentData]);
-            setNewComment('');
+            setComments([...comments, newCommentData]); // Add new comment to the list
+            setNewComment(''); // Clear input field
+
+            const updatedDiscussion = await getDiscussionById(id);
+            setComments(updatedDiscussion.comments || []);
         } catch (err) {
             console.error("Error adding comment:", err);
             // Handle error (could show an error message)
         }
     };
 
-    if (!discussion) return <p>Loading...</p>;
+    if (loading) return <p>Loading...</p>; // Show loading message while fetching data
+    if (!discussion) return <p>Discussion not found</p>; // If no discussion, show error
 
     return (
         <div
@@ -74,7 +71,7 @@ const DiscussionDetail = () => {
                 paddingBottom: "10vh",
             }}
         >
-            <div className="discussion-detail-container bg-gray-900 rounded-2xl shadow-2xl p-10 mt-10" style={{width: "1000px"}}>
+            <div className="discussion-detail-container bg-gray-900 rounded-2xl shadow-2xl p-10 mt-10" style={{ width: "1000px" }}>
                 <h3 className="text-white text-3xl font-thick">{discussion.title}</h3>
                 
                 <div className="discussion-content-box mt-5">
@@ -121,7 +118,7 @@ const DiscussionDetail = () => {
                             <div key={index} className="comment mt-4 p-4 bg-gray-800 rounded-md">
                                 <p className="text-white">{comment.content}</p>
                                 <p className="text-gray-400">
-                                    <small>By {comment.author} on {new Date(comment.createdAt).toLocaleString()}</small>
+                                    <small>By {comment.username}, {new Date(comment.createdAt).toLocaleString()}</small>
                                 </p>
                             </div>
                         ))

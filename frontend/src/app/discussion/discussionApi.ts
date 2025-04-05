@@ -8,6 +8,13 @@ const { disc } = config.api;
   //   tag: string;
   // }
   
+  export interface Comment {
+    content: string;
+    author: string;
+    author_id: string;
+    createdAt: string;
+  }
+
   interface CreateDiscussionResponse {
     id: number;
     title: string;
@@ -63,3 +70,10 @@ const { disc } = config.api;
     return response.json();
   };
   
+  export const getDiscussionById = async (id: string): Promise<Discussion> => {
+    const response = await fetch(`${disc}/user/discussion/${id}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch discussion');
+    }
+    return response.json();
+  };

@@ -1,4 +1,3 @@
-// In userRoutes.js
 import express from 'express';
 import userController from '../controllers/userController.js';
 

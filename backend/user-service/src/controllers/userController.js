@@ -175,12 +175,22 @@ export default {
                 return res.status(401).json({ error: 'Unauthorized: User not found' });
             }
 
+            const userSnapshot = await db.ref(`users/${author}`).get();
+  
+            if (!userSnapshot.exists()) {
+              return res.status(404).json({ error: 'No user found' });
+            }
+      
+            const user = userSnapshot.val();
+            const username = user.username;
+
             console.log(`Discussion ID: ${id}`);
             // Add the comment to the discussion with a new unique comment key
             const newCommentRef = db.ref(`discussions/${id}/comments`).push(); // Push to the comments node, without hardcoding the key
             await newCommentRef.set({
                 content,
                 author,
+                username,
                 createdAt: Date.now(),
             });
 

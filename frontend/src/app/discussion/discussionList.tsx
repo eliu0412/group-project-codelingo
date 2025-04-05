@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export interface Comment {
   content: string;
   author: string;
+  username: string;
   createdAt: string;
 }
 
@@ -14,7 +15,6 @@ export interface Discussion {
   createdAt: string;
   content: string;
   comments: Comment[];
-
 }
 
 interface DiscussionListProps {
@@ -23,10 +23,9 @@ interface DiscussionListProps {
 
 const DiscussionList: React.FC<DiscussionListProps> = ({ discussions }) => {
   const navigate = useNavigate();
-  const handleViewDetails = (discussion: Discussion) => {
-    navigate(`/discussion/${discussion.id}`, {
-      state: { discussion }, // Pass the whole discussion object via state
-    });
+
+  const handleViewDetails = (discussionId: number) => {
+    navigate(`/discussion/${discussionId}`); // Pass only the ID in the URL
   };
 
   return (
@@ -51,7 +50,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ discussions }) => {
             </p>
             <div className="mt-4">
               <button
-                onClick={() => handleViewDetails(discussion)}
+                onClick={() => handleViewDetails(discussion.id)}
                 className="bg-[#5a3dc3ce] text-white px-4 py-2 rounded-md cursor-pointer text-sm transition duration-300 hover:bg-[#512fcace] active:bg-[#381aa2ce]"
               >
                 View Details
@@ -61,8 +60,6 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ discussions }) => {
         ))}
     </div>
   );
-  
-  
 };
 
 export default DiscussionList;
