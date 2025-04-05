@@ -7,7 +7,7 @@
 //      match: "http://localhost:8087",
 //      user: "http://localhost:8082/api/user"
 //    },
-//  };
+//  }; 
 
 
 export const config = {
