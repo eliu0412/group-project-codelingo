@@ -5,6 +5,8 @@ import "./lobbyPage.css"; // Import your specific lobby styles
 import { getDailyChallenge, getLeaderboard, getUserScore } from "./lobbyPageAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { config } from "../../config.ts";
+const { user } = config.api;
 
 interface Leader {
   username: string;

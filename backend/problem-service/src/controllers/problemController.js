@@ -298,7 +298,7 @@ export const executeCode = async (req, res) => {
 console.log("READ-BACK FILE CONTENTS BEFORE EXEC:\n", fileContents);
 
     // ✅ Await Python execution
-    const { stdout, stderr } = await execAsync(`python "${filePath}"`);
+    const { stdout, stderr } = await execAsync(`python3 "${filePath}"`);
 
     // ✅ Clean up
     await fs.unlink(filePath);
