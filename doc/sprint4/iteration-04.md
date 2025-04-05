@@ -106,10 +106,6 @@ As with prior sprints, roles were flexible, and team members frequently collabor
 - **CI/CD Pipeline Finalization:**  
   Pipeline now runs backend and frontend tests, then auto-deploys on release tag.
 
-#### ❌ Deferred or Not Fully Completed
-
-- Some unit tests for frontend components were deprioritized due to focus on final feature completion.
-
 <br>
 
 ---
