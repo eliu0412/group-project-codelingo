@@ -4,6 +4,7 @@ import Landing from "./app/home/landing";
 import About from "./app/home/about";
 import Contact from "./app/home/contact";
 import DiscussionsPage from "./app/discussion/discussionPage";
+import DiscussionDetail from "./app/discussion/discussionDetail";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./app/registration/registrationPage";
 import Login from "./app/login/loginPage";
@@ -138,6 +139,12 @@ function App() {
                 path="/solve-challenge"
                 element={<PrivateRoute></PrivateRoute>}
               />
+              <Route 
+                path="/discussion/:id" 
+                element={<PrivateRoute>
+                  <DiscussionDetail />
+                </PrivateRoute>} 
+                />
             </Routes>
           </BrowserRouter>
         </SocketProvider>

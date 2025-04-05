@@ -98,3 +98,108 @@
   .view-details:hover {
     background-color: #3ec4a9; /* Green accent for hover */
   }
+
+  .discussion-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.discussion-header {
+    margin-bottom: 20px;
+}
+
+.discussion-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.discussion-content {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.discussion-author {
+    font-size: 1rem;
+    color: #777;
+}
+
+.comments-section {
+    margin-top: 20px;
+}
+
+.comments-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.comment {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.comment-content {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.comment-meta {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.no-comments {
+    font-size: 1rem;
+    color: #777;
+    font-style: italic;
+}
+
+.add-comment-section {
+    margin-top: 20px;
+}
+
+.add-comment-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.submit-comment-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-comment-button:hover {
+    background-color: #0056b3;
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #555;
+}

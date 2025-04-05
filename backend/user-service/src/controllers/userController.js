@@ -74,7 +74,10 @@ export default {
                 return res.status(404).json({ message: 'No discussions found' });
             }
 
-            let discussions = Object.values(snapshot.val());
+            let discussions = Object.entries(snapshot.val()).map(([id, discussion]) => ({
+              id, // Add the discussion ID
+              ...discussion
+          }));
 
             // Apply regex filter on title if provided
             if (titleRegex) {
@@ -105,6 +108,74 @@ export default {
             res.status(500).json({ error: err.message });
         }
     }],
+    getDiscussionById: [
+      async (req, res) => {
+          try {
+              const { id } = req.params; // Discussion ID from URL
+  
+              if (!id) {
+                  return res.status(400).json({ error: 'Discussion ID is required' });
+              }
+  
+              // Fetch the discussion
+              const discussionSnapshot = await db.ref(`discussions/${id}`).get();
+  
+              if (!discussionSnapshot.exists()) {
+                  return res.status(404).json({ error: 'Discussion not found' });
+              }
+  
+              const discussions = Object.entries(discussionSnapshot.val());
+  
+              // Fetch comments for the discussion
+              const commentsSnapshot = await db.ref(`discussions/${id}/comments`).get();
+              const comments = commentsSnapshot.exists() ? Object.values(commentsSnapshot.val()) : [];
+              
+              if (discussions.author) {
+                const userSnapshot = await db.ref('users').orderByKey().equalTo(discussion.author).get();
+                        if (userSnapshot.exists()) {
+                            const user = Object.values(userSnapshot.val())[0];
+                            discussions.author = user.username;
+              }
+            }
+              return res.status(200).json({
+                  ...discussions,
+                  id, // Include the discussion ID
+                  comments, // Include the comments
+              });
+          } catch (err) {
+              console.error(err);
+              res.status(500).json({ error: err.message });
+          }
+      }
+  ],
+  addCommentToDiscussion: [
+    async (req, res) => {
+        try {
+            const { id } = req.params; // Discussion ID from URL
+            const { content } = req.body; // Comment content
+
+            const author = req.headers.authorization?.split(' ')[1];
+            // const author = req.user?.id || 'Anonymous'; // Extract user ID from token or fallback to 'Anonymous'
+
+            if (!id || !content) {
+                return res.status(400).json({ error: 'Discussion ID and comment content are required' });
+            }
+
+            // Add the comment to the discussion
+            const newCommentRef = db.ref(`discussions/${id}/comments/${id}`).push();
+            await newCommentRef.set({
+                content,
+                author,
+                createdAt: Date.now(),
+            });
+
+            return res.status(201).json({ message: 'Comment added successfully', commentId: newCommentRef.key });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err.message });
+        }
+    }
+],
 
     modifyDiscussion: [
         // verifyToken,
