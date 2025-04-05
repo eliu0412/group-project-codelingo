@@ -3,21 +3,22 @@
 
 ---
 
-## Iteration 03 - Review & Retrospect
+## Iteration 04 - Review & Retrospect
 
-- **When:** 3/21/2025  
+- **When:** 04/04/2025  
 - **Where:** Online
 
 ---
 
 ## Process - Reflection
 
-- Identified task dependencies and created a network diagram to plan the sprint’s critical path  
-- Prioritized backend schema and API-related tasks early in the sprint  
-- Implemented progress tracking logic  
-- Continued refinement of the admin dashboard  
-- Added placeholder logic for fill-in-the-blank interactive questions (AP-8)  
-- Daily standups and mid-sprint syncs were used to align the team and unblock issues quickly
+- Fully implemented and tested GitHub upload integration for user-submitted code  
+- Completed and deployed the streak system with dynamic daily tracking and visual feedback  
+- Released competitive coding mode with real-time multiplayer support and post-game review lobby  
+- Finalized interactive fill-in-the-blank questions with backend validation and frontend UI  
+- Enhanced UI/UX with a simplified navigation bar and improved layout responsiveness  
+- Daily standups, mid-sprint demos, and async documentation contributed to a smooth workflow  
+- CI/CD pipeline improvements enabled faster deployments and reliable testing
 
 ---
 
@@ -32,18 +33,19 @@
 
 ### ⚠️ Decisions that didn’t work as well
 
-- **Underestimation of AP-8 (Fill-in-the-Blank Logic):**  
-  The complexity of implementing flexible, dynamic interactive questions with real-time validation was not fully scoped during planning, leading to delays.
-- **Assuming Uniform Workflows Across Team:**  
-  A one-size-fits-all development flow led to some inefficiencies. We’ve since adjusted to allow for more flexibility based on individual strengths.
+- **Cross-Team Collaboration:** Smooth handoffs between backend, frontend, and design led to timely deliveries  
+- **Early API Exploration (GitHub):** Allowed for seamless integration without auth-related blockers  
+- **UI and Game Feature Previews:** Helped validate user experience mid-sprint and ensured visual consistency  
+- **Feedback Loop on Post-Game Lobbies:** Engaged users with meaningful stats and rankings after each session
 
 ---
 
-### 🔄 Planned Changes
+### 🔄 Improvements Carried Out
 
-- Add pre-sprint “technical breakdown” sessions to improve the accuracy of story point estimation  
-- Introduce buffer time for exploratory tasks or new feature formats  
-- Increase async documentation to reduce reliance on full-group syncs
+- Introduced technical breakdown sessions pre-sprint for better estimation and scoping  
+- Increased async documentation to reduce sync meeting overhead  
+- Allocated buffer time for debugging and polish, improving final output quality  
+- Adjusted workflows to suit developer strengths, improving velocity and code quality
 
 ---
 
@@ -68,17 +70,8 @@
 
 ---
 
-### ❌ Tasks Planned But Not Completed:
+## Final Notes
 
-- **AP-8 (Interactive Fill-in-the-Blank Questions):**  
-  - **User Story:** _"As a user, I want fill-in-the-blank questions during lessons so that I can test my understanding interactively."_  
-  - **Status:** Incomplete due to unexpected backend and validation complexity. Work is partially implemented but requires more time for full integration.
----
+Sprint 4 marked the successful completion of our planned feature roadmap. All core features were delivered, tested, and deployed. The team demonstrated strong adaptability, collaboration, and technical execution throughout the final iteration.
 
-## Looking Ahead
-
-In the next sprint, we aim to:
-
-- Complete AP-8, including frontend components and answer validation logic  
-- Upload finalized modules to GitHub with README and setup docs  
-- Expand AI question integration within lesson flows  
+🚀 **CodeLingo is live and ready!**
