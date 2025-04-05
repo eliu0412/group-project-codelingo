@@ -51,23 +51,19 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
 
   return (
     <div className="pagination flex gap-2 items-center justify-center mt-4">
-      <button onClick={handleFirstPage} disabled={currentPage === 1} className="px-2 py-1">&laquo;</button>
-      <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-2 py-1">&lsaquo;</button>
+      <button onClick={handleFirstPage} disabled={currentPage === 1} className="px-2 py-1">
+        &laquo;
+      </button>
+      <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-2 py-1">
+        &lsaquo;
+      </button>
 
       {getVisiblePages().map((page) => {
         const isActive = page === currentPage;
 
-        const isFixedActive =
-          (page === 1 && currentPage === 1) ||
-          (page === totalPages && currentPage === totalPages);
-
         const baseClass = "px-3 py-1 rounded";
 
-        const activeClass = isFixedActive
-          ? "bg-blue-700 text-white font-bold border border-blue-300 shadow-md"
-          : isActive
-          ? "bg-indigo-600 text-white font-bold"
-          : "bg-gray-200 hover:bg-gray-300";
+        const activeClass = isActive ? "bg-gray-300" : "bg-gray-100";
 
         return (
           <button
@@ -80,8 +76,12 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         );
       })}
 
-      <button onClick={handleNextPage} disabled={currentPage === totalPages} className="px-2 py-1">&rsaquo;</button>
-      <button onClick={handleLastPage} disabled={currentPage === totalPages} className="px-2 py-1">&raquo;</button>
+      <button onClick={handleNextPage} disabled={currentPage === totalPages} className="px-2 py-1">
+        &rsaquo;
+      </button>
+      <button onClick={handleLastPage} disabled={currentPage === totalPages} className="px-2 py-1">
+        &raquo;
+      </button>
     </div>
   );
 };
