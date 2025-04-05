@@ -1,6 +1,6 @@
 import { db } from '../../shared/initFirebase.js';
 
-import verifyToken from '../../../shared/verifyToken.js';
+//import verifyToken from '../../../shared/verifyToken.js';
 import moment from 'moment';
 // import verifyToken from '../../../shared/verifyToken.js';
 
