@@ -3,7 +3,7 @@ import verifyToken from '../../../shared/verifyToken.js';
 
 export default {
     createDiscussion: [
-        // verifyToken,
+        verifyToken,
         async (req, res) => {
             console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
             console.log(`➡️ Forwarding request to user service at http://localhost:8082${req.url}`);
@@ -33,6 +33,7 @@ export default {
                     title,
                     content,
                     author,
+                    comments: [],
                     createdAt: Date.now()
                 });
 
@@ -48,66 +49,71 @@ export default {
     }],
 
     getDiscussion: [
-        //verifyToken,
-        async (req, res) => {
-            console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
-            console.log(`➡️ Forwarding request to user service at http://localhost:8082${req.url}`);
-            console.log(`📦 Request Body:`, req.body);
-        try {
-            const { author, createdDate, titleRegex } = req.query; // Optional filters
-
-            let discussionsRef = db.ref('discussions');
-            let query = discussionsRef;
-
-            // Apply filters dynamically
-            if (author) {
-                query = query.orderByChild('author').equalTo(author);
-            }
-
-            if (createdDate) {
-                query = query.orderByChild('createdDate').equalTo(createdDate);
-            }
-
-            const snapshot = await query.get();
-
-            if (!snapshot.exists()) {
-                return res.status(404).json({ message: 'No discussions found' });
-            }
-
-            let discussions = Object.entries(snapshot.val()).map(([id, discussion]) => ({
-              id, // Add the discussion ID
-              ...discussion
-          }));
-
-            // Apply regex filter on title if provided
-            if (titleRegex) {
-                const regex = new RegExp(titleRegex, 'i'); // Case-insensitive regex
-                discussions = discussions.filter(discussion => regex.test(discussion.title));
-            }
-
-            const discussionsWithAuthorNames = await Promise.all(
-              discussions.map(async (discussion) => {
-                  if (discussion.author) {
-                      const userSnapshot = await db.ref('users').orderByKey().equalTo(discussion.author).get();
-                      if (userSnapshot.exists()) {
-                          const user = Object.values(userSnapshot.val())[0];
-                          discussion.author = user.username; // Add the author's name
+      async (req, res) => {
+          console.log(`🔥 API Gateway received request: ${req.method} ${req.url}`);
+          console.log(`➡️ Forwarding request to user service at http://localhost:8082${req.url}`);
+          console.log(`📦 Request Body:`, req.body);
+  
+          try {
+              const { author, createdDate, titleRegex } = req.query; // Optional filters
+  
+              let discussionsRef = db.ref('discussions');
+              let query = discussionsRef;
+  
+              // Apply filters dynamically
+              if (author) {
+                  query = query.orderByChild('author').equalTo(author);
+              }
+  
+              if (createdDate) {
+                  query = query.orderByChild('createdDate').equalTo(createdDate);
+              }
+  
+              const snapshot = await query.get();
+  
+              if (!snapshot.exists()) {
+                  return res.status(404).json({ message: 'No discussions found' });
+              }
+  
+              let discussions = Object.entries(snapshot.val()).map(([id, discussion]) => ({
+                  id, // Add the discussion ID
+                  ...discussion
+              }));
+  
+              // Apply regex filter on title if provided
+              if (titleRegex) {
+                  const regex = new RegExp(titleRegex, 'i'); // Case-insensitive regex
+                  discussions = discussions.filter(discussion => regex.test(discussion.title));
+              }
+  
+              // Sort discussions by 'createdDate' in descending order (latest first)
+              discussions.sort((a, b) => b.createdDate - a.createdDate);
+  
+              const discussionsWithAuthorNames = await Promise.all(
+                  discussions.map(async (discussion) => {
+                      if (discussion.author) {
+                          const userSnapshot = await db.ref('users').orderByKey().equalTo(discussion.author).get();
+                          if (userSnapshot.exists()) {
+                              const user = Object.values(userSnapshot.val())[0];
+                              discussion.author = user.username; // Add the author's name
+                          } else {
+                               // Fallback if user not found
+                          }
                       } else {
-                           // Fallback if user not found
+                          // Fallback if no author ID
                       }
-                  } else {
-                      // Fallback if no author ID
-                  }
-                  return discussion;
-              })
-          );
+                      return discussion;
+                  })
+              );
+  
+              return res.status(200).json(discussionsWithAuthorNames);
+          } catch (err) {
+              console.error(err);
+              res.status(500).json({ error: err.message });
+          }
+      }
+    ],
 
-            return res.status(200).json(discussionsWithAuthorNames);
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ error: err.message });
-        }
-    }],
     getDiscussionById: [
       async (req, res) => {
           try {
@@ -124,21 +130,23 @@ export default {
                   return res.status(404).json({ error: 'Discussion not found' });
               }
   
-              const discussions = Object.entries(discussionSnapshot.val());
+              const discussion = discussionSnapshot.val(); // The actual discussion object
   
               // Fetch comments for the discussion
               const commentsSnapshot = await db.ref(`discussions/${id}/comments`).get();
               const comments = commentsSnapshot.exists() ? Object.values(commentsSnapshot.val()) : [];
-              
-              if (discussions.author) {
-                const userSnapshot = await db.ref('users').orderByKey().equalTo(discussion.author).get();
-                        if (userSnapshot.exists()) {
-                            const user = Object.values(userSnapshot.val())[0];
-                            discussions.author = user.username;
+  
+              // Fetch the author details if the author exists
+              if (discussion.author) {
+                  const userSnapshot = await db.ref('users').orderByKey().equalTo(discussion.author).get();
+                  if (userSnapshot.exists()) {
+                      const user = Object.values(userSnapshot.val())[0];
+                      discussion.author = user.username; // Replace author ID with username
+                  }
               }
-            }
+  
               return res.status(200).json({
-                  ...discussions,
+                  ...discussion, // Spread the discussion data
                   id, // Include the discussion ID
                   comments, // Include the comments
               });
@@ -148,21 +156,27 @@ export default {
           }
       }
   ],
-  addCommentToDiscussion: [
+
+  addComment: [
+    verifyToken,
     async (req, res) => {
         try {
             const { id } = req.params; // Discussion ID from URL
             const { content } = req.body; // Comment content
 
-            const author = req.headers.authorization?.split(' ')[1];
-            // const author = req.user?.id || 'Anonymous'; // Extract user ID from token or fallback to 'Anonymous'
+            const author = req.user?.uid;
 
             if (!id || !content) {
                 return res.status(400).json({ error: 'Discussion ID and comment content are required' });
             }
 
-            // Add the comment to the discussion
-            const newCommentRef = db.ref(`discussions/${id}/comments/${id}`).push();
+            if (!author) {
+                return res.status(401).json({ error: 'Unauthorized: User not found' });
+            }
+
+            console.log(`Discussion ID: ${id}`);
+            // Add the comment to the discussion with a new unique comment key
+            const newCommentRef = db.ref(`discussions/${id}/comments`).push(); // Push to the comments node, without hardcoding the key
             await newCommentRef.set({
                 content,
                 author,
@@ -175,48 +189,51 @@ export default {
             res.status(500).json({ error: err.message });
         }
     }
-],
+  ],
 
-    modifyDiscussion: [
-        // verifyToken,
-        async (req, res) => {
-            try {
-                const id = req.params.postID; // Discussion ID from URL
-                const { title, content } = req.body; // Fields to update
+  modifyDiscussion: [
+    verifyToken,
+    async (req, res) => {
+        try {
+            const { postID: id } = req.params; // Discussion ID from URL
+            const { title, content } = req.body; // Fields to update
 
-                if (!id) {
-                    return res.status(400).json({ error: 'Discussion ID is required' });
-                }
-
-                // Fetch the discussion
-                const discussionRef = db.ref(`discussions/${id}`);
-                const snapshot = await discussionRef.get();
-
-                if (!snapshot.exists()) {
-                    return res.status(404).json({ error: 'Discussion not found' });
-                }
-
-                // Update only the provided fields
-                const updates = {};
-                if (title) updates.title = title;
-                if (content) updates.content = content;
-
-                if (Object.keys(updates).length === 0) {
-                    return res.status(400).json({ error: 'No valid fields provided for update' });
-                }
-
-                await discussionRef.update(updates);
-
-                return res.status(200).json({
-                    message: 'Discussion updated successfully',
-                    updatedFields: updates
-                });
-            } catch (err) {
-                console.error(err);
-                res.status(500).json({ error: err.message });
+            if (!id) {
+                return res.status(400).json({ error: 'Discussion ID is required' });
             }
+
+            // Fetch the discussion
+            const discussionRef = db.ref(`discussions/${id}`);
+            const snapshot = await discussionRef.get();
+
+            if (!snapshot.exists()) {
+                return res.status(404).json({ error: 'Discussion not found' });
+            }
+
+            // Prepare updates object dynamically
+            const updates = {};
+            if (title) updates.title = title;
+            if (content) updates.content = content;
+
+            // If no fields are provided for update, return an error
+            if (Object.keys(updates).length === 0) {
+                return res.status(400).json({ error: 'No valid fields provided for update' });
+            }
+
+            // Update the discussion with the provided fields
+            await discussionRef.update(updates);
+
+            return res.status(200).json({
+                message: 'Discussion updated successfully',
+                updatedFields: updates
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'An error occurred while updating the discussion' });
         }
-    ],
+    }
+  ],
+
     addRankToUser: [
         async (req, res) => {
           try {

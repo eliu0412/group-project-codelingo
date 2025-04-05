@@ -1,205 +1,67 @@
-/* Discussion Page Styles */
-.discussions-page {
-    /* General form and button styles */
-  
-    form {
-      margin-top: 10px;
-      background-color: rgba(60, 80, 120, 0.4);
-      padding: 15px;
-      border-radius: 8px;
-      max-width: 1000px;
-      width: 100%;
-    }
-  
-    form input,
-    form textarea {
-      width: 100%;
-      padding: 5px;
-      margin: 5px;
-      border: 1px solid #a8b1c4;
-      border-radius: 5px;
-      background-color: #1f273b;
-      color: white;
-    }
-  
-    form textarea {
-      height: 256px;
-    }
-  
-    form button {
-      background-color: #5a3dc3ce;
-      color: white;
-      padding: 10px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-bottom: 5px;
-    }
-  
-    form button:hover {
-      background-color: #3ec4a9;
-    }
-  
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-  }
-  
-  /* Discussion List Styles */
-  .discussion-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
-  }
-  
-  .discussion-item {
-    background-color: white; /* White background */
-    color: black; /* Black text */
-    padding: 15px;
-    border-radius: 10px;
-    width: 300px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .discussion-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
-  }
-  
-  .title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: black; /* Purple color for titles */
-  }
-  
-  .author, .date {
-    font-size: 14px;
-    font-weight: 300;
-    margin-bottom: 8px;
-    color: #7b7b7b; /* Light gray for author and date */
-  }
-  
-  .view-details {
-    display: inline-block;
-    padding: 8px 12px;
-    background-color: #4ac0e6; /* Light blue base */
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.2s;
-  }
-  
-  .view-details:hover {
-    background-color: #3ec4a9; /* Green accent for hover */
-  }
-
-  .discussion-detail-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
+/* General Button Styles */
+button {
+  background-color: #5a3dc3ce; /* Purple background */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.discussion-header {
-    margin-bottom: 20px;
+button:hover {
+  background-color: #3ec4a9; /* Green accent on hover */
 }
 
-.discussion-title {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 10px;
+/* Form and Input Styles */
+form {
+  margin-top: 10px;
+  background-color: rgba(60, 80, 120, 0.4);
+  padding: 15px;
+  border-radius: 8px;
+  max-width: 1000px;
+  width: 100%;
 }
 
-.discussion-content {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 10px;
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #a8b1c4;
+  border-radius: 5px;
+  background-color: #1f273b;
+  color: white;
 }
 
-.discussion-author {
-    font-size: 1rem;
-    color: #777;
+form textarea {
+  height: 256px;
 }
 
-.comments-section {
-    margin-top: 20px;
+form button {
+  margin-top: 10px;
+  padding: 12px 20px;
+  background-color: #5a3dc3ce; /* Purple background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.comments-title {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 10px;
+form button:hover {
+  background-color: #3ec4a9; /* Green accent for hover */
 }
 
-.comment {
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.comment-content {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 5px;
-}
-
-.comment-meta {
-    font-size: 0.9rem;
-    color: #999;
-}
-
-.no-comments {
-    font-size: 1rem;
-    color: #777;
-    font-style: italic;
-}
-
-.add-comment-section {
-    margin-top: 20px;
-}
-
-.add-comment-title {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.comment-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.submit-comment-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.submit-comment-button:hover {
-    background-color: #0056b3;
-}
-
-.loading {
-    text-align: center;
-    font-size: 1.5rem;
-    color: #555;
+hr {
+  border: 0;
+  border-top: 1px solid white;
+  margin: 1.5rem 0;
 }

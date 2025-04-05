@@ -8,7 +8,7 @@ userRouter.post('/discussion', userController.createDiscussion);
 userRouter.get('/discussion', userController.getDiscussion);
 userRouter.patch('/discussion/:postID', userController.modifyDiscussion);
 userRouter.get('/discussion/:id', userController.getDiscussionById); // Fetch a single discussion
-userRouter.post('/discussion/:id/comment', userController.addCommentToDiscussion); // Add a comment to a discussion
+userRouter.post('/discussion/:id/comment', userController.addComment); // Add a comment to a discussion
 
 userRouter.post('/rank', userController.addRankToUser);
 userRouter.get('/rank', userController.getRankFromUser);

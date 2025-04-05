@@ -35,13 +35,31 @@ const { disc } = config.api;
         Authorization: `Bearer ${user.uid}`,
       },
       body: JSON.stringify(newDiscussion),
-      credentials: 'include'
+      // credentials: 'include'
     });
   
     if (!response.ok) {
       throw new Error('Failed to create discussion');
     }
   
+    return response.json();
+  };
+
+  // Add comment to a discussion
+  export const addComment = async (discussionId: string, comment: { content: string }, user: any): Promise<any> => {
+    const response = await fetch(`${disc}/user/discussion/${discussionId}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.uid}`,
+      },
+      body: JSON.stringify(comment),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add comment');
+    }
+
     return response.json();
   };
   

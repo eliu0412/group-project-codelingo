@@ -51,6 +51,14 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route 
+                path="/discussion/:id" 
+                element={
+                <PrivateRoute>
+                  <DiscussionDetail />
+                </PrivateRoute>
+                } 
+              />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route
@@ -135,16 +143,10 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route
+              {/* <Route
                 path="/solve-challenge"
                 element={<PrivateRoute></PrivateRoute>}
-              />
-              <Route 
-                path="/discussion/:id" 
-                element={<PrivateRoute>
-                  <DiscussionDetail />
-                </PrivateRoute>} 
-                />
+              /> */}
             </Routes>
           </BrowserRouter>
         </SocketProvider>
