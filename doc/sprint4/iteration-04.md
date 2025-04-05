@@ -1,7 +1,6 @@
-
-# CodeLingo - Sprint 3  
-**Start date:** March 8, 2025  
-**End date:** March 21, 2025  
+# CodeLingo - Sprint 4  
+**Start date:** March 22, 2025  
+**End date:** April 4, 2025  
 
 <br>
 
@@ -10,18 +9,18 @@
 ### Roles & Responsibilities
 
 - **Frontend Developer(s):**  
-  Implement new UI components (e.g., game flows, leaderboard, statistics) using React (TypeScript) and integrate with backend services.
+  Developed and updated UI components (e.g., streak system, post-game lobby, fill-in-the-blank lessons) using React (TypeScript) and integrated them with backend services.
 
 - **Backend Developer(s):**  
-  Extend API functionality, manage user data, implement secure endpoints, and handle game logic.
+  Created and extended API functionality (e.g., GitHub integration, streak logic, discussion comments), handled deployment logic and unit test coverage.
 
 - **DevOps Engineer:**  
-  Maintain CI/CD pipelines, monitor infrastructure, and deploy updates.
+  Finalized CI/CD pipeline with automatic deployment on push to `main`, improved test automation.
 
 - **QA Engineer:**  
-  Design and execute integration tests, validate new features, and help catch edge cases in game mechanics.
+  Verified lesson tests, validated streak tracking, and conducted thorough tests on new competitive coding flows.
 
-As before, these roles act as general guidelines. Team members are encouraged to collaborate across the stack and take ownership of tasks based on their strengths and availability. Work is assigned via Jira and approached with flexibility and shared responsibility.
+As with prior sprints, roles were flexible, and team members frequently collaborated across the stack. Work was managed via Jira and assigned based on availability, expertise, and task priority.
 
 <br>
 
@@ -32,16 +31,16 @@ As before, these roles act as general guidelines. Team members are encouraged to
 ## Events
 
 - **Weekly Sprint Meetings (Slack/Online):**  
-  Review progress, blockers, and reassign tasks if needed.
+  Aligned priorities, reviewed blockers, and discussed architecture decisions.
 
 - **Daily Stand-ups (Slack/Online):**  
-  Team members quickly update each other on current work.
+  Provided short updates to ensure visibility of progress and challenges.
 
 - **Code Review Sessions (Slack/Online):**  
-  Asynchronous peer reviews to ensure maintainable and scalable code.
+  Maintained consistency and readability of codebase through peer reviews.
 
 - **Sprint Review & Retrospective (Hybrid):**  
-  Review completed work, identify what went well, and plan improvements for the next sprint.
+  Assessed sprint outcomes, celebrated completed features, and discussed lessons learned from unresolved tickets.
 
 <br>
 
@@ -52,16 +51,16 @@ As before, these roles act as general guidelines. Team members are encouraged to
 ## Artifacts
 
 - **Jira Board:**  
-  Used to organize user stories, track sprint progress, and visualize dependencies.
+  Contained Sprint 4 tickets categorized by type (feature, bugfix, devops) and tracked completion with linked branches.
 
 - **GitHub Repository:**  
-  Version-controlled codebase structured with GitFlow practices.
+  Continued GitFlow structure with merged feature branches and finalized CI/CD deployment pipeline.
 
 - **Sprint Documentation:**  
-  Includes burndown chart, schedule, retrospective notes, and design decisions.
+  Included updated burndown chart, iteration summary, and retrospectives.
 
 - **Figma Prototypes:**  
-  Updated designs for leaderboard, game join screens, and post-game statistics.
+  Added updated designs for fill-in-the-blank questions, lobby result screens, and simplified navbar.
 
 <br>
 
@@ -73,28 +72,43 @@ As before, these roles act as general guidelines. Team members are encouraged to
 
 ### Goals and Tasks
 
-#### **Game Features & Interaction**
+#### ✅ Features Implemented
 
-- Implement private game creation and join-by-code flow.
-- Enable post-game statistics visualization (accuracy, time, score).
-- Design and implement a competitive leaderboard.
-- Ensure secure session and game interactions (authentication checks on game actions).
-  
-#### **Learning & Progress**
+- **GitHub Integration:**  
+  Users can upload code directly to GitHub for sharing and showcasing their work.
 
-- Allow users to browse and access various programming and CS modules.
-- Enable GitHub integration so users can upload and showcase their code files.
-  
-#### **Security & Access Control**
+- **Streak System:**  
+  Gamified motivation via daily check-ins and continuous learning tracking.
 
-- Enforce access restrictions on discussion posts, problem creation, and game joining—only for authenticated users.
-- Validate frontend routes and backend endpoints accordingly.
+- **Post-Game Lobby:**  
+  Displayed user performance and challenge breakdown after completing a game session.
 
-#### **Testing & Validation**
+- **Fill-in-the-Blank Questions:**  
+  Interactive questions during lessons to enhance learning engagement.
 
-- Conduct integration tests to validate feature flows end-to-end.
-- Test user session handling in multiplayer game mode.
-- Monitor analytics and edge cases, especially for competitive features.
+- **Simplified Navbar:**  
+  Reduced cognitive load with a cleaner, minimal top navigation layout.
+
+- **Discussion Comments:**  
+  Users can now comment and reply in forum-style discussions.
+
+- **Competitive Coding Mode:**  
+  Enabled real-time problem-solving between users to foster engagement and skill-building.
+
+#### 🔧 Bug Fixes & Improvements
+
+- **Lesson Test Fixes:**  
+  Resolved broken lesson test cases and adjusted coverage.
+
+- **User-Service Test Fixes:**  
+  Patched failed unit tests related to auth and user progress endpoints.
+
+- **CI/CD Pipeline Finalization:**  
+  Pipeline now runs backend and frontend tests, then auto-deploys on release tag.
+
+#### ❌ Deferred or Not Fully Completed
+
+- Some unit tests for frontend components were deprioritized due to focus on final feature completion.
 
 <br>
 
@@ -105,19 +119,19 @@ As before, these roles act as general guidelines. Team members are encouraged to
 ## Artifacts
 
 - **Jira User Stories:**  
-  Clearly written from a user perspective to define value and intent behind each task.
-
-- **Wireframes & Prototypes:**  
-  Updated Figma screens for new user-facing features.
+  Covered user-focused outcomes like GitHub integration, interactive lessons, and motivation through streaks.
 
 - **API Docs:**  
-  Outlines new endpoints (e.g., `/games/join`, `/leaderboard`, `/stats`) and their expected behaviors.
+  Documented endpoints like `/streaks`, `/github/upload`, and `/challenges/submit`.
 
-- **Integration Test Plans:**  
-  Details how new components are validated across services.
+- **Test Coverage Reports:**  
+  Tracked backend and frontend test results for CI/CD validation.
 
-- **Deployment Logs:**  
-  Captures changes pushed live during the sprint and their status.
+- **Deployment Pipeline Logs:**  
+  Captured success/failures in staging and production environments.
+
+- **Figma Mockups:**  
+  Final designs for post-game lobby, navbar layout, and comment UI.
 
 <br>
 
@@ -125,4 +139,4 @@ As before, these roles act as general guidelines. Team members are encouraged to
 
 <br>
 
-All work in Sprint 3 is tracked in Jira and reviewed during code reviews and sprint meetings. The team continues to follow an agile, iterative development model to ensure frequent delivery and continuous improvement.
+Sprint 4 marked the final push toward a functional MVP. With major features completed and critical fixes in place, the team wrapped up development with improved test coverage, polished user experience, and a working deployment pipeline. All progress was continuously tracked in Jira and GitHub and reviewed via code review and sprint sessions.
