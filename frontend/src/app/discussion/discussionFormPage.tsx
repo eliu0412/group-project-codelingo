@@ -44,25 +44,28 @@ const DiscussionForm: React.FC = () => {
   };
 
   return (
-    <div className="discussions-page"
-        style={{
-            backgroundImage: `url(${background})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            width: "100%",
-            backgroundAttachment: "fixed",
-            minHeight:"100vh",
-            display: "flex",    // Enable flexbox
-            flexDirection: "column", // Stack items vertically
-            justifyContent: "center", // Center the content vertically
-            alignItems: "center", // Center the content horizontally
-        }}
+    <div
+      className="discussions-page"
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        width: "100%",
+        backgroundAttachment: "fixed",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingBottom: "10vh",
+      }}
     >
         <h2 className="fade-in text-white text-3xl font-thick italic text-center mt-10 mb-5">
             "The important thing is not to stop questioning."
         </h2>
-        <form onSubmit={handleSubmitForm}>
+        <form onSubmit={handleSubmitForm}
+          className="w-3/4 bg-gray-900 rounded-2xl shadow-2xl p-10">
             <label className="text-white font-thin italic">Title:</label>
             <input
                 type="text"
@@ -70,6 +73,7 @@ const DiscussionForm: React.FC = () => {
                 value={newDiscussion.title}
                 onChange={handleFormChange}
                 required
+                className="w-full p-3 mt-2 mb-4 bg-gray-800 rounded-md text-white"
             />
             <label className="text-white font-thin italic">Content:</label>
             <textarea
@@ -77,18 +81,20 @@ const DiscussionForm: React.FC = () => {
                 value={newDiscussion.content}
                 onChange={handleFormChange}
                 required
+                className="w-full p-3 mt-2 mb-4 bg-gray-800 rounded-md text-white"
+                style={{ minHeight: '200px' }}
             />
-            <div className="flex justify-center gap-5 m-10">
+            <div className="flex justify-center gap-5 mt-8">
                 <button
                 type="button"
                 onClick={handleBackToDiscussions}
-                className="flex-1 p-3 m-10">
+                className="bg-transparent border border-[#666] cursor-pointer rounded-md text-lg leading-tight text-white px-9 py-4 transition duration-300 hover:bg-[rgba(41,41,82,0.9)] active:bg-[rgba(32,32,65,0.9)]">
                     Back to Discussions
                 </button>
-                <button type="submit" className="flex-1 p-3 m-10">
+                <button type="submit" className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md cursor-pointer text-lg leading-tight transition duration-300 hover:bg-[#512fcace] active:bg-[#381aa2ce]">
                     Submit
                 </button>
-                <button type="button" onClick={handleBackToProblem} className="flex-1 p-3 m-10">
+                <button type="button" onClick={handleBackToProblem} className="bg-[#5a3dc3ce] text-white px-9 py-4 rounded-md cursor-pointer text-lg leading-tight transition duration-300 hover:bg-[#512fcace] active:bg-[#381aa2ce]">
                     Back to Problem
                 </button>
             </div>
